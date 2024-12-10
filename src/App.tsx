@@ -1,11 +1,15 @@
 import React from "react";
 import CategoryList from "./components/CategoryList";
+import Navbar from "./components/Navbar";
 
 const App: React.FC = () => {
   return (
-    <div>
-      <CategoryList />
-    </div>
+    <>
+      <Navbar />
+      <div>
+        <CategoryList />
+      </div>
+    </>
   );
 };
 
