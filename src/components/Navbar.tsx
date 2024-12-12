@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { fetchCategories } from "../services/categories";
+import { fetchCategories } from "../services/api";
 import Logo from "./Logo";
 
 type Category = {

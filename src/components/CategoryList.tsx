@@ -1,14 +1,14 @@
 import React, { useEffect, useState } from "react";
-import { fetchCategories } from "../services/categories";
+import { fetchCategories } from "../services/api";
 
-type Category = {
-  id: string;
+interface Category {
+  id: string
   attributes: {
-    id: number;
-    title: string;
-    description: string | null;
-    created_at: string;
-    updated_at: string;
+    id: number
+    title: string
+    description: string | null
+    created_at: string
+    updated_at: string
   };
 };
 
@@ -21,7 +21,11 @@ const CategoryList: React.FC = () => {
     const getCategories = async () => {
       try {
         const data = await fetchCategories();
-        setCategories(data.data);
+        if (data.data && data.data.length > 0) {
+          setCategories(data.data);
+        } else {
+          setError("Nenhuma categoria disponível.");
+        }
       } catch (err) {
         console.log(err);
         
