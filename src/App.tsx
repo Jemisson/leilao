@@ -1,8 +1,7 @@
-import React from "react";
 import Navbar from "./components/Navbar";
 import ProductCatalog from "./components/ProductCatalog";
 
-const App: React.FC = () => {
+function App () {
   return (
     <>
       <Navbar />
