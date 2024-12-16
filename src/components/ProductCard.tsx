@@ -1,36 +1,26 @@
-import React from "react";
+import { Product } from "../types";
 
-interface Product {
-  id: number,
-  attributes: {
-    lot_number: string,
-    donor_name: string,
-    donor_phone: string,
-    minimum_value: number,
-    bidder_name: string,
-    bidder_phone: string,
-    winning_value: number,
-    description: string
-  }
-};
+interface ProductCardProps {
+  product: Product;
+}
 
-const ProductCard: React.FC<{ product: Product }> = ({ product }) => {
+const ProductCard = ({ product }: ProductCardProps) => {
   return (
     <div className="max-w-sm bg-white border border-gray-200 rounded-lg shadow-md dark:bg-gray-800 dark:border-gray-700" key={product.id}>
       <img
         className="rounded-t-lg w-full h-48 object-cover"
         src='/public/empty.png'
-        alt={product.attributes.description}
+        alt={product.attributes.name}
       />
       <div className="p-5">
         <h5 className="mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white">
-          {product.attributes.description}
+          {product.attributes.name}
         </h5>
         <p className="mb-3 font-normal text-gray-700 dark:text-gray-400">
           {product.attributes.description}
         </p>
         <p className="mb-3 font-semibold text-lg text-gray-900 dark:text-white">
-          Valor: R$ {product.attributes?.winning_value}
+          Valor: R$ {product.attributes.winning_value}
         </p>
         <button className="inline-flex items-center px-3 py-2 text-sm font-medium text-center text-white bg-redBright rounded-lg hover:bg-redDark focus:ring-4 focus:outline-none focus:ring-redBright dark:bg-redBright dark:hover:bg-redDark dark:focus:ring-redBright">
           Fazer um Lance

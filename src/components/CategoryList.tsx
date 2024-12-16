@@ -1,18 +1,8 @@
-import React, { useEffect, useState } from "react";
-import { fetchCategories } from "../services/api";
+import { useEffect, useState } from "react"
+import { fetchCategories } from "../services/api"
+import { Category } from "../types"
 
-interface Category {
-  id: string
-  attributes: {
-    id: number
-    title: string
-    description: string | null
-    created_at: string
-    updated_at: string
-  };
-};
-
-const CategoryList: React.FC = () => {
+function  CategoryList() {
   const [categories, setCategories] = useState<Category[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);

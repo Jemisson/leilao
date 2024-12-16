@@ -1,11 +1,18 @@
+import { useState } from "react";
 import Navbar from "./components/Navbar";
 import ProductCatalog from "./components/ProductCatalog";
 
 function App () {
+  const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
+
+  const handleCategoryClick = (categoryId: string) => {
+    setSelectedCategory(categoryId);
+  };
+
   return (
     <>
-      <Navbar />
-      <ProductCatalog />
+       <Navbar onCategoryClick={handleCategoryClick} />
+       <ProductCatalog selectedCategory={selectedCategory} />
     </>
   );
 };

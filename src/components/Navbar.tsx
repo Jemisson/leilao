@@ -1,15 +1,13 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { fetchCategories } from "../services/api";
 import Logo from "./Logo";
+import { Category } from "../types";
 
-type Category = {
-  id: string;
-  attributes: {
-    title: string;
-  };
-};
+interface NavBarProps {
+  onCategoryClick: (categoryId: string) => void
+}
 
-const Navbar: React.FC = () => {
+function Navbar ({ onCategoryClick }: NavBarProps) {
   const [categories, setCategories] = useState<Category[]>([]);
 
   useEffect(() => {
@@ -60,13 +58,13 @@ const Navbar: React.FC = () => {
           <ul className="flex flex-col font-medium p-4 md:p-0 mt-4 border border-gold rounded-lg bg-redDark md:flex-row md:space-x-8 md:mt-0 md:border-0 md:bg-redDark">
             {categories.map((category) => (
               <li key={category.id}>
-                <a
-                  href="#"
+                <button
                   className="block py-2 px-3 text-beige bg-redBright rounded md:bg-transparent md:text-beige md:p-0 hover:text-gold"
                   aria-current="page"
+                  onClick={() => onCategoryClick(category.id)}
                 >
                   {category.attributes.title}
-                </a>
+                </button>
               </li>
             ))}
           </ul>
