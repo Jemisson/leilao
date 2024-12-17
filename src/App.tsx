@@ -5,13 +5,16 @@ import ProductCatalog from "./components/ProductCatalog";
 function App () {
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
 
-  const handleCategoryClick = (categoryId: string) => {
+  const handleCategoryClick = (categoryId: string | null) => {
     setSelectedCategory(categoryId);
   };
 
   return (
     <>
-       <Navbar onCategoryClick={handleCategoryClick} />
+       <Navbar 
+        onCategoryClick={handleCategoryClick}
+       activeCategory={selectedCategory} 
+      />
        <ProductCatalog selectedCategory={selectedCategory} />
     </>
   );

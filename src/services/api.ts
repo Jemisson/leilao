@@ -9,7 +9,14 @@ export const fetchCategories = async () => {
   return response.data;
 }
 
-export const fetchProducts = async (page: number) => {
-  const response = await api.get(`/products?page=${page}`);
+export const fetchProducts = async (
+  page: number,
+  categoryId: string | null = null
+) => {
+  const url = categoryId
+    ? `/products?page=${page}&category_id=${categoryId}`
+    : `/products?page=${page}`;
+
+  const response = await api.get(url);
   return response.data;
-}
+};

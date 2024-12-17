@@ -6,12 +6,25 @@ interface ProductCardProps {
 
 const ProductCard = ({ product }: ProductCardProps) => {
   return (
-    <div className="max-w-sm bg-white border border-gray-200 rounded-lg shadow-md dark:bg-gray-800 dark:border-gray-700" key={product.id}>
-      <img
-        className="rounded-t-lg w-full h-48 object-cover"
-        src='/public/empty.png'
-        alt={product.attributes.name}
-      />
+    <div
+      className="relative max-w-sm bg-white border border-gray-200 rounded-lg shadow-md dark:bg-gray-800 dark:border-gray-700"
+      key={product.id}
+    >
+      {/* Imagem do Produto */}
+      <div className="relative">
+        <img
+          className="rounded-t-lg w-full h-48 object-cover"
+          src="/public/empty.png"
+          alt={product.attributes.name}
+        />
+
+        {/* Tag da Categoria */}
+        <span className="absolute bottom-2 right-2 bg-redDark text-beige text-xs font-semibold px-2 py-1 rounded-lg shadow">
+          {product.attributes.category_title}
+        </span>
+      </div>
+
+      {/* Conteúdo do Card */}
       <div className="p-5">
         <h5 className="mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white">
           {product.attributes.name}
@@ -33,11 +46,7 @@ const ProductCard = ({ product }: ProductCardProps) => {
             stroke="currentColor"
             strokeWidth="2"
           >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              d="M17 9l-5 5-5-5"
-            />
+            <path strokeLinecap="round" strokeLinejoin="round" d="M17 9l-5 5-5-5" />
           </svg>
         </button>
       </div>

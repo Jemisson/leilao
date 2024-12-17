@@ -4,11 +4,34 @@ import Logo from "./Logo";
 import { Category } from "../types";
 
 interface NavBarProps {
-  onCategoryClick: (categoryId: string) => void
+  onCategoryClick: (categoryId: string | null) => void
+  activeCategory: string | null
 }
 
-function Navbar ({ onCategoryClick }: NavBarProps) {
+function Navbar ({ onCategoryClick, activeCategory }: NavBarProps) {
   const [categories, setCategories] = useState<Category[]>([]);
+  const [isVisible, setIsVisible] = useState(true);
+  const [lastScrollY, setLastScrollY] = useState(0);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      const currentScrollY = window.scrollY;
+
+      if (currentScrollY > lastScrollY) {
+        setIsVisible(false);
+      } else {
+        setIsVisible(true);
+      }
+
+      setLastScrollY(currentScrollY);
+    };
+
+    window.addEventListener("scroll", handleScroll);
+
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+    };
+  }, [lastScrollY]);
 
   useEffect(() => {
     const getCategories = async () => {
@@ -24,7 +47,11 @@ function Navbar ({ onCategoryClick }: NavBarProps) {
   }, []);
 
   return (
-    <nav className="bg-redDark border-gold">
+    <nav
+      className={`bg-redDark border-gold fixed top-0 left-0 w-full transition-transform duration-300 z-50 ${
+        isVisible ? "translate-y-0" : "-translate-y-full"
+      }`}
+    >
       <div className="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-4">
 
         <Logo />
@@ -53,21 +80,41 @@ function Navbar ({ onCategoryClick }: NavBarProps) {
             />
           </svg>
         </button>
-        {/* Menu */}
+
         <div className="hidden w-full md:block md:w-auto" id="navbar-default">
-          <ul className="flex flex-col font-medium p-4 md:p-0 mt-4 border border-gold rounded-lg bg-redDark md:flex-row md:space-x-8 md:mt-0 md:border-0 md:bg-redDark">
-            {categories.map((category) => (
-              <li key={category.id}>
-                <button
-                  className="block py-2 px-3 text-beige bg-redBright rounded md:bg-transparent md:text-beige md:p-0 hover:text-gold"
-                  aria-current="page"
-                  onClick={() => onCategoryClick(category.id)}
-                >
-                  {category.attributes.title}
-                </button>
-              </li>
-            ))}
-          </ul>
+
+        <ul className="flex space-x-4 items-center">
+
+          {categories.map((category) => (
+            <li key={category.id}>
+              <button
+                className={`px-3 py-2 text-beige ${
+                  activeCategory === category.id
+                    ? "border-b-2 border-gold text-gold" // Categoria ativa
+                    : "hover:text-gold hover:border-b-2 hover:border-gold"
+                }`}
+                onClick={() => onCategoryClick(category.id)}
+              >
+                {category.attributes.title}
+              </button>
+            </li>
+          ))}
+
+          <li>
+            <button
+              className={`px-3 py-2 text-beige ${
+                activeCategory === null
+                  ? "border-b-2 border-gold text-gold" // Categoria ativa
+                  : "hover:text-gold hover:border-b-2 hover:border-gold"
+              }`}
+              onClick={() => onCategoryClick(null)}
+            >
+              Ver Tudo
+            </button>
+          </li>
+
+        </ul>
+
         </div>
       </div>
     </nav>

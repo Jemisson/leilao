@@ -16,6 +16,10 @@ function ProductCatalog( {selectedCategory}: ProductCatalogProps ) {
   const [totalPages, setTotalPages] = useState(1);
 
   useEffect(() => {
+    setCurrentPage(1);
+  }, [selectedCategory]);
+
+  useEffect(() => {
     const getProducts = async () => {
       try {
         const data = await fetchProducts(currentPage, selectedCategory);

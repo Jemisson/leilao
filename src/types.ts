@@ -12,6 +12,7 @@ export interface Product {
     sold_at?: number;
     name: string;
     auctioned: number;
+    category_title: string;
   };
 }
 
