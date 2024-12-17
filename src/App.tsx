@@ -1,14 +1,21 @@
-import React from "react";
-import CategoryList from "./components/CategoryList";
+import { useState } from "react";
 import Navbar from "./components/Navbar";
+import ProductCatalog from "./components/ProductCatalog";
 
-const App: React.FC = () => {
+function App () {
+  const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
+
+  const handleCategoryClick = (categoryId: string | null) => {
+    setSelectedCategory(categoryId);
+  };
+
   return (
     <>
-      <Navbar />
-      <div>
-        <CategoryList />
-      </div>
+       <Navbar 
+        onCategoryClick={handleCategoryClick}
+       activeCategory={selectedCategory} 
+      />
+       <ProductCatalog selectedCategory={selectedCategory} />
     </>
   );
 };
