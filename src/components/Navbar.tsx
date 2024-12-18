@@ -1,17 +1,21 @@
-import { useEffect, useState } from "react";
-import { fetchCategories } from "../services/api";
-import Logo from "./Logo";
-import { Category } from "../types";
+import { useEffect, useState } from "react"
+import { fetchCategories } from "../services/api"
+import Logo from "./Logo"
+import { Category } from "../types"
+import { isAuthenticated } from "../utils/authHelpers"
+import { useNavigate } from "react-router-dom"
+import Cookies from "js-cookie"
 
 interface NavBarProps {
-  onCategoryClick: (categoryId: string | null) => void
-  activeCategory: string | null
+  onCategoryClick: (categoryId: string | null) => void;
+  activeCategory: string | null;
 }
 
-function Navbar ({ onCategoryClick, activeCategory }: NavBarProps) {
+function Navbar({ onCategoryClick, activeCategory }: NavBarProps) {
   const [categories, setCategories] = useState<Category[]>([]);
   const [isVisible, setIsVisible] = useState(true);
   const [lastScrollY, setLastScrollY] = useState(0);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -46,6 +50,11 @@ function Navbar ({ onCategoryClick, activeCategory }: NavBarProps) {
     getCategories();
   }, []);
 
+  const handleLogout = () => {
+    Cookies.remove("leilao_jwt_token"); // Remove o token de autenticação
+    navigate("/login"); // Redireciona para a página de login
+  };
+
   return (
     <nav
       className={`bg-redDark border-gold fixed top-0 left-0 w-full transition-transform duration-300 z-50 ${
@@ -53,7 +62,6 @@ function Navbar ({ onCategoryClick, activeCategory }: NavBarProps) {
       }`}
     >
       <div className="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-4">
-
         <Logo />
 
         <button
@@ -82,43 +90,60 @@ function Navbar ({ onCategoryClick, activeCategory }: NavBarProps) {
         </button>
 
         <div className="hidden w-full md:block md:w-auto" id="navbar-default">
-
-        <ul className="flex space-x-4 items-center">
-
-          {categories.map((category) => (
-            <li key={category.id}>
+          <ul className="flex space-x-4 items-center">
+            {categories.map((category) => (
+              <li key={category.id}>
+                <button
+                  className={`px-3 py-2 text-beige ${
+                    activeCategory === category.id
+                      ? "border-b-2 border-gold text-gold"
+                      : "hover:text-gold hover:border-b-2 hover:border-gold"
+                  }`}
+                  onClick={() => onCategoryClick(category.id)}
+                >
+                  {category.attributes.title}
+                </button>
+              </li>
+            ))}
+            <li>
               <button
                 className={`px-3 py-2 text-beige ${
-                  activeCategory === category.id
-                    ? "border-b-2 border-gold text-gold" // Categoria ativa
+                  activeCategory === null
+                    ? "border-b-2 border-gold text-gold"
                     : "hover:text-gold hover:border-b-2 hover:border-gold"
                 }`}
-                onClick={() => onCategoryClick(category.id)}
+                onClick={() => onCategoryClick(null)}
               >
-                {category.attributes.title}
+                Ver Tudo
               </button>
             </li>
-          ))}
 
-          <li>
-            <button
-              className={`px-3 py-2 text-beige ${
-                activeCategory === null
-                  ? "border-b-2 border-gold text-gold" // Categoria ativa
-                  : "hover:text-gold hover:border-b-2 hover:border-gold"
-              }`}
-              onClick={() => onCategoryClick(null)}
-            >
-              Ver Tudo
-            </button>
-          </li>
-
-        </ul>
-
+            {/* Botões protegidos */}
+            {isAuthenticated() && (
+              <>
+                <li>
+                  <button
+                    className="px-3 py-2 text-beige hover:text-gold hover:border-b-2 hover:border-gold"
+                    onClick={() => navigate("/dashboard")}
+                  >
+                    Dashboard
+                  </button>
+                </li>
+                <li>
+                  <button
+                    className="px-3 py-2 text-beige hover:text-gold hover:border-b-2 hover:border-gold"
+                    onClick={handleLogout}
+                  >
+                    Logout
+                  </button>
+                </li>
+              </>
+            )}
+          </ul>
         </div>
       </div>
     </nav>
   );
-};
+}
 
 export default Navbar;
