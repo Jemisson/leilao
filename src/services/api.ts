@@ -1,8 +1,34 @@
 import axios from "axios"
+import Cookies from "js-cookie"
 
 const api = axios.create({
   baseURL: "http://localhost:3000/api/v1",
+  headers: {
+    "Content-Type": "application/json",
+  }
 })
+
+api.interceptors.request.use((config) => {
+  const token = Cookies.get("jwt_token");
+  if (token) {
+    config.headers.Authorization = `Bearer ${token}`;
+  }
+  return config;
+})
+
+const authApi = axios.create({
+  baseURL: "http://localhost:3000",
+  headers: {
+    "Content-Type": "application/json",
+  },
+})
+
+export const login = async (email: string, password: string) => {
+  const response = await authApi.post("/login", {
+    user: { email, password },
+  });
+  return response.data;
+}
 
 export const fetchCategories = async () => {
   const response = await api.get("/categories");
@@ -14,9 +40,13 @@ export const fetchProducts = async (
   categoryId: string | null = null
 ) => {
   const url = categoryId
-    ? `/products?page=${page}&category_id=${categoryId}`
-    : `/products?page=${page}`;
-
+  ? `/products?page=${page}&category_id=${categoryId}`
+  : `/products?page=${page}`;
+  
   const response = await api.get(url);
   return response.data;
+}
+
+export const logout = () => {
+  Cookies.remove("leilao_jwt_token");
 };

@@ -1,23 +1,33 @@
 import { useState } from "react";
+import { BrowserRouter as Router } from "react-router-dom";
 import Navbar from "./components/Navbar";
-import ProductCatalog from "./components/ProductCatalog";
+import AppRoutes from "./routes/AppRoutes";
 
-function App () {
+function App() {
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
 
+  // Atualiza a categoria selecionada
   const handleCategoryClick = (categoryId: string | null) => {
     setSelectedCategory(categoryId);
   };
 
   return (
-    <>
-       <Navbar 
-        onCategoryClick={handleCategoryClick}
-       activeCategory={selectedCategory} 
-      />
-       <ProductCatalog selectedCategory={selectedCategory} />
-    </>
+    <Router>
+      <>
+        {/* Navbar visível em todas as páginas */}
+        <Navbar
+          activeCategory={selectedCategory}
+          onCategoryClick={handleCategoryClick}
+        />
+
+        {/* Rotas da aplicação */}
+        <AppRoutes
+          selectedCategory={selectedCategory}
+          onCategoryClick={handleCategoryClick}
+        />
+      </>
+    </Router>
   );
-};
+}
 
 export default App;
