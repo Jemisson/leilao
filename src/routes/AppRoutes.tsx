@@ -20,11 +20,16 @@ const AppRoutes: React.FC<AppRoutesProps> = ({ selectedCategory}) => {
       {/* Página inicial pública */}
       <Route
         path="/"
-        element={<ProductCatalog selectedCategory={selectedCategory} />}
+        element={
+          <ProductCatalog selectedCategory={selectedCategory} />}
       />
 
       {/* Página de login */}
-      <Route path="/login" element={<LoginForm />} />
+      <Route
+        path="/login"
+        element={
+          <LoginForm/>}
+      />
 
       {/* Página protegida (dashboard) */}
       <Route
