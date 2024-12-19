@@ -6,7 +6,6 @@ import AppRoutes from "./routes/AppRoutes";
 function App() {
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
 
-  // Atualiza a categoria selecionada
   const handleCategoryClick = (categoryId: string | null) => {
     setSelectedCategory(categoryId);
   };
