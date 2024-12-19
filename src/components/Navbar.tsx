@@ -1,11 +1,10 @@
-import { useEffect, useState } from "react"
-import { fetchCategories } from "../services/api"
-import Logo from "./Logo"
-import { Category } from "../types"
-import { isAuthenticated } from "../utils/authHelpers"
-import { useNavigate } from "react-router-dom"
-import Cookies from "js-cookie"
-
+import { useEffect, useState } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
+import { fetchCategories } from "../services/api";
+import Logo from "./Logo";
+import { Category } from "../types";
+import { isAuthenticated } from "../utils/authHelpers";
+import Cookies from 'js-cookie'
 interface NavBarProps {
   onCategoryClick: (categoryId: string | null) => void;
   activeCategory: string | null;
@@ -15,7 +14,11 @@ function Navbar({ onCategoryClick, activeCategory }: NavBarProps) {
   const [categories, setCategories] = useState<Category[]>([]);
   const [isVisible, setIsVisible] = useState(true);
   const [lastScrollY, setLastScrollY] = useState(0);
+  const location = useLocation();
   const navigate = useNavigate();
+
+  // Oculta a Navbar na página de login
+  const shouldShowNavbar = location.pathname !== "/login";
 
   useEffect(() => {
     const handleScroll = () => {
@@ -51,9 +54,11 @@ function Navbar({ onCategoryClick, activeCategory }: NavBarProps) {
   }, []);
 
   const handleLogout = () => {
-    Cookies.remove("leilao_jwt_token"); // Remove o token de autenticação
-    navigate("/login"); // Redireciona para a página de login
+    Cookies.remove("leilao_jwt_token")
+    navigate("/login")
   };
+
+  if (!shouldShowNavbar) return null;
 
   return (
     <nav
