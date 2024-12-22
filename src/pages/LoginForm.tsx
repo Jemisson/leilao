@@ -44,12 +44,12 @@ const LoginPage: React.FC = () => {
           style={{ backgroundImage: "url('/gado.jpg')" }}
         ></div>
       </div>
-    
+
       {/* Lado direito */}
       <div className="w-full lg:w-1/2 flex flex-col justify-center items-center bg-gray-50 p-6">
         <h3 className="mb-3 text-4xl font-extrabold text-gray-900">Login</h3>
-        <p className="mb-4 text-gray-700">Entre com seu email e senha</p>
-    
+        <p className="mb-4 text-gray-700">Entre com sua conta Goole</p>
+
         {/* Mensagem de Erro ou Sucesso */}
         {message && (
           <p
@@ -60,7 +60,7 @@ const LoginPage: React.FC = () => {
             {message}
           </p>
         )}
-    
+
         {/* Formulário de Login */}
         <form
           onSubmit={handleLogin}
@@ -78,14 +78,14 @@ const LoginPage: React.FC = () => {
             />
             Entrar com Google
           </a>
-    
+
           {/* Divider */}
           <div className="flex items-center mb-3 w-full">
             <hr className="h-0 border-b border-solid border-gray-500 grow" />
             <p className="mx-4 text-gray-600">ou</p>
             <hr className="h-0 border-b border-solid border-gray-500 grow" />
           </div>
-    
+
           {/* Email */}
           <label htmlFor="email" className="mb-2 text-sm text-start text-gray-900 w-full">
             Email*
@@ -99,7 +99,7 @@ const LoginPage: React.FC = () => {
             required
             className="flex items-center w-full px-5 py-4 mb-7 text-sm font-medium outline-none focus:bg-gray-400 placeholder:text-gray-700 bg-gray-200 text-gray-900 rounded-2xl"
           />
-    
+
           {/* Senha */}
           <label htmlFor="password" className="mb-2 text-sm text-start text-gray-900 w-full">
             Senha*

@@ -102,7 +102,7 @@ function Navbar({ onCategoryClick, activeCategory }: NavBarProps) {
             <li>
               <button
                 className={`px-3 py-2 text-beige ${
-                  activeCategory === null
+                  activeCategory === null && location.pathname === "/"
                     ? "border-b-2 border-gold text-gold"
                     : "hover:text-gold hover:border-b-2 hover:border-gold"
                 }`}
@@ -116,7 +116,11 @@ function Navbar({ onCategoryClick, activeCategory }: NavBarProps) {
               <>
                 <li>
                   <button
-                    className="px-3 py-2 text-beige hover:text-gold hover:border-b-2 hover:border-gold"
+                    className={`px-3 py-2 text-beige ${
+                      location.pathname === "/dashboard"
+                        ? "border-b-2 border-gold text-gold"
+                        : "hover:text-gold hover:border-b-2 hover:border-gold"
+                    }`}
                     onClick={() => navigate("/dashboard")}
                   >
                     Dashboard
