@@ -14,6 +14,7 @@ interface NavBarProps {
 function Navbar({ onCategoryClick, activeCategory }: NavBarProps) {
   const [categories, setCategories] = useState<Category[]>([]);
   const [isVisible, setIsVisible] = useState(true);
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [lastScrollY, setLastScrollY] = useState(0);
   const [pendingCategory, setPendingCategory] = useState<string | null>(null);
   const location = useLocation();
@@ -79,12 +80,48 @@ function Navbar({ onCategoryClick, activeCategory }: NavBarProps) {
   if (!shouldShowNavbar) return null;
 
   return (
-    <nav className={`bg-redDark border-gold fixed top-0 left-0 w-full z-50 ${ isVisible ? "translate-y-0" : "-translate-y-full"}`}>
+    <nav
+      className={`bg-redDark border-gold fixed top-0 left-0 w-full z-50 ${
+        isVisible ? "translate-y-0" : "-translate-y-full"
+      } transition-transform duration-300`}
+    >
       <div className="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-4">
-        <Logo />
+        <div className="flex items-center space-x-2 sm:ml-0 ml-12">
+          <Logo />
+        </div>
 
-        <div className="hidden w-full md:block md:w-auto" id="navbar-default">
-          <ul className="flex space-x-4 items-center">
+        <button
+          onClick={() => setIsMenuOpen(!isMenuOpen)}
+          className="inline-flex items-center p-2 w-10 h-10 justify-center text-gold rounded-lg md:hidden hover:bg-redBright focus:outline-none focus:ring-2 focus:ring-gold"
+          aria-controls="navbar-default"
+          aria-expanded={isMenuOpen}
+        >
+          <span className="sr-only">Abrir menu</span>
+          <svg
+            className="w-5 h-5"
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 17 14"
+            aria-hidden="true"
+          >
+            <path
+              stroke="currentColor"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth="2"
+              d="M1 1h15M1 7h15M1 13h15"
+            />
+          </svg>
+        </button>
+  
+        {/* Menu responsivo */}
+        <div
+          className={`${
+            isMenuOpen ? "block" : "hidden"
+          } w-full md:block md:w-auto`}
+          id="navbar-default"
+        >
+          <ul className="flex flex-col md:flex-row md:space-x-4 items-center">
             {categories.map((category) => (
               <li key={category.id}>
                 <button
@@ -111,7 +148,7 @@ function Navbar({ onCategoryClick, activeCategory }: NavBarProps) {
                 Ver Tudo
               </button>
             </li>
-
+  
             {isAuthenticated() && (
               <>
                 <li>
@@ -141,6 +178,7 @@ function Navbar({ onCategoryClick, activeCategory }: NavBarProps) {
       </div>
     </nav>
   );
+  
 }
 
 export default Navbar;

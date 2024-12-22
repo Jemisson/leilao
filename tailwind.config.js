@@ -7,6 +7,9 @@ export default {
   ],
   theme: {
     extend: {
+      fontFamily: {
+        sans: ['Inter', 'sans-serif'],
+      },
       colors: {
         redDark: "#8B0000", // Vermelho escuro
         gold: "#D4AF37", // Dourado

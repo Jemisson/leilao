@@ -50,3 +50,13 @@ export const fetchProducts = async (
 export const logout = () => {
   Cookies.remove("leilao_jwt_token");
 };
+
+export const deleteProduct = async (productId: number) => {
+  try {
+    const response = await api.delete(`/products/${productId}`);
+    return response.data;
+  } catch (error) {
+    console.error("Erro ao excluir produto:", error);
+    throw error;
+  }
+};

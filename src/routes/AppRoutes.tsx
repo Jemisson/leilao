@@ -1,8 +1,9 @@
 import React from "react";
 import { Routes, Route, Navigate } from "react-router-dom";
 import ProductCatalog from "../components/ProductCatalog";
-import DashboardPage from "../pages/Dashboard";
+import DashboardLayout from "../components/DashboardLayout";
 import LoginForm from "../pages/LoginForm";
+import ProductManagement from "../pages/ProductManagement";
 import { isAuthenticated } from "../utils/authHelpers";
 
 const PrivateRoute: React.FC<{ children: JSX.Element }> = ({ children }) => {
@@ -11,35 +12,36 @@ const PrivateRoute: React.FC<{ children: JSX.Element }> = ({ children }) => {
 
 interface AppRoutesProps {
   selectedCategory: string | null;
-  onCategoryClick: (categoryId: string | null) => void;
 }
 
-const AppRoutes: React.FC<AppRoutesProps> = ({ selectedCategory}) => {
+const AppRoutes: React.FC<AppRoutesProps> = ({ selectedCategory }) => {
   return (
     <Routes>
       {/* Página inicial pública */}
       <Route
         path="/"
         element={
-          <ProductCatalog selectedCategory={selectedCategory} />}
+          <ProductCatalog selectedCategory={selectedCategory} />
+        }
       />
 
       {/* Página de login */}
-      <Route
-        path="/login"
-        element={
-          <LoginForm/>}
-      />
+      <Route path="/login" element={<LoginForm />} />
 
-      {/* Página protegida (dashboard) */}
+      {/* Layout do Dashboard com rotas protegidas */}
       <Route
-        path="/dashboard"
+        path="/dashboard/*"
         element={
           <PrivateRoute>
-            <DashboardPage />
+            <DashboardLayout />
           </PrivateRoute>
         }
-      />
+      >
+        {/* Rotas dentro do Dashboard */}
+        <Route index element={<h1>Bem-vindo ao Dashboard</h1>} />
+        <Route path="produtos" element={<ProductManagement />} />
+        <Route path="pessoas" element={<h1>Gerenciamento de Pessoas</h1>} />
+      </Route>
     </Routes>
   );
 };
