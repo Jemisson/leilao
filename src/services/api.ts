@@ -60,3 +60,17 @@ export const deleteProduct = async (productId: number) => {
     throw error;
   }
 };
+
+export const createProduct = async (productData: {
+  lot_number: string;
+  donor_name: string;
+  donor_phone: string;
+  minimum_value: number;
+  name: string;
+  description: string;
+  auctioned: number;
+  category_id: number;
+}) => {
+  const response = await api.post("/products", { product: productData });
+  return response.data;
+};

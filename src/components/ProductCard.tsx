@@ -27,13 +27,13 @@ const ProductCard = ({ product }: ProductCardProps) => {
       {/* Conteúdo do Card */}
       <div className="p-5">
         <h5 className="mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white">
-          {product.attributes.name}
+          LOTE: {product.attributes.lot_number}
         </h5>
         <p className="mb-3 font-normal text-gray-700 dark:text-gray-400">
           {product.attributes.description}
         </p>
         <p className="mb-3 font-semibold text-lg text-gray-900 dark:text-white">
-          Valor: R$ {product.attributes.winning_value}
+          Valor: R$ {product.attributes.winning_value ? product.attributes.winning_value : product.attributes.minimum_value}
         </p>
         <button className="inline-flex items-center px-3 py-2 text-sm font-medium text-center text-white bg-redBright rounded-lg hover:bg-redDark focus:ring-4 focus:outline-none focus:ring-redBright dark:bg-redBright dark:hover:bg-redDark dark:focus:ring-redBright">
           Fazer um Lance

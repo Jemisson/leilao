@@ -1,7 +1,7 @@
 export interface Product {
   id: number;
   attributes: {
-    id:number;
+    id: number;
     lot_number: string;
     donor_name?: string;
     donor_phone?: string;
@@ -18,7 +18,7 @@ export interface Product {
 }
 
 export interface Category {
-  id: number;
+  id: string;
   attributes: {
     id: number;
     title: string;
