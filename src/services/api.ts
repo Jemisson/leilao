@@ -61,16 +61,11 @@ export const deleteProduct = async (productId: number) => {
   }
 };
 
-export const createProduct = async (productData: {
-  lot_number: string;
-  donor_name: string;
-  donor_phone: string;
-  minimum_value: number;
-  name: string;
-  description: string;
-  auctioned: number;
-  category_id: number;
-}) => {
-  const response = await api.post("/products", { product: productData });
+export const createProduct = async (productData: FormData) => {
+  const response = await api.post("/products", productData, {
+    headers: {
+      "Content-Type": "multipart/form-data",
+    },
+  });
   return response.data;
 };
