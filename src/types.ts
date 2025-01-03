@@ -14,6 +14,7 @@ export interface Product {
     name: string;
     auctioned: number;
     category_title: string;
+    image_urls?: string[];
   };
 }
 

@@ -71,6 +71,7 @@ const ProductManagement: React.FC = () => {
         <thead>
           <tr className="bg-gray-100">
             <th className="py-2 px-4 border-b">ID</th>
+            <th className="py-2 px-4 border-b">Imagem</th> 
             <th className="py-2 px-4 border-b">Lote</th>
             <th className="py-2 px-4 border-b">Nome</th>
             <th className="py-2 px-4 border-b">Descrição</th>
@@ -82,6 +83,17 @@ const ProductManagement: React.FC = () => {
           {products.map((product) => (
             <tr key={product.id}>
               <td className="py-2 px-4 border-b">{product.id}</td>
+              <td className="py-2 px-4 border-b">
+              {product.attributes.image_urls?.[0] ? (
+                <img
+                  src={product.attributes.image_urls[0]}
+                  alt={`Lote ${product.attributes.lot_number}`}
+                  className="h-12 w-12 object-cover rounded-lg"
+                />
+              ) : (
+                <span className="text-gray-400 italic">Sem Imagem</span>
+              )}
+            </td>
               <td className="py-2 px-4 border-b">{product.attributes.lot_number}</td>
               <td className="py-2 px-4 border-b">{product.attributes.name}</td>
               <td className="py-2 px-4 border-b">
