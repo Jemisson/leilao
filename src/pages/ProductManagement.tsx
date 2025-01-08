@@ -95,18 +95,17 @@ const ProductManagement: React.FC = () => {
               )}
             </td>
               <td className="py-2 px-4 border-b">{product.attributes.lot_number}</td>
-              <td className="py-2 px-4 border-b">{product.attributes.name}</td>
               <td className="py-2 px-4 border-b">
                 {product.attributes.description}
               </td>
               <td className="py-2 px-4 border-b">
-                R$ {product.attributes.winning_value ? product.attributes.winning_value : product.attributes.minimum_value}
+                R$ {product.attributes.minimum_value}
               </td>
               <td className="py-2 px-4 border-b flex space-x-2">
 
               {/* Botão para ver detalhes */}
               <button
-                // onClick={() => handleViewDetails(product.attributes.id)}
+                onClick={() => navigate(`/dashboard/produtos/${product.id}/lances`)}
                 className="text-blue-500 hover:text-blue-700"
                 aria-label="Ver detalhes"
               >

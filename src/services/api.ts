@@ -9,7 +9,7 @@ const api = axios.create({
 })
 
 api.interceptors.request.use((config) => {
-  const token = Cookies.get("jwt_token");
+  const token = Cookies.get("leilao_jwt_token");
   if (token) {
     config.headers.Authorization = `Bearer ${token}`;
   }
@@ -67,5 +67,15 @@ export const createProduct = async (productData: FormData) => {
       "Content-Type": "multipart/form-data",
     },
   });
+  return response.data;
+};
+
+export const fetchProductById = async (productId: number) => {
+  const response = await api.get(`/products/${productId}`);
+  return response.data;
+};
+
+export const fetchBids = async (productId: number) => {
+  const response = await api.get(`/bids?product_id=${productId}`);
   return response.data;
 };

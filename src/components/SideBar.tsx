@@ -1,5 +1,6 @@
 import { NavLink } from "react-router-dom";
 import { Dispatch, SetStateAction } from "react";
+import { FaMoneyBill } from "react-icons/fa";
 
 interface SideBarProps {
   isSidebarOpen: boolean;
@@ -78,21 +79,8 @@ function SideBar({ isSidebarOpen, setIsSidebarOpen }: SideBarProps) {
                   }`
                 }
               >
-                <svg
-                  className="w-5 h-5 mr-3 text-gray-500"
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                  strokeWidth={2}
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    d="M5.121 17.804A4.992 4.992 0 0112 15c1.657 0 3.156.672 4.243 1.757m-8.486 0A4.992 4.992 0 017 12a4.992 4.992 0 012.757-4.243m8.486 0A4.992 4.992 0 0117 12a4.992 4.992 0 01-2.757 4.243m-8.486 0A4.992 4.992 0 017 12a4.992 4.992 0 012.757-4.243m8.486 0A4.992 4.992 0 0117 12a4.992 4.992 0 01-2.757 4.243"
-                  />
-                </svg>
-                <span>Pessoas</span>
+                <FaMoneyBill className="mr-2"/>
+                <span>Lances</span>
               </NavLink>
             </li>
           </ul>

@@ -6,12 +6,8 @@ export interface Product {
     donor_name?: string;
     donor_phone?: string;
     minimum_value: number;
-    bidder_name?: string;
-    bidder_phone?: string;
-    winning_value: number;
     description?: string;
     sold_at?: number;
-    name: string;
     auctioned: number;
     category_title: string;
     image_urls?: string[];
@@ -27,4 +23,15 @@ export interface Category {
     created_at: string;
     updated_at: string;
   };
+}
+
+export interface Bid {
+  id: number;
+  attributes: {
+    id: number;
+    name: string;
+    value: number;
+    phone: string;
+    created_at: string;
+  }
 }

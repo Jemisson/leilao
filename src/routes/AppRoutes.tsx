@@ -6,6 +6,7 @@ import LoginForm from "../pages/LoginForm";
 import ProductManagement from "../pages/ProductManagement";
 import { isAuthenticated } from "../utils/authHelpers";
 import ProductCreation from "../pages/ProductCreation";
+import BidHistory from "../pages/BidHistory";
 
 const PrivateRoute: React.FC<{ children: JSX.Element }> = ({ children }) => {
   return isAuthenticated() ? children : <Navigate to="/login" />;
@@ -42,7 +43,8 @@ const AppRoutes: React.FC<AppRoutesProps> = ({ selectedCategory }) => {
         <Route index element={<h1>Bem-vindo ao Dashboard</h1>} />
         <Route path="produtos" element={<ProductManagement />} />
         <Route path="produtos/new" element={<ProductCreation />} />
-        <Route path="pessoas" element={<h1>Gerenciamento de Pessoas</h1>} />
+        <Route path="produtos/:productId/lances" element={ <BidHistory />} />
+
       </Route>
     </Routes>
   );
