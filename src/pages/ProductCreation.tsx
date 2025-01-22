@@ -22,7 +22,11 @@ function ProductCreation () {
 
   return (
     <div className="min-h-screen bg-gray-100 p-6">
-      <ProductForm onSubmit={handleCreateProduct} isSubmitting={isSubmitting} />
+      <ProductForm
+        onSubmit={handleCreateProduct}
+        isSubmitting={isSubmitting}
+        mode={"create"}
+      />
     </div>
   );
 };

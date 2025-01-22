@@ -10,8 +10,12 @@ export interface Product {
     sold_at?: number;
     auctioned: number;
     category_title: string;
-    image_urls?: string[];
-  };
+    category_id: string;
+    images?: Array<{
+        id: string;
+        url: string;
+      }>;
+  }
 }
 
 export interface Category {
@@ -34,4 +38,15 @@ export interface Bid {
     phone: string;
     created_at: string;
   }
+}
+
+export interface ProductFormProps {
+  onSubmit: (formData: FormData) => void;
+  initialData?: Partial<Product["attributes"]>;
+  isSubmitting: boolean;
+  mode: "create" | "edit";
+}
+
+export interface NoDataProps {
+  className?: string;
 }

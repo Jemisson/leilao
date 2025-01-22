@@ -1,47 +1,36 @@
 import React, { useEffect, useState } from "react";
-import { fetchCategories } from "../services/api";
+import { deleteImage, fetchCategories } from "../services/api";
 import ImageUpload from "./ImageUploader";
 import Button from "./Button";
-import { Category } from "../types";
-
-interface ProductFormProps {
-  onSubmit: (formData: FormData) => void;
-  initialData?: {
-    lot_number: string;
-    donor_name: string;
-    donor_phone: string;
-    minimum_value: string;
-    bidder_name?: string;
-    bidder_phone?: string;
-    winning_value?: string;
-    name: string;
-    description: string;
-    auctioned: number;
-    category_id: string;
-  };
-  isSubmitting: boolean;
-}
+import { Category, Product, ProductFormProps } from "../types";
 
 const ProductForm: React.FC<ProductFormProps> = ({
   onSubmit,
-  initialData = {
-    lot_number: "",
-    donor_name: "",
-    donor_phone: "",
-    minimum_value: "",
-    bidder_name: "",
-    bidder_phone: "",
-    winning_value: "",
-    name: "",
-    description: "",
-    auctioned: 0,
-    category_id: "",
-  },
+  initialData = {},
   isSubmitting,
+  mode,
 }) => {
-  const [productData, setProductData] = useState(initialData);
+  const [productData, setProductData] = useState<Partial<Product["attributes"]>>(initialData);
   const [categories, setCategories] = useState<Category[]>([]);
   const [productImages, setProductImages] = useState<File[]>([]);
+  const [existingImages, setExistingImages] = useState<{ id: string; url: string }[]>([]);
+
+  useEffect(() => {
+    if (initialData?.category_title && categories.length > 0) {
+      const matchedCategory = categories.find(
+        (category) => category.attributes.title === initialData.category_title
+      );
+      if (matchedCategory) {
+        setProductData((prevData) => ({
+          ...prevData,
+          category_id: matchedCategory.id,
+        }));
+      }
+    }
+    if (initialData?.images) {
+      setExistingImages(initialData.images);
+    }
+  }, [initialData, categories]);
 
   useEffect(() => {
     const getCategories = async () => {
@@ -58,33 +47,47 @@ const ProductForm: React.FC<ProductFormProps> = ({
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
   ) => {
-    setProductData({ ...productData, [e.target.name]: e.target.value });
+    setProductData((prevData) => ({
+      ...prevData,
+      [e.target.name]: e.target.value,
+    }));
   };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
 
     const formData = new FormData();
-
     Object.entries(productData).forEach(([key, value]) => {
-      formData.append(`product[${key}]`, typeof value === "number" ? value.toString() : value);
+      if (value !== undefined && value !== null) {
+        formData.append(`product[${key}]`, value.toString());
+      }
     });
 
     productImages.forEach((image) => {
-      formData.append("product[images][]", image);
+      formData.append("images[]", image);
     });
 
     onSubmit(formData);
   };
 
+  const handleDeleteImage = async (imageId: string) => {
+    if (!initialData?.id || !imageId) return;
+
+    try {
+      await deleteImage(initialData.id, imageId);
+      setExistingImages((prevImages) => prevImages.filter((img) => img.id !== imageId));
+    } catch (error) {
+      console.error("Erro ao excluir imagem:", error);
+    }
+  };
 
   return (
     <div className="flex flex-wrap gap-6">
+      <h1 className="text-2xl font-bold">{mode === "edit" ? "Editar Produto" : "Cadastrar Produto"}</h1>
       <form onSubmit={handleSubmit} className="flex w-full gap-6">
-        {/* Formulário de Dados */}
+
         <div className="w-full md:w-1/2 space-y-6">
 
-          {/* Categoria */}
           <div>
             <label
               htmlFor="category_id"
@@ -95,7 +98,7 @@ const ProductForm: React.FC<ProductFormProps> = ({
             <select
               id="category_id"
               name="category_id"
-              value={productData.category_id}
+              value={productData.category_id || ""}
               onChange={handleChange}
               className="w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-redBright"
               required
@@ -109,118 +112,42 @@ const ProductForm: React.FC<ProductFormProps> = ({
             </select>
           </div>
 
-          {/* Número do Lote */}
-          <div>
-            <label
-              htmlFor="lot_number"
-              className="block mb-2 text-sm font-medium text-gray-700"
-            >
-              Número do Lote
-            </label>
-            <input
-              type="text"
-              id="lot_number"
-              name="lot_number"
-              value={productData.lot_number}
-              onChange={handleChange}
-              className="w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-redBright"
-              placeholder="Número do Lote"
-              required
-            />
-          </div>
+          {[
+            { label: "Número do Lote", name: "lot_number", type: "text" },
+            { label: "Nome do Doador", name: "donor_name", type: "text" },
+            { label: "Telefone do Doador", name: "donor_phone", type: "tel" },
+            { label: "Valor Mínimo", name: "minimum_value", type: "number" },
+          ].map(({ label, name, type }) => {
 
-          {/* Nome do Doador */}
-          <div>
-            <label
-              htmlFor="donor_name"
-              className="block mb-2 text-sm font-medium text-gray-700"
-            >
-              Nome do Doador
-            </label>
-            <input
-              type="text"
-              id="donor_name"
-              name="donor_name"
-              value={productData.donor_name}
-              onChange={handleChange}
-              className="w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-redBright"
-              placeholder="Nome do Doador"
-              required
-            />
-          </div>
+            const value = productData[name as keyof Pick<Product["attributes"], "lot_number" | "donor_name" | "donor_phone" | "minimum_value">];
 
-          {/* Telefone do Doador */}
-          <div>
-            <label
-              htmlFor="donor_phone"
-              className="block mb-2 text-sm font-medium text-gray-700"
-            >
-              Telefone do Doador
-            </label>
-            <input
-              type="tel"
-              id="donor_phone"
-              name="donor_phone"
-              value={productData.donor_phone}
-              onChange={handleChange}
-              className="w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-redBright"
-              placeholder="Telefone do Doador"
-              required
-            />
-          </div>
+            return (
+              <div key={name}>
+                <label htmlFor={name} className="block mb-2 text-sm font-medium text-gray-700">
+                  {label}
+                </label>
+                <input
+                  id={name}
+                  name={name}
+                  type={type}
+                  value={value || ""}
+                  onChange={handleChange}
+                  className="w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-redBright"
+                  placeholder={label}
+                  required
+                />
+              </div>
+            );
+          })}
 
-          {/* Valor Mínimo */}
           <div>
-            <label
-              htmlFor="minimum_value"
-              className="block mb-2 text-sm font-medium text-gray-700"
-            >
-              Valor Mínimo
-            </label>
-            <input
-              type="number"
-              id="minimum_value"
-              name="minimum_value"
-              value={productData.minimum_value}
-              onChange={handleChange}
-              className="w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-redBright"
-              placeholder="Valor Mínimo"
-              required
-            />
-          </div>
-
-          {/* Nome do Produto */}
-          <div>
-            <label
-              htmlFor="name"
-              className="block mb-2 text-sm font-medium text-gray-700"
-            >
-              Nome do Produto
-            </label>
-            <input
-              type="text"
-              id="name"
-              name="name"
-              value={productData.name}
-              onChange={handleChange}
-              className="w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-redBright"
-              placeholder="Nome do Produto"
-              required
-            />
-          </div>
-
-          {/* Descrição */}
-          <div>
-            <label
-              htmlFor="description"
-              className="block mb-2 text-sm font-medium text-gray-700"
-            >
+            <label htmlFor="description" className="block mb-2 text-sm font-medium text-gray-700">
               Descrição
             </label>
             <textarea
               id="description"
               name="description"
-              value={productData.description}
+              value={productData.description || ""}
               onChange={handleChange}
               className="w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-redBright"
               placeholder="Descrição"
@@ -230,13 +157,32 @@ const ProductForm: React.FC<ProductFormProps> = ({
           </div>
         </div>
 
-        {/* Uploader de Imagens */}
         <div className="w-full flex flex-col items-center space-y-6">
-
           <label className="block text-sm font-medium text-gray-700">
-            Upload de Imagens
+            Envio de Imagens
           </label>
+
           <ImageUpload onImagesChange={setProductImages} />
+
+          <div className="flex flex-wrap justify-between">
+            {existingImages.map((image) => (
+              <div key={image.id} className="relative">
+                <img
+                  src={image.url}
+                  alt="Produto"
+                  className="w-full h-24 object-cover rounded border border-gray-300"
+                />
+                <button
+                  type="button"
+                  onClick={() => handleDeleteImage(image.id)}
+                  className="absolute top-0 right-0 bg-red-500 text-white rounded-full p-1"
+                >
+                  X
+                </button>
+              </div>
+            ))}
+          </div>
+
           <Button
             text="Salvar Produto"
             onClick={(e) => {
@@ -248,7 +194,6 @@ const ProductForm: React.FC<ProductFormProps> = ({
         </div>
       </form>
     </div>
-
   );
 };
 
