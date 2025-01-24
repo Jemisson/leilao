@@ -1,18 +1,11 @@
-import { Product } from "../types";
+import { ProductCardProps } from "../types";
 
-interface ProductCardProps {
-  product: Product;
-}
-
-const ProductCard = ({ product }: ProductCardProps) => {
-  console.log(product);
-  
+const ProductCard = ({ product, onBid }: ProductCardProps) => { 
   return (
     <div
       className="relative max-w-sm bg-white border border-gray-200 rounded-lg shadow-md dark:bg-gray-800 dark:border-gray-700"
       key={product.id}
     >
-      {/* Imagem do Produto */}
       <div className="relative">
         <img
           className="rounded-t-lg w-full h-48 object-cover"
@@ -28,7 +21,6 @@ const ProductCard = ({ product }: ProductCardProps) => {
         </span>
       </div>
 
-      {/* Conteúdo do Card */}
       <div className="p-5">
         <h5 className="mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white">
           LOTE: {product.attributes.lot_number}
@@ -39,7 +31,11 @@ const ProductCard = ({ product }: ProductCardProps) => {
         <p className="mb-3 font-semibold text-lg text-gray-900 dark:text-white">
           Valor: R$ {product.attributes.current_value}
         </p>
-        <button className="inline-flex items-center px-3 py-2 text-sm font-medium text-center text-white bg-redBright rounded-lg hover:bg-redDark focus:ring-4 focus:outline-none focus:ring-redBright dark:bg-redBright dark:hover:bg-redDark dark:focus:ring-redBright">
+        <button
+          type="button"
+          onClick={onBid}
+          className="inline-flex items-center px-3 py-2 text-sm font-medium text-center text-white !bg-redDark rounded-lg hover:bg-redBright focus:ring-4 focus:outline-none focus:ring-redBright dark:bg-redBright"
+        >
           Fazer um Lance
           <svg
             className="w-4 h-4 ml-2"

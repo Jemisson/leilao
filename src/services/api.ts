@@ -103,3 +103,17 @@ export const deleteImage = async (id: number, imageId: string) => {
     throw error;
   }
 };
+
+export const createBid = async (productId: number, value: number, profileUserId: number) => {
+  try {
+    const response = await api.post("/bids", {
+      product_id: productId,
+      value,
+      profile_user_id: profileUserId,
+    });
+    return response.data;
+  } catch (error) {
+    console.error("Erro ao efetuar lance:", error);
+    throw error;
+  }
+};

@@ -1,28 +1,26 @@
 import { useEffect, useState } from "react";
 import { fetchProducts } from "../services/api";
-import { Product } from "../types";
+import { Product, ProductCatalogProps } from "../types";
 import Pagination from "./Pagination";
 import ProductCard from "./ProductCard";
 import NoData from "./NoData";
+import BidModal from "./BidModal";
 
-interface ProductCatalogProps {
-  selectedCategory: string | null;
-}
-
-function ProductCatalog({ selectedCategory }: ProductCatalogProps) {
+function ProductCatalog({ selectedCategory, profileUserId }: ProductCatalogProps) {
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [categoryChanged, setCategoryChanged] = useState(false);
+  const [isBidModalOpen, setBidModalOpen] = useState(false);
+  const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
 
   useEffect(() => {
     setCategoryChanged(true);
     setCurrentPage(1);
   }, [selectedCategory]);
 
-  // Buscar produtos
   useEffect(() => {
     const getProducts = async () => {
       setLoading(true);
@@ -51,6 +49,11 @@ function ProductCatalog({ selectedCategory }: ProductCatalogProps) {
     }
   }, [currentPage, selectedCategory, categoryChanged]);
 
+  const handleOpenBidModal = (product: Product) => {
+    setSelectedProduct(product);
+    setBidModalOpen(true);
+  };
+
   if (loading) return <p>Carregando...</p>;
   if (error) return <p>{error}</p>;
 
@@ -70,8 +73,14 @@ function ProductCatalog({ selectedCategory }: ProductCatalogProps) {
 
           <ul className="grid grid-cols-[repeat(auto-fit,_minmax(250px,_1fr))] gap-6 w-full mt-6">
             {products.map((product) => (
-              <li key={product.id} className="flex flex-col items-center">
-                <ProductCard product={product} />
+              <li 
+                key={product.id}
+                className="flex flex-col items-center"
+              >
+                <ProductCard
+                  product={product}
+                  onBid={() => handleOpenBidModal(product)}
+                  />
               </li>
             ))}
           </ul>
@@ -83,6 +92,15 @@ function ProductCatalog({ selectedCategory }: ProductCatalogProps) {
           />
         </>
       )}
+
+      <BidModal
+        isOpen={isBidModalOpen}
+        onClose={() => setBidModalOpen(false)}
+        productName={selectedProduct?.attributes.lot_number || ''}
+        productId={selectedProduct?.id || 0}
+        profileUserId={profileUserId}
+        currentValue={selectedProduct?.attributes.current_value || 0}
+      />
     </div>
   );
 }
