@@ -46,7 +46,7 @@ const ImageUpload: React.FC<ImageUploadProps> = ({ onImagesChange }) => {
         </p>
         <button
           type="button"
-          className="mt-2 inline-block bg-redDark text-white px-4 py-2 rounded hover:bg-redBright"
+          className="mt-2 inline-block outline outline-1 !outline-redDark text-redDark px-4 py-2 rounded hover:bg-redDark hover:text-white"
         >
           Selecionar Imagens
         </button>
@@ -66,6 +66,7 @@ const ImageUpload: React.FC<ImageUploadProps> = ({ onImagesChange }) => {
                 className="w-full h-32 object-cover"
               />
               <button
+                type="button"
                 onClick={() => removeImage(index)}
                 className="absolute top-2 right-2 bg-red-600 text-white rounded-full p-1 text-sm hover:bg-red-700"
               >

@@ -3,6 +3,7 @@ import { fetchProducts } from "../services/api";
 import { Product } from "../types";
 import Pagination from "./Pagination";
 import ProductCard from "./ProductCard";
+import NoData from "./NoData";
 
 interface ProductCatalogProps {
   selectedCategory: string | null;
@@ -35,7 +36,6 @@ function ProductCatalog({ selectedCategory }: ProductCatalogProps) {
           setTotalPages(data.meta.total_pages);
         } else {
           setProducts([]);
-          setError("Nenhum produto disponível.");
         }
       } catch (err) {
         console.error(err);
@@ -56,26 +56,33 @@ function ProductCatalog({ selectedCategory }: ProductCatalogProps) {
 
   return (
     <div className="flex flex-col items-center min-h-screen bg-gray-100 p-6">
-      <h1 className="text-3xl font-bold mb-6">Catálogo de Produtos</h1>
-      <Pagination
-        currentPage={currentPage}
-        totalPages={totalPages}
-        onPageChange={(page) => setCurrentPage(page)}
-      />
+      <h1 className="text-3xl font-bold mb-6 mt-28">Catálogo de Produtos</h1>
 
-      <ul className="grid grid-cols-[repeat(auto-fit,_minmax(250px,_1fr))] gap-6 w-full mt-6">
-        {products.map((product) => (
-          <li key={product.id} className="flex flex-col items-center">
-            <ProductCard product={product} />
-          </li>
-        ))}
-      </ul>
+      {products.length === 0 ? (
+        <NoData />
+      ) : (
+        <>
+          <Pagination
+            currentPage={currentPage}
+            totalPages={totalPages}
+            onPageChange={(page) => setCurrentPage(page)}
+          />
 
-      <Pagination
-        currentPage={currentPage}
-        totalPages={totalPages}
-        onPageChange={(page) => setCurrentPage(page)}
-      />
+          <ul className="grid grid-cols-[repeat(auto-fit,_minmax(250px,_1fr))] gap-6 w-full mt-6">
+            {products.map((product) => (
+              <li key={product.id} className="flex flex-col items-center">
+                <ProductCard product={product} />
+              </li>
+            ))}
+          </ul>
+
+          <Pagination
+            currentPage={currentPage}
+            totalPages={totalPages}
+            onPageChange={(page) => setCurrentPage(page)}
+          />
+        </>
+      )}
     </div>
   );
 }

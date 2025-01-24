@@ -5,16 +5,18 @@ export interface Product {
     lot_number: string;
     donor_name?: string;
     donor_phone?: string;
-    minimum_value: number;
-    bidder_name?: string;
-    bidder_phone?: string;
-    winning_value: number;
+    minimum_value?: number;
     description?: string;
     sold_at?: number;
-    name: string;
     auctioned: number;
     category_title: string;
-  };
+    category_id: string;
+    current_value?: number;
+    images?: Array<{
+        id: string;
+        url: string;
+      }>;
+  }
 }
 
 export interface Category {
@@ -26,4 +28,26 @@ export interface Category {
     created_at: string;
     updated_at: string;
   };
+}
+
+export interface Bid {
+  id: number;
+  attributes: {
+    id: number;
+    name: string;
+    value: number;
+    phone: string;
+    created_at: string;
+  }
+}
+
+export interface ProductFormProps {
+  onSubmit: (formData: FormData) => void;
+  initialData?: Partial<Product["attributes"]>;
+  isSubmitting: boolean;
+  mode: "create" | "edit";
+}
+
+export interface NoDataProps {
+  className?: string;
 }

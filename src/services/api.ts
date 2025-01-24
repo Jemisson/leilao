@@ -9,7 +9,7 @@ const api = axios.create({
 })
 
 api.interceptors.request.use((config) => {
-  const token = Cookies.get("jwt_token");
+  const token = Cookies.get("leilao_jwt_token");
   if (token) {
     config.headers.Authorization = `Bearer ${token}`;
   }
@@ -68,4 +68,38 @@ export const createProduct = async (productData: FormData) => {
     },
   });
   return response.data;
+};
+
+export const updateProduct = async (productId: number, formData: FormData) => {
+  try {
+    const response = await api.put(`/products/${productId}`, formData, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    });
+    return response.data;
+  } catch (error) {
+    console.error("Erro ao atualizar produto:", error);
+    throw error;
+  }
+};
+
+export const fetchProductById = async (productId: number) => {
+  const response = await api.get(`/products/${productId}`);
+  return response.data;
+};
+
+export const fetchBids = async (productId: number) => {
+  const response = await api.get(`/bids?product_id=${productId}`);
+  return response.data;
+};
+
+export const deleteImage = async (id: number, imageId: string) => {
+  try {
+    const response = await api.delete(`/products/${id}/images/${imageId}`);
+    return response.data;
+  } catch (error) {
+    console.error("Erro ao excluir imagem:", error);
+    throw error;
+  }
 };

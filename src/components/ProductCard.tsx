@@ -5,6 +5,8 @@ interface ProductCardProps {
 }
 
 const ProductCard = ({ product }: ProductCardProps) => {
+  console.log(product);
+  
   return (
     <div
       className="relative max-w-sm bg-white border border-gray-200 rounded-lg shadow-md dark:bg-gray-800 dark:border-gray-700"
@@ -14,11 +16,13 @@ const ProductCard = ({ product }: ProductCardProps) => {
       <div className="relative">
         <img
           className="rounded-t-lg w-full h-48 object-cover"
-          src="/public/empty.png"
-          alt={product.attributes.name}
+          src={
+            product.attributes.images && product.attributes.images.length > 0
+              ? product.attributes.images[0].url
+              : "/public/empty.png"
+          }
+          alt={product.attributes.description || "Imagem do produto"}
         />
-
-        {/* Tag da Categoria */}
         <span className="absolute bottom-2 right-2 bg-redDark text-beige text-xs font-semibold px-2 py-1 rounded-lg shadow">
           {product.attributes.category_title}
         </span>
@@ -30,10 +34,10 @@ const ProductCard = ({ product }: ProductCardProps) => {
           LOTE: {product.attributes.lot_number}
         </h5>
         <p className="mb-3 font-normal text-gray-700 dark:text-gray-400">
-          {product.attributes.description}
+          {product.attributes.description || ""}
         </p>
         <p className="mb-3 font-semibold text-lg text-gray-900 dark:text-white">
-          Valor: R$ {product.attributes.winning_value ? product.attributes.winning_value : product.attributes.minimum_value}
+          Valor: R$ {product.attributes.current_value}
         </p>
         <button className="inline-flex items-center px-3 py-2 text-sm font-medium text-center text-white bg-redBright rounded-lg hover:bg-redDark focus:ring-4 focus:outline-none focus:ring-redBright dark:bg-redBright dark:hover:bg-redDark dark:focus:ring-redBright">
           Fazer um Lance
