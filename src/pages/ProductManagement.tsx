@@ -102,7 +102,7 @@ const ProductManagement: React.FC = () => {
                 {product.attributes.description}
               </td>
               <td className="py-2 px-4 border-b text-center">
-                R$ {product.attributes.minimum_value}
+                R$ {product.attributes.current_value}
               </td>
               <td className="py-2 px-4 border-b text-center">
                 <button

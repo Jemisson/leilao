@@ -5,12 +5,13 @@ export interface Product {
     lot_number: string;
     donor_name?: string;
     donor_phone?: string;
-    minimum_value: number;
+    minimum_value?: number;
     description?: string;
     sold_at?: number;
     auctioned: number;
     category_title: string;
     category_id: string;
+    current_value?: number;
     images?: Array<{
         id: string;
         url: string;
