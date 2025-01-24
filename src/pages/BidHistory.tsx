@@ -21,9 +21,6 @@ const BidHistory: React.FC = () => {
 
         setProduct(productData.data);
         setBids(bidData.data);
-
-        console.log(productData.data);
-        
       } catch (err) {
         console.error("Erro ao carregar detalhes do produto ou lances:", err);
         setError("Erro ao carregar dados. Tente novamente.");

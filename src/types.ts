@@ -51,3 +51,22 @@ export interface ProductFormProps {
 export interface NoDataProps {
   className?: string;
 }
+
+export interface BidModalProps {
+  isOpen: boolean;
+  onClose: () => void;
+  productName: string;
+  productId: number;
+  profileUserId: number;
+  currentValue: number;
+}
+
+export interface ProductCatalogProps {
+  selectedCategory: string | null;
+  profileUserId: number;
+}
+
+export interface ProductCardProps {
+  product: Product;
+  onBid: () => void;
+}
