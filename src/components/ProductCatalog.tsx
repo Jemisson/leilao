@@ -27,7 +27,7 @@ function ProductCatalog({ selectedCategory, profileUserId }: ProductCatalogProps
       setError(null);
 
       try {
-        const data = await fetchProducts(currentPage, selectedCategory);
+        const data = await fetchProducts(currentPage, selectedCategory, 0);
 
         if (data.data && data.data.length > 0) {
           setProducts(data.data);

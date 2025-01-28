@@ -37,11 +37,12 @@ export const fetchCategories = async () => {
 
 export const fetchProducts = async (
   page: number,
-  categoryId: string | null = null
+  categoryId: string | null = null,
+  auctioned: number
 ) => {
   const url = categoryId
-  ? `/products?page=${page}&category_id=${categoryId}`
-  : `/products?page=${page}`;
+  ? `/products?page=${page}&category_id=${categoryId}&auctioned=${auctioned}`
+  : `/products?page=${page}&auctioned=${auctioned}`;
   
   const response = await api.get(url);
   return response.data;
@@ -82,6 +83,11 @@ export const updateProduct = async (productId: number, formData: FormData) => {
     console.error("Erro ao atualizar produto:", error);
     throw error;
   }
+};
+
+export const soldProduct = async (id: number) => {
+  const response = await api.patch(`products/${id}/mark_as_sold`);
+  return response.data;
 };
 
 export const fetchProductById = async (productId: number) => {

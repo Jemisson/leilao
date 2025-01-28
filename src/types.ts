@@ -18,6 +18,7 @@ export interface Product {
     category_title: string;
     category_id: string;
     current_value?: number;
+    winning_name?: string;
     images?: Array<{
         id: string;
         url: string;
@@ -82,4 +83,13 @@ export interface ProductCardProps {
 export interface BidTableProps {
   fetchBids: boolean;
   showLotNumber?: boolean;
+}
+
+export interface AuctionModalProps {
+  isOpen: boolean;
+  onClose: () => void;
+  onConfirm: () => void;
+  lotNumber: string;
+  currentValue: number;
+  winning_name: string;
 }

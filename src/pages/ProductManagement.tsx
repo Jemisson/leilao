@@ -1,12 +1,14 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { fetchProducts, deleteProduct } from "../services/api";
+import { fetchProducts, deleteProduct, soldProduct } from "../services/api";
 import Pagination from "../components/Pagination";
 import Button from "../components/Button";
 import { Product } from "../types";
 import ConfirmationModal from "../components/ConfirmationModal";
 import { CiEdit, CiTrash } from "react-icons/ci";
 import { FaEye } from "react-icons/fa";
+import { ImHammer2 } from "react-icons/im";
+import AuctionModal from "../components/AuctionModal";
 
 const ProductManagement: React.FC = () => {
   const [products, setProducts] = useState<Product[]>([]);
@@ -16,14 +18,13 @@ const ProductManagement: React.FC = () => {
   const [totalPages, setTotalPages] = useState(1);
   const navigate = useNavigate();
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [selectedProductId, setSelectedProductId] = useState<number | null>(null);
-  const [selectedProductLot, setSelectedProductLot] = useState<string | null>(null);
-
+  const [isAuctionModalOpen, setIsAuctionModalOpen] = useState(false);
+  const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
 
   useEffect(() => {
     const getProducts = async () => {
       try {
-        const data = await fetchProducts(currentPage);
+        const data = await fetchProducts(currentPage, null ,0);
         setProducts(data.data);
         setTotalPages(data.meta.total_pages);
       } catch (err) {
@@ -37,20 +38,37 @@ const ProductManagement: React.FC = () => {
     getProducts();
   }, [currentPage]);
 
-  const handleDeleteConfirmation = (productId: number, productLot: string) => {
-    setSelectedProductId(productId);
-    setSelectedProductLot(productLot);
+  const handleDeleteConfirmation = (product: Product) => {
+    setSelectedProduct(product);
     setIsModalOpen(true);
   };
 
   const handleDelete = async () => {
-    if (selectedProductId !== null) {
+    if (selectedProduct) {
       try {
-        await deleteProduct(selectedProductId);
-        setProducts(products.filter((product) => product.id !== selectedProductId));
+        await deleteProduct(selectedProduct.id);
+        setProducts(products.filter((product) => product.id !== selectedProduct.id));
         setIsModalOpen(false);
       } catch (err) {
         console.error("Erro ao deletar produto:", err);
+      }
+    }
+  };
+
+  const handleMarkAsSoldConfirmation = (product: Product) => {
+    setSelectedProduct(product);
+    setIsAuctionModalOpen(true);
+  };
+  
+  const handleMarkAsSold = async (productId: number) => {
+    if (productId) {
+      console.log(productId);
+      try {
+        await soldProduct(productId);
+        setProducts(products.filter((product) => product.id !== productId));
+        setIsAuctionModalOpen(false);
+      } catch (err) {
+        console.error("Erro ao arrematar produto:", err);
       }
     }
   };
@@ -66,9 +84,9 @@ const ProductManagement: React.FC = () => {
     <div className="p-6 bg-gray-100 min-h-screen">
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-2xl font-bold">Gerenciamento de Produtos</h1>
-        {/* Usando o Componente Button */}
         <Button text="Adicionar Produto" onClick={handleAddProduct} />
       </div>
+
       <table className="min-w-full bg-white border border-gray-300 shadow-sm rounded-lg">
         <thead>
           <tr className="bg-gray-100">
@@ -102,7 +120,7 @@ const ProductManagement: React.FC = () => {
                 {product.attributes.description}
               </td>
               <td className="py-2 px-4 border-b text-center">
-                R$ {product.attributes.current_value}
+                R$ {Number(product.attributes.current_value).toFixed(2)}
               </td>
               <td className="py-2 px-4 border-b text-center">
                 <button
@@ -118,15 +136,23 @@ const ProductManagement: React.FC = () => {
                   className="text-yellow-500 hover:text-yellow-700"
                   aria-label="Editar"
                 >
-                  <CiEdit className="size-6"/>
+                  <CiEdit className="size-6 ml-1"/>
                 </button>
 
                 <button
-                  onClick={() => handleDeleteConfirmation(product.id, product.attributes.lot_number)}
+                  onClick={() => handleDeleteConfirmation(product)}
                   className="text-red-500 hover:text-red-700"
                   aria-label="Excluir"
                 >
-                  <CiTrash className="size-6"/>
+                  <CiTrash className="size-6 ml-1"/>
+                </button>
+
+                <button
+                  onClick={() =>  handleMarkAsSoldConfirmation(product)}
+                  className="text-redDark hover:text-red-700"
+                  aria-label="Excluir"
+                >
+                  <ImHammer2 className="size-6 ml-5"/>
                 </button>
               </td>
             </tr>
@@ -143,11 +169,21 @@ const ProductManagement: React.FC = () => {
       <ConfirmationModal
         isOpen={isModalOpen}
         title="Confirmar Exclusão"
-        message={`Tem certeza de que deseja excluir o Lote ${selectedProductLot}?`}
+        message={`Tem certeza de que deseja excluir o Lote ${selectedProduct?.attributes.lot_number}?`}
         onConfirm={handleDelete}
         onCancel={() => setIsModalOpen(false)}
       />
 
+      {selectedProduct && (
+        <AuctionModal
+          isOpen={isAuctionModalOpen}
+          onClose={() => setIsAuctionModalOpen(false)}
+          onConfirm={() => handleMarkAsSold(selectedProduct.id)}
+          lotNumber={selectedProduct.attributes.lot_number}
+          currentValue={selectedProduct.attributes.current_value || 0}
+          winning_name={selectedProduct.attributes.winning_name || "Vencedor"}
+        />
+      )}
     </div>
   );
 };
