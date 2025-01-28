@@ -1,3 +1,9 @@
+export interface PaginationProps {
+  currentPage: number;
+  totalPages: number;
+  onPageChange: (page: number) => void;
+}
+
 export interface Product {
   id: number;
   attributes: {
@@ -38,6 +44,8 @@ export interface Bid {
     value: number;
     phone: string;
     created_at: string;
+    product: number;
+    lot_number: string;
   }
 }
 
@@ -69,4 +77,9 @@ export interface ProductCatalogProps {
 export interface ProductCardProps {
   product: Product;
   onBid: () => void;
+}
+
+export interface BidTableProps {
+  fetchBids: boolean;
+  showLotNumber?: boolean;
 }

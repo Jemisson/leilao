@@ -59,7 +59,7 @@ function ProductCatalog({ selectedCategory, profileUserId }: ProductCatalogProps
 
   return (
     <div className="flex flex-col items-center min-h-screen bg-gray-100 p-6">
-      <h1 className="text-3xl font-bold mb-6 mt-28">Catálogo de Produtos</h1>
+      <h1 className="text-3xl font-bold mb-6">Catálogo de Produtos</h1>
 
       {products.length === 0 ? (
         <NoData />

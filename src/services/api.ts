@@ -89,8 +89,13 @@ export const fetchProductById = async (productId: number) => {
   return response.data;
 };
 
-export const fetchBids = async (productId: number) => {
-  const response = await api.get(`/bids?product_id=${productId}`);
+export const fetchBids = async (page: number) => {
+  const response = await api.get(`/bids?page=${page}`);
+  return response.data;
+};
+
+export const fetchBidsById = async (productId: number, page: number) => {
+  const response = await api.get(`/bids?product_id=${productId}&page=${page}`);
   return response.data;
 };
 

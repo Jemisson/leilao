@@ -72,7 +72,7 @@ function SideBar({ isSidebarOpen, setIsSidebarOpen }: SideBarProps) {
             </li>
             <li>
               <NavLink
-                to="/dashboard/pessoas"
+                to="/dashboard/historico"
                 className={({ isActive }) =>
                   `flex items-center p-2 text-gray-700 hover:bg-gray-100 ${
                     isActive ? "font-bold text-redDark" : ""
@@ -80,7 +80,7 @@ function SideBar({ isSidebarOpen, setIsSidebarOpen }: SideBarProps) {
                 }
               >
                 <FaMoneyBill className="mr-2"/>
-                <span>Lances</span>
+                <span>Todos os Lances</span>
               </NavLink>
             </li>
           </ul>

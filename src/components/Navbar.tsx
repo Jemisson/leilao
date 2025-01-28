@@ -81,7 +81,7 @@ function Navbar({ onCategoryClick, activeCategory }: NavBarProps) {
 
   return (
     <nav
-      className={`bg-redDark border-gold fixed top-0 left-0 w-full z-50 ${
+      className={`bg-redDark border-gold sticky top-0 left-0 w-full z-50 ${
         isVisible ? "translate-y-0" : "-translate-y-full"
       } transition-transform duration-300`}
     >

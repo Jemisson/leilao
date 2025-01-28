@@ -8,6 +8,8 @@ import { isAuthenticated } from "../utils/authHelpers";
 import ProductCreation from "../pages/ProductCreation";
 import BidHistory from "../pages/BidHistory";
 import ProductEdit from "../pages/ProductEdit";
+import ProductDetails from "../pages/ProductDetails";
+import Dashboard from "../pages/Dashboard";
 
 const PrivateRoute: React.FC<{ children: JSX.Element }> = ({ children }) => {
   return isAuthenticated() ? children : <Navigate to="/login" />;
@@ -24,7 +26,7 @@ const AppRoutes: React.FC<AppRoutesProps> = ({ selectedCategory }) => {
       <Route
         path="/"
         element={
-          <ProductCatalog selectedCategory={selectedCategory} />
+          <ProductCatalog selectedCategory={selectedCategory} profileUserId={0} />
         }
       />
 
@@ -41,10 +43,11 @@ const AppRoutes: React.FC<AppRoutesProps> = ({ selectedCategory }) => {
         }
       >
         {/* Rotas dentro do Dashboard */}
-        <Route index element={<h1>Bem-vindo ao Dashboard</h1>} />
+        <Route index element={<Dashboard />} />
+        <Route path="historico" element={<BidHistory /> }/>
         <Route path="produtos" element={<ProductManagement />} />
         <Route path="produtos/new" element={<ProductCreation />} />
-        <Route path="produtos/:productId/lances" element={ <BidHistory />} />
+        <Route path="produtos/:productId/lances" element={ <ProductDetails />} />
         <Route path="produtos/:productId/edit" element={<ProductEdit />} />
 
       </Route>

@@ -1,12 +1,8 @@
-interface PaginationProps {
-  currentPage: number;
-  totalPages: number;
-  onPageChange: (page: number) => void;
-}
+import { PaginationProps } from "../types";
 
 const Pagination: React.FC<PaginationProps> = ({ currentPage, totalPages, onPageChange }) => {
   return (
-    <div className="flex justify-between items-center mt-6 w-full max-w-6xl">
+    <div className="flex justify-between items-center mt-6 w-full max-w-full">
       <button
         onClick={() => onPageChange(currentPage - 1)}
         disabled={currentPage === 1}

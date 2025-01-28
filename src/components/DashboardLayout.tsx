@@ -14,7 +14,7 @@ function DashboardLayout() {
       <div
         className={`flex-1 transition-all duration-300 ${
           isSidebarOpen ? "ml-64" : "ml-0"
-        } pt-16`}
+        } `}
       >
         <Outlet />
       </div>
