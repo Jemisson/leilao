@@ -50,11 +50,11 @@ const ProductDetails: React.FC = () => {
             <p className="text-gray-700">
               <strong>Descrição:</strong> {product.attributes.description}
             </p>
-            <p className="text-gray-700">
+            <p className="text-gray-700 mt-2">
               <strong>Valor Inicial:</strong> R$ {product.attributes.minimum_value}
             </p>
-            <p className="text-gray-700">
-              <strong>Valor atual:</strong> R$ {product.attributes.current_value}
+            <p className="text-2xl mt-5 text-redBright">
+              <strong>Valor atual: R$ {Number(product.attributes.current_value).toFixed(2)} </strong>
             </p>
             <div className="flex gap-10 justify-start flex-wrap mt-10">
               {product.attributes.images?.map((image) => (

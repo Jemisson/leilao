@@ -77,7 +77,7 @@ const BidTable: React.FC<BidTableProps> = ({ showLotNumber = false, productId })
                   </td>
                   <td className="py-2 px-4 border-b text-center">{bid.attributes.name}</td>
                   <td className="py-2 px-4 border-b text-center">{bid.attributes.phone}</td>
-                  <td className="py-2 px-4 border-b text-center">R$ {bid.attributes.value}</td>
+                  <td className="py-2 px-4 border-b text-center">R$ {Number(bid.attributes.value).toFixed(2)}</td>
                 </tr>
               ))}
             </tbody>
