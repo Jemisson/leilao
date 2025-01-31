@@ -2,14 +2,9 @@ import { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { fetchCategories } from "../services/api";
 import Logo from "./Logo";
-import { Category } from "../types";
-import { isAuthenticated } from "../utils/authHelpers";
+import { Category, NavBarProps } from "../types";
+import { getUserRole, isAuthenticated } from "../utils/authHelpers";
 import Cookies from "js-cookie";
-
-interface NavBarProps {
-  onCategoryClick: (categoryId: string | null) => void;
-  activeCategory: string | null;
-}
 
 function Navbar({ onCategoryClick, activeCategory }: NavBarProps) {
   const [categories, setCategories] = useState<Category[]>([]);
@@ -19,6 +14,8 @@ function Navbar({ onCategoryClick, activeCategory }: NavBarProps) {
   const [pendingCategory, setPendingCategory] = useState<string | null>(null);
   const location = useLocation();
   const navigate = useNavigate();
+  const isLoggedIn = isAuthenticated();
+  const userRole = getUserRole();
 
     // Oculta a Navbar na página de login
     const shouldShowNavbar = location.pathname !== "/login";
@@ -149,20 +146,22 @@ function Navbar({ onCategoryClick, activeCategory }: NavBarProps) {
               </button>
             </li>
   
-            {isAuthenticated() && (
+            {isLoggedIn ? (
               <>
-                <li>
-                  <button
-                    className={`px-3 py-2 text-beige ${
-                      location.pathname === "/dashboard"
-                        ? "border-b-2 border-gold text-gold"
-                        : "hover:text-gold hover:border-b-2 hover:border-gold"
-                    }`}
-                    onClick={() => navigate("/dashboard")}
-                  >
-                    Dashboard
-                  </button>
-                </li>
+                {userRole === "admin" && (
+                  <li>
+                    <button
+                      className={`px-3 py-2 text-beige ${
+                        location.pathname === "/dashboard"
+                          ? "border-b-2 border-gold text-gold"
+                          : "hover:text-gold hover:border-b-2 hover:border-gold"
+                      }`}
+                      onClick={() => navigate("/dashboard")}
+                    >
+                      Dashboard
+                    </button>
+                  </li>
+                )}
                 <li>
                   <button
                     className="px-3 py-2 text-beige hover:text-gold hover:border-b-2 hover:border-gold"
@@ -172,6 +171,15 @@ function Navbar({ onCategoryClick, activeCategory }: NavBarProps) {
                   </button>
                 </li>
               </>
+            ) : (
+              <li>
+                <button
+                  className="px-3 py-2 text-beige hover:text-gold hover:border-b-2 hover:border-gold"
+                  onClick={() => navigate("/login")}
+                >
+                  Entrar
+                </button>
+              </li>
             )}
           </ul>
         </div>

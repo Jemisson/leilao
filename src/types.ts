@@ -93,3 +93,8 @@ export interface AuctionModalProps {
   currentValue: number;
   winning_name: string;
 }
+
+export interface NavBarProps {
+  onCategoryClick: (categoryId: string | null) => void;
+  activeCategory: string | null;
+}
