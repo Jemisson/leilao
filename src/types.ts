@@ -77,6 +77,7 @@ export interface ProductCatalogProps {
 
 export interface ProductCardProps {
   product: Product;
+  isUpdated: boolean;
   onBid: () => void;
 }
 
@@ -93,8 +94,15 @@ export interface AuctionModalProps {
   currentValue: number;
   winning_name: string;
 }
-
 export interface NavBarProps {
   onCategoryClick: (categoryId: string | null) => void;
   activeCategory: string | null;
+}
+
+export interface WebSocketContextProps {
+  cable: ActionCable.Cable | null;
+}
+export interface BidTableProps {
+  showLotNumber?: boolean;
+  productId?: number;
 }

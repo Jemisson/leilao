@@ -1,13 +1,9 @@
 import React, { useEffect, useState } from "react";
 import { parseISO, format } from "date-fns";
 import { fetchBids, fetchBidsById } from "../services/api";
-import { Bid } from "../types";
+import { Bid, BidTableProps } from "../types";
 import Pagination from "./Pagination";
-
-interface BidTableProps {
-  showLotNumber?: boolean;
-  productId?: number; // Opcional: para filtrar por produto específico
-}
+import { useWebSocket } from "../hooks/useWebSocket";
 
 const BidTable: React.FC<BidTableProps> = ({ showLotNumber = false, productId }) => {
   const [bids, setBids] = useState<Bid[]>([]);
@@ -15,6 +11,7 @@ const BidTable: React.FC<BidTableProps> = ({ showLotNumber = false, productId })
   const [error, setError] = useState<string | null>(null);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
+  const { cable } = useWebSocket();
 
   useEffect(() => {
     const fetchAllBids = async (page: number) => {
@@ -41,6 +38,20 @@ const BidTable: React.FC<BidTableProps> = ({ showLotNumber = false, productId })
 
     fetchAllBids(currentPage);
   }, [currentPage, productId]);
+
+  useEffect(() => {
+    if (!cable) return;
+
+    const subscription = cable.subscriptions.create("BidsChannel", {
+      received(data: {data: Bid}) {
+        setBids((prevBids) => [data.data, ...prevBids]);
+      },
+    });
+
+    return () => {
+      subscription.unsubscribe();
+    };
+  }, [cable]);
 
   const formatDate = (isoDate: string): string => {
     const parsedDate = parseISO(isoDate);

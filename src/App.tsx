@@ -2,6 +2,7 @@ import { useState } from "react";
 import { BrowserRouter as Router } from "react-router-dom";
 import Navbar from "./components/Navbar";
 import AppRoutes from "./routes/AppRoutes";
+import { WebSocketProvider } from "./contexts/WebSocketProvider";
 
 function App() {
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
@@ -11,21 +12,18 @@ function App() {
   };
 
   return (
-    <Router>
-      <>
-        {/* Navbar visível em todas as páginas */}
+    <WebSocketProvider>
+      <Router>
         <Navbar
           activeCategory={selectedCategory}
           onCategoryClick={handleCategoryClick}
         />
 
-        {/* Rotas da aplicação */}
         <AppRoutes
           selectedCategory={selectedCategory}
-          onCategoryClick={handleCategoryClick}
         />
-      </>
-    </Router>
+      </Router>
+    </WebSocketProvider>
   );
 }
 

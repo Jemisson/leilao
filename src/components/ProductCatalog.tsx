@@ -1,23 +1,29 @@
 import { useEffect, useState } from "react";
 import { fetchProducts } from "../services/api";
-import { Product, ProductCatalogProps } from "../types";
+import { Bid, Product, ProductCatalogProps } from "../types";
 import Pagination from "./Pagination";
 import ProductCard from "./ProductCard";
 import NoData from "./NoData";
 import BidModal from "./BidModal";
+import { useWebSocket } from "../hooks/useWebSocket";
 
 function ProductCatalog({ selectedCategory, profileUserId }: ProductCatalogProps) {
   const [products, setProducts] = useState<Product[]>([]);
+  const [updatedProducts, setUpdatedProducts] = useState<Set<number>>(new Set());
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
-  const [categoryChanged, setCategoryChanged] = useState(false);
   const [isBidModalOpen, setBidModalOpen] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
+  const { cable } = useWebSocket();
+
+  const handleOpenBidModal = (product: Product) => {
+    setSelectedProduct(product);
+    setBidModalOpen(true);
+  };
 
   useEffect(() => {
-    setCategoryChanged(true);
     setCurrentPage(1);
   }, [selectedCategory]);
 
@@ -40,19 +46,51 @@ function ProductCatalog({ selectedCategory, profileUserId }: ProductCatalogProps
         setError("Erro ao carregar produtos.");
       } finally {
         setLoading(false);
-        setCategoryChanged(false);
       }
     };
 
-    if (!categoryChanged) {
       getProducts();
-    }
-  }, [currentPage, selectedCategory, categoryChanged]);
+  }, [currentPage, selectedCategory]);
 
-  const handleOpenBidModal = (product: Product) => {
-    setSelectedProduct(product);
-    setBidModalOpen(true);
-  };
+  useEffect(() => {
+    if (!cable) return;
+
+    const subscription = cable.subscriptions.create("BidsChannel", {
+      received(data: {data: Bid}) {
+
+        setProducts((prevProducts) => {
+          return prevProducts.map((product) => {
+            if (Number(product.id) === Number(data.data.attributes.product)) {
+              setUpdatedProducts((prev) => new Set(prev).add(product.id));
+
+              setTimeout(() => {
+                setUpdatedProducts((prev) => {
+                  const newSet = new Set(prev);
+                  newSet.delete(product.id); // Remove o produto da lista após 2 segundos
+                  return newSet;
+                });
+              }, 2000);
+
+              return {
+                ...product,
+                attributes: {
+                  ...product.attributes,
+                  current_value: Number(data.data.attributes.value),
+                },
+              };
+            } else {
+              return product;
+            }
+          });
+        });
+
+      },
+    });
+
+    return () => {
+      subscription.unsubscribe();
+    };
+  }, [cable]);
 
   if (loading) return <p>Carregando...</p>;
   if (error) return <p>{error}</p>;
@@ -79,6 +117,7 @@ function ProductCatalog({ selectedCategory, profileUserId }: ProductCatalogProps
               >
                 <ProductCard
                   product={product}
+                  isUpdated={updatedProducts.has(product.id)}
                   onBid={() => handleOpenBidModal(product)}
                   />
               </li>
