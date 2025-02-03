@@ -3,7 +3,7 @@ import { ProductCardProps } from "../types";
 const ProductCard = ({ product, isUpdated, onBid }: ProductCardProps) => { 
   return (
     <div
-      className="relative max-w-sm bg-white border border-gray-200 rounded-lg shadow-md dark:bg-gray-800 dark:border-gray-700"
+      className={`relative max-w-sm bg-white border  rounded-lg shadow-md dark:bg-gray-800 dark:border-gray-700 ${isUpdated ? " border-2 border-solid border-gold" : "border-gray-200"}`}
       key={product.id}
     >
       <div className="relative">
@@ -28,7 +28,7 @@ const ProductCard = ({ product, isUpdated, onBid }: ProductCardProps) => {
         <p className="mb-3 font-normal text-gray-700 dark:text-gray-400">
           {product.attributes.description || ""}
         </p>
-        <p className={`mb-3 font-semibold text-lg ${isUpdated ? "text-redDark" : "text-gray-900"}`}>
+        <p className={`mb-3 font-semibold text-lg ${isUpdated ? "text-redBright" : "text-gray-900"}`}>
           Valor: R$ {product.attributes.current_value}
         </p>
         <button

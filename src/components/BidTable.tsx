@@ -1,65 +1,12 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { parseISO, format } from "date-fns";
-import { fetchBids, fetchBidsById } from "../services/api";
-import { Bid, BidTableProps } from "../types";
-import Pagination from "./Pagination";
-import { useWebSocket } from "../hooks/useWebSocket";
+import { BidTableProps } from "../types";
 
-const BidTable: React.FC<BidTableProps> = ({ showLotNumber = false, productId }) => {
-  const [bids, setBids] = useState<Bid[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-  const [currentPage, setCurrentPage] = useState(1);
-  const [totalPages, setTotalPages] = useState(1);
-  const { cable } = useWebSocket();
-
-  useEffect(() => {
-    const fetchAllBids = async (page: number) => {
-      setLoading(true);
-      setError(null);
-
-      try {
-        let response;
-        if (productId) {
-          response = await fetchBidsById(productId, page);
-        } else {
-          response = await fetchBids(page);
-        }
-
-        setBids(response.data || []);
-        setTotalPages(response.meta?.total_pages || 1);
-      } catch (err) {
-        console.error("Erro ao carregar lances:", err);
-        setError("Erro ao carregar lances. Tente novamente.");
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchAllBids(currentPage);
-  }, [currentPage, productId]);
-
-  useEffect(() => {
-    if (!cable) return;
-
-    const subscription = cable.subscriptions.create("BidsChannel", {
-      received(data: {data: Bid}) {
-        setBids((prevBids) => [data.data, ...prevBids]);
-      },
-    });
-
-    return () => {
-      subscription.unsubscribe();
-    };
-  }, [cable]);
-
+const BidTable: React.FC<BidTableProps> = ({ showLotNumber = false, bids }) => {
   const formatDate = (isoDate: string): string => {
     const parsedDate = parseISO(isoDate);
     return format(parsedDate, "dd/MM/yyyy - HH:mm");
   };
-
-  if (loading) return <p>Carregando...</p>;
-  if (error) return <p>{error}</p>;
 
   return (
     <div>
@@ -88,16 +35,13 @@ const BidTable: React.FC<BidTableProps> = ({ showLotNumber = false, productId })
                   </td>
                   <td className="py-2 px-4 border-b text-center">{bid.attributes.name}</td>
                   <td className="py-2 px-4 border-b text-center">{bid.attributes.phone}</td>
-                  <td className="py-2 px-4 border-b text-center">R$ {Number(bid.attributes.value).toFixed(2)}</td>
+                  <td className="py-2 px-4 border-b text-center">
+                    R$ {Number(bid.attributes.value).toFixed(2)}
+                  </td>
                 </tr>
               ))}
             </tbody>
           </table>
-          <Pagination
-            currentPage={currentPage}
-            totalPages={totalPages}
-            onPageChange={(page) => setCurrentPage(page)}
-          />
         </>
       ) : (
         <p className="text-gray-700 italic">Nenhum lance registrado.</p>

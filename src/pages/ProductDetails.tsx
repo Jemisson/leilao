@@ -1,14 +1,20 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { fetchProductById } from "../services/api";
-import { Product } from "../types";
+import { fetchProductById, fetchBidsById } from "../services/api";
+import { Product, Bid } from "../types";
 import BidTable from "../components/BidTable";
+import Pagination from "../components/Pagination";
+import { useWebSocket } from "../hooks/useWebSocket";
 
 const ProductDetails: React.FC = () => {
   const { productId } = useParams<{ productId: string }>();
   const [product, setProduct] = useState<Product | null>(null);
+  const [bids, setBids] = useState<Bid[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+  const { cable } = useWebSocket();
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -26,6 +32,50 @@ const ProductDetails: React.FC = () => {
 
     fetchProductDetails();
   }, [productId]);
+
+
+  useEffect(() => {
+    const fetchBids = async () => {
+      try {
+        const response = await fetchBidsById(Number(productId), currentPage);
+        setBids(response.data || []);
+        setTotalPages(response.meta?.total_pages || 1);
+      } catch (err) {
+        console.error("Erro ao carregar lances:", err);
+        setError("Erro ao carregar os lances.");
+      }
+    };
+
+    fetchBids();
+  }, [productId, currentPage]);
+
+  // 📌 WebSocket para atualizar lances em tempo real apenas do produto atual
+  useEffect(() => {
+    if (!cable) return;
+
+    const subscription = cable.subscriptions.create("BidsChannel", {
+      received(data: { data: Bid }) {
+        if (Number(data.data.attributes.product) === Number(productId)) {
+          setBids((prevBids) => [data.data, ...prevBids]);
+          setProduct((prevProduct) =>
+            prevProduct
+              ? {
+                  ...prevProduct,
+                  attributes: {
+                    ...prevProduct.attributes,
+                    current_value: Number(data.data.attributes.value),
+                  },
+                }
+              : prevProduct
+          );
+        }
+      },
+    });
+
+    return () => {
+      subscription.unsubscribe();
+    };
+  }, [cable, productId]);
 
   if (loading) return <p>Carregando...</p>;
   if (error) return <p>{error}</p>;
@@ -72,7 +122,14 @@ const ProductDetails: React.FC = () => {
 
       <div className="w-2/3 pl-10">
         <h2 className="text-xl font-bold mb-4">Histórico de Lances</h2>
-        <BidTable showLotNumber={false} productId={Number(productId)} />
+        <BidTable showLotNumber={false} bids={bids} />
+
+        {/* Paginação */}
+        <Pagination
+          currentPage={currentPage}
+          totalPages={totalPages}
+          onPageChange={setCurrentPage}
+        />
       </div>
     </div>
   );

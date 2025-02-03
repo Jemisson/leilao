@@ -82,8 +82,8 @@ export interface ProductCardProps {
 }
 
 export interface BidTableProps {
-  fetchBids: boolean;
   showLotNumber?: boolean;
+  bids: Bid[];
 }
 
 export interface AuctionModalProps {
