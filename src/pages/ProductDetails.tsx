@@ -49,7 +49,6 @@ const ProductDetails: React.FC = () => {
     fetchBids();
   }, [productId, currentPage]);
 
-  // 📌 WebSocket para atualizar lances em tempo real apenas do produto atual
   useEffect(() => {
     if (!cable) return;
 

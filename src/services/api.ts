@@ -128,3 +128,18 @@ export const createBid = async (productId: number, value: number, profileUserId:
     throw error;
   }
 };
+
+export const fetchUsers = async (page: number = 1) => {
+  try {
+    const response = await api.get(`/profile_users?page=${page}`);
+    return response.data;
+  } catch (error) {
+    console.error("Erro ao buscar usuários:", error);
+    throw error;
+  }
+};
+
+export const fetchUserById = async (userId: number) => {
+  const response = await api.get(`/profile_users/${userId}`);
+  return response.data;
+};

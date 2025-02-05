@@ -10,11 +10,16 @@ const BidModal: React.FC<BidModalProps> = ({
   profileUserId,
   currentValue,
  }) => {
-  const [bidValue, setBidValue] = React.useState<number | "">("");
+  const [bidValue, setBidValue] = useState<number | "">("");
   const [loading, setLoading] = useState(false);
 
   const handleSubmit = async () => {
     setLoading(true);
+
+    if (!profileUserId) {
+      alert("Você precisa estar logado para fazer um lance.");
+      return;
+    }
 
     if (typeof bidValue !== "number" || bidValue <= currentValue) {
       alert("Por favor, insira um valor maior que o valor atual");
@@ -27,6 +32,7 @@ const BidModal: React.FC<BidModalProps> = ({
     } catch (error) {
       console.log("Erro ao enviar lance. Tente novamente.", error);
     } finally {
+      setBidValue("");
       setLoading(false);
     }
   };

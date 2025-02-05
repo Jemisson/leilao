@@ -15,9 +15,20 @@ const LoginPage: React.FC = () => {
     e.preventDefault();
     try {
       const data = await login(email, password);
+
       Cookies.set("leilao_jwt_token", data.token, { expires: 5 });
+
+      const payload = JSON.parse(atob(data.token.split(".")[1]));
+      const userRole = payload.role;
+
+      if (userRole === "admin") {
+        navigate("/dashboard");
+      } else {
+        navigate("/");
+      }
+
       setMessage(data.message || "Login realizado com sucesso!");
-      navigate("/dashboard");
+
     } catch (error) {
       const axiosError = error as AxiosError;
       if (axiosError.response && axiosError.response.data) {

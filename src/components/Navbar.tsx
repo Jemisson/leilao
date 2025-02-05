@@ -3,7 +3,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { fetchCategories } from "../services/api";
 import Logo from "./Logo";
 import { Category, NavBarProps } from "../types";
-import { getUserRole, isAuthenticated } from "../utils/authHelpers";
+import { isAuthenticated } from "../utils/authHelpers";
 import Cookies from "js-cookie";
 
 function Navbar({ onCategoryClick, activeCategory }: NavBarProps) {
@@ -15,9 +15,7 @@ function Navbar({ onCategoryClick, activeCategory }: NavBarProps) {
   const location = useLocation();
   const navigate = useNavigate();
   const isLoggedIn = isAuthenticated();
-  const userRole = getUserRole();
 
-    // Oculta a Navbar na página de login
     const shouldShowNavbar = location.pathname !== "/login";
 
     useEffect(() => {
@@ -148,26 +146,12 @@ function Navbar({ onCategoryClick, activeCategory }: NavBarProps) {
   
             {isLoggedIn ? (
               <>
-                {userRole === "admin" && (
-                  <li>
-                    <button
-                      className={`px-3 py-2 text-beige ${
-                        location.pathname === "/dashboard"
-                          ? "border-b-2 border-gold text-gold"
-                          : "hover:text-gold hover:border-b-2 hover:border-gold"
-                      }`}
-                      onClick={() => navigate("/dashboard")}
-                    >
-                      Dashboard
-                    </button>
-                  </li>
-                )}
                 <li>
                   <button
                     className="px-3 py-2 text-beige hover:text-gold hover:border-b-2 hover:border-gold"
                     onClick={handleLogout}
                   >
-                    Logout
+                    Sair
                   </button>
                 </li>
               </>

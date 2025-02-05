@@ -9,6 +9,7 @@ import { CiEdit, CiTrash } from "react-icons/ci";
 import { FaEye } from "react-icons/fa";
 import { ImHammer2 } from "react-icons/im";
 import AuctionModal from "../components/AuctionModal";
+import IconButton from "../components/IconButton";
 
 const ProductManagement: React.FC = () => {
   const [products, setProducts] = useState<Product[]>([]);
@@ -123,37 +124,33 @@ const ProductManagement: React.FC = () => {
                 R$ {Number(product.attributes.current_value).toFixed(2)}
               </td>
               <td className="py-2 px-4 border-b text-center">
-                <button
+                <IconButton
                   onClick={() => navigate(`/dashboard/produtos/${product.id}/lances`)}
+                  icon={<FaEye className="size-6" />}
+                  ariaLabel="Ver detalhes"
                   className="text-blue-500 hover:text-blue-700"
-                  aria-label="Ver detalhes"
-                >
-                  <FaEye className="size-6"/>
-                </button>
+                />
 
-                <button
+                <IconButton
                   onClick={() => navigate(`/dashboard/produtos/${product.id}/edit`)}
+                  icon={<CiEdit className="size-6" />}
+                  ariaLabel="Editar"
                   className="text-yellow-500 hover:text-yellow-700"
-                  aria-label="Editar"
-                >
-                  <CiEdit className="size-6 ml-1"/>
-                </button>
+                />
 
-                <button
+                <IconButton
                   onClick={() => handleDeleteConfirmation(product)}
+                  icon={<CiTrash className="size-6" />}
+                  ariaLabel="Excluir"
                   className="text-red-500 hover:text-red-700"
-                  aria-label="Excluir"
-                >
-                  <CiTrash className="size-6 ml-1"/>
-                </button>
+                />
 
-                <button
-                  onClick={() =>  handleMarkAsSoldConfirmation(product)}
+                <IconButton
+                  onClick={() => handleMarkAsSoldConfirmation(product)}
+                  icon={<ImHammer2 className="size-6" />}
+                  ariaLabel="Arrematar"
                   className="text-redDark hover:text-red-700"
-                  aria-label="Excluir"
-                >
-                  <ImHammer2 className="size-6 ml-5"/>
-                </button>
+                />
               </td>
             </tr>
           ))}

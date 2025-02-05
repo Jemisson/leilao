@@ -1,3 +1,5 @@
+import { Dispatch, SetStateAction } from "react";
+
 export interface PaginationProps {
   currentPage: number;
   totalPages: number;
@@ -66,13 +68,13 @@ export interface BidModalProps {
   onClose: () => void;
   productName: string;
   productId: number;
-  profileUserId: number;
+  profileUserId: number | null;
   currentValue: number;
 }
 
 export interface ProductCatalogProps {
   selectedCategory: string | null;
-  profileUserId: number;
+  profileUserId: number | null;
 }
 
 export interface ProductCardProps {
@@ -105,4 +107,52 @@ export interface WebSocketContextProps {
 export interface BidTableProps {
   showLotNumber?: boolean;
   productId?: number;
+}
+
+export interface MenuItemProps {
+  to: string;
+  icon: JSX.Element;
+  label: string;
+}
+
+export interface SideBarProps {
+  isSidebarOpen: boolean;
+  setIsSidebarOpen: Dispatch<SetStateAction<boolean>>;
+}
+
+export interface User {
+  id: string;
+  attributes: {
+    id: number;
+    name: string;
+    cpf: string;
+    birth: string;
+    street: string;
+    number: string;
+    neighborhood: string;
+    city: string;
+    state: string;
+    country: string;
+    zip_code: string;
+    phone: string;
+    email: string;
+    role: string;
+  };
+}
+
+export interface UsersResponse {
+  data: User[];
+  meta: {
+    total_count: number;
+    total_pages: number;
+    current_page: number;
+    per_page: number;
+  };
+}
+
+export interface IconButtonProps {
+  onClick: () => void;
+  icon: React.ReactNode;
+  ariaLabel: string;
+  className?: string;
 }

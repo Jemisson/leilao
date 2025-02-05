@@ -4,12 +4,14 @@ import ProductCatalog from "../components/ProductCatalog";
 import DashboardLayout from "../components/DashboardLayout";
 import LoginForm from "../pages/LoginForm";
 import ProductManagement from "../pages/ProductManagement";
-import { isAuthenticated } from "../utils/authHelpers";
+import { getAuthenticatedUser, isAuthenticated } from "../utils/authHelpers";
 import ProductCreation from "../pages/ProductCreation";
 import BidHistory from "../pages/BidHistory";
 import ProductEdit from "../pages/ProductEdit";
 import ProductDetails from "../pages/ProductDetails";
 import Dashboard from "../pages/Dashboard";
+import UserManagement from "../pages/UserManagement";
+import UserDetails from "../pages/UserDetails";
 
 const PrivateRoute: React.FC<{ children: JSX.Element }> = ({ children }) => {
   return isAuthenticated() ? children : <Navigate to="/login" />;
@@ -20,13 +22,20 @@ interface AppRoutesProps {
 }
 
 const AppRoutes: React.FC<AppRoutesProps> = ({ selectedCategory }) => {
+  const user = getAuthenticatedUser();
+  console.log(user);
+  
+  const profileUserId = user ? user.id : null;
   return (
     <Routes>
       {/* Página inicial pública */}
       <Route
         path="/"
         element={
-          <ProductCatalog selectedCategory={selectedCategory} profileUserId={0} />
+          <ProductCatalog
+            selectedCategory={selectedCategory}
+            profileUserId={profileUserId}
+          />
         }
       />
 
@@ -49,6 +58,8 @@ const AppRoutes: React.FC<AppRoutesProps> = ({ selectedCategory }) => {
         <Route path="produtos/new" element={<ProductCreation />} />
         <Route path="produtos/:productId/lances" element={ <ProductDetails />} />
         <Route path="produtos/:productId/edit" element={<ProductEdit />} />
+        <Route path="licitantes" element={<UserManagement />} />
+        <Route path="licitantes/:userId" element={<UserDetails />} />
 
       </Route>
     </Routes>

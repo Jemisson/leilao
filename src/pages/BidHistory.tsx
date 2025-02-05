@@ -12,6 +12,7 @@ const BidHistory: React.FC = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const { cable } = useWebSocket();
+  const [isWebSocketReady, setIsWebSocketReady] = useState(false);
 
   useEffect(() => {
     const getBids = async () => {
@@ -33,12 +34,17 @@ const BidHistory: React.FC = () => {
   }, [currentPage]);
 
   useEffect(() => {
-    if (!cable) return;
+    if (cable) {
+      setIsWebSocketReady(true);
+    }
+  }, [cable]); 
+
+  useEffect(() => {
+    if (!isWebSocketReady || !cable) return;
+
 
     const subscription = cable.subscriptions.create("BidsChannel", {
       received(data: { data: Bid }) {
-        console.log("📢 Novo lance recebido!", data.data);
-        
         setBids((prevBids) => {
           if (currentPage === 1) {
             return [data.data, ...prevBids];
@@ -51,7 +57,7 @@ const BidHistory: React.FC = () => {
     return () => {
       subscription.unsubscribe();
     };
-  }, [cable, currentPage]);
+  }, [isWebSocketReady, cable, currentPage]);
 
   if (loading) return <p className="p-6">Carregando...</p>;
   if (error) return <p className="p-6 text-red-500">{error}</p>;

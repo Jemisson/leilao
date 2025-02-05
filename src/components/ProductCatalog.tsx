@@ -6,6 +6,7 @@ import ProductCard from "./ProductCard";
 import NoData from "./NoData";
 import BidModal from "./BidModal";
 import { useWebSocket } from "../hooks/useWebSocket";
+import { useNavigate } from "react-router-dom";
 
 function ProductCatalog({ selectedCategory, profileUserId }: ProductCatalogProps) {
   const [products, setProducts] = useState<Product[]>([]);
@@ -17,8 +18,15 @@ function ProductCatalog({ selectedCategory, profileUserId }: ProductCatalogProps
   const [isBidModalOpen, setBidModalOpen] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
   const { cable } = useWebSocket();
+  const navigate = useNavigate();
 
+  console.log(profileUserId);
   const handleOpenBidModal = (product: Product) => {
+    
+    if (!profileUserId) {
+      navigate("/login");
+      return;
+    }
     setSelectedProduct(product);
     setBidModalOpen(true);
   };
@@ -66,7 +74,7 @@ function ProductCatalog({ selectedCategory, profileUserId }: ProductCatalogProps
               setTimeout(() => {
                 setUpdatedProducts((prev) => {
                   const newSet = new Set(prev);
-                  newSet.delete(product.id); // Remove o produto da lista após 2 segundos
+                  newSet.delete(product.id);
                   return newSet;
                 });
               }, 2000);
