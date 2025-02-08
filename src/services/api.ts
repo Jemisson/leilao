@@ -1,5 +1,6 @@
 import axios from "axios"
 import Cookies from "js-cookie"
+import { UserAttributes } from "../types";
 
 const api = axios.create({
   baseURL: "http://localhost:3000/api/v1",
@@ -50,7 +51,7 @@ export const fetchProducts = async (
 
 export const logout = () => {
   Cookies.remove("leilao_jwt_token");
-};
+}
 
 export const deleteProduct = async (productId: number) => {
   try {
@@ -60,7 +61,7 @@ export const deleteProduct = async (productId: number) => {
     console.error("Erro ao excluir produto:", error);
     throw error;
   }
-};
+}
 
 export const createProduct = async (productData: FormData) => {
   const response = await api.post("/products", productData, {
@@ -69,7 +70,7 @@ export const createProduct = async (productData: FormData) => {
     },
   });
   return response.data;
-};
+}
 
 export const updateProduct = async (productId: number, formData: FormData) => {
   try {
@@ -83,27 +84,27 @@ export const updateProduct = async (productId: number, formData: FormData) => {
     console.error("Erro ao atualizar produto:", error);
     throw error;
   }
-};
+}
 
 export const soldProduct = async (id: number) => {
   const response = await api.patch(`products/${id}/mark_as_sold`);
   return response.data;
-};
+}
 
 export const fetchProductById = async (productId: number) => {
   const response = await api.get(`/products/${productId}`);
   return response.data;
-};
+}
 
 export const fetchBids = async (page: number) => {
   const response = await api.get(`/bids?page=${page}`);
   return response.data;
-};
+}
 
 export const fetchBidsById = async (productId: number, page: number) => {
   const response = await api.get(`/bids?product_id=${productId}&page=${page}`);
   return response.data;
-};
+}
 
 export const deleteImage = async (id: number, imageId: string) => {
   try {
@@ -113,7 +114,7 @@ export const deleteImage = async (id: number, imageId: string) => {
     console.error("Erro ao excluir imagem:", error);
     throw error;
   }
-};
+}
 
 export const createBid = async (productId: number, value: number, profileUserId: number) => {
   try {
@@ -127,7 +128,7 @@ export const createBid = async (productId: number, value: number, profileUserId:
     console.error("Erro ao efetuar lance:", error);
     throw error;
   }
-};
+}
 
 export const fetchUsers = async (page: number = 1) => {
   try {
@@ -137,9 +138,21 @@ export const fetchUsers = async (page: number = 1) => {
     console.error("Erro ao buscar usuários:", error);
     throw error;
   }
-};
+}
 
 export const fetchUserById = async (userId: number) => {
   const response = await api.get(`/profile_users/${userId}`);
   return response.data;
-};
+}
+
+export const createUser = async (userAttributes: UserAttributes) => {
+  try {
+    const response = await api.post("/profile_users", {
+      user_attributes: userAttributes,
+    });
+    return response.data;
+  } catch (error) {
+    console.error("Erro ao criar usuário:", error);
+    throw error;
+  }
+}

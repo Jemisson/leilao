@@ -5,6 +5,8 @@ import Pagination from "../components/Pagination";
 import { FaEye } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import IconButton from "../components/IconButton";
+import Button from "../components/Button";
+import { MdAdminPanelSettings } from "react-icons/md";
 
 const UserManagement: React.FC = () => {
   const [users, setUsers] = useState<User[]>([]);
@@ -34,13 +36,20 @@ const UserManagement: React.FC = () => {
     getUsers();
   }, [currentPage]);
 
+  const handleAddUser = () => {
+    navigate("/dashboard/licitantes/new");
+  };
+
   if (loading) return <p className="p-6">Carregando...</p>;
   if (error) return <p className="p-6 text-red-500">{error}</p>;
 
   return (
     <div className="p-6 bg-gray-100 min-h-screen">
-      <h1 className="text-3xl font-bold mb-6">Lista de Usuários</h1>
-      
+      <div className="flex justify-between items-center mb-6">
+        <h1 className="text-2xl font-bold">Lista de Usuários</h1>
+        <Button text="Adicionar Usuário" onClick={handleAddUser} />
+      </div>
+
       {users.length > 0 ? (
         <>
           <table className="min-w-full bg-white border border-gray-300 shadow-sm rounded-lg">
@@ -57,7 +66,12 @@ const UserManagement: React.FC = () => {
               {users.map((user) => (
                 <tr key={user.id}>
                   <td className="py-2 px-4 border-b text-center">{user.id}</td>
-                  <td className="py-2 px-4 border-b text-center">{user.attributes.name}</td>
+                  <td className="py-2 px-4 border-b text-center">
+                    <div className="flex items-center justify-center space-x-2">
+                      <span>{user.attributes.name}</span>
+                      {user.attributes.role === "admin" && <MdAdminPanelSettings className="text-redDark" />}
+                    </div>
+                  </td>
                   <td className="py-2 px-4 border-b text-center">{user.attributes.phone}</td>
                   <td className="py-2 px-4 border-b text-center">
                     {`${user.attributes.street}, ${user.attributes.number}, 

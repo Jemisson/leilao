@@ -156,3 +156,42 @@ export interface IconButtonProps {
   ariaLabel: string;
   className?: string;
 }
+
+export interface UserAttributes {
+  email: string;
+  password: string;
+  role: 'admin' | 'user';
+}
+
+export interface ProfileUser {
+  name: string;
+  cpf: string;
+  birth: string;
+  street: string;
+  number: string;
+  neighborhood: string;
+  city: string;
+  state: string;
+  country: string;
+  zip_code: string;
+  phone: string;
+  user_attributes: UserAttributes;
+}
+
+export interface InputFieldProps {
+  label: string;
+  type: string;
+  name: string;
+  value: string;
+  onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  required?: boolean;
+}
+
+export interface SelectFieldProps {
+  label: string;
+  name: string;
+  value: string;
+  onChange: (e: React.ChangeEvent<HTMLSelectElement>) => void;
+  options: { value: string; label: string }[];
+  required?: boolean;
+}
