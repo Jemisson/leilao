@@ -15,8 +15,6 @@ const UserDetails: React.FC = () => {
       setLoading(true);
       setError(null);
       try {
-        console.log(userId);
-        
         const response = await fetchUserById(Number(userId));
         setUser(response.data);
       } catch (err) {
@@ -41,7 +39,7 @@ const UserDetails: React.FC = () => {
         <div className="bg-white p-6 rounded-lg shadow-md">
           <p><strong>ID:</strong> {user.id}</p>
           <p><strong>Nome:</strong> {user.attributes.name}</p>
-          <p><strong>Email:</strong> {user.attributes.email}</p>
+          <p><strong>Email:</strong> {user.attributes.user_email}</p>
           <p><strong>Telefone:</strong> {user.attributes.phone}</p>
           <p><strong>CPF:</strong> {user.attributes.cpf}</p>
           <p><strong>Data de Nascimento:</strong> {user.attributes.birth}</p>

@@ -1,6 +1,6 @@
 import axios from "axios"
 import Cookies from "js-cookie"
-import { UserAttributes } from "../types";
+import { ProfileUser } from "../types";
 
 const api = axios.create({
   baseURL: "http://localhost:3000/api/v1",
@@ -145,10 +145,10 @@ export const fetchUserById = async (userId: number) => {
   return response.data;
 }
 
-export const createUser = async (userAttributes: UserAttributes) => {
+export const createUser = async (profileUser: ProfileUser) => {
   try {
     const response = await api.post("/profile_users", {
-      user_attributes: userAttributes,
+      profile_user: profileUser,
     });
     return response.data;
   } catch (error) {

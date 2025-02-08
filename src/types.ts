@@ -137,6 +137,7 @@ export interface User {
     phone: string;
     email: string;
     role: string;
+    user_email: string;
   };
 }
 
@@ -194,4 +195,11 @@ export interface SelectFieldProps {
   onChange: (e: React.ChangeEvent<HTMLSelectElement>) => void;
   options: { value: string; label: string }[];
   required?: boolean;
+}
+
+export interface UserFormProps {
+  initialProfileUser: ProfileUser;
+  onSubmit: (profileUser: ProfileUser) => void;
+  isSubmitting: boolean;
+  currentUserRole: string;
 }
