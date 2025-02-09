@@ -63,7 +63,6 @@ const ProductManagement: React.FC = () => {
   
   const handleMarkAsSold = async (productId: number) => {
     if (productId) {
-      console.log(productId);
       try {
         await soldProduct(productId);
         setProducts(products.filter((product) => product.id !== productId));

@@ -18,7 +18,7 @@ const UserForm: React.FC<UserFormProps> = ({
     country: "",
     zip_code: "",
     phone: "",
-    user_attributes: { email: "", role: "user", password: "" }
+    user_attributes: { id: "", email: "", role: "user", password: "" }
   },
   onSubmit,
   isSubmitting,

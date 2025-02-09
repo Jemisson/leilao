@@ -1,5 +1,9 @@
 import { Dispatch, SetStateAction } from "react";
-
+export interface DecodedToken {
+  id: string;
+  role: string;
+  name: string;
+}
 export interface PaginationProps {
   currentPage: number;
   totalPages: number;
@@ -135,9 +139,10 @@ export interface User {
     country: string;
     zip_code: string;
     phone: string;
-    email: string;
-    role: string;
-    user_email: string;
+    user_attributes: {
+      email: string;
+      role: string;
+    }
   };
 }
 
@@ -159,8 +164,9 @@ export interface IconButtonProps {
 }
 
 export interface UserAttributes {
+  id: string;
   email: string;
-  password: string;
+  password?: string;
   role: 'admin' | 'user';
 }
 

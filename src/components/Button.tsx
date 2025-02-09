@@ -2,9 +2,9 @@ import React from "react";
 
 interface ButtonProps {
   text: string;
-  onClick: (e: React.MouseEvent<HTMLButtonElement> | React.FormEvent<HTMLFormElement>) => void; // Suporte a diferentes eventos
-  className?: string; // Permite adicionar classes adicionais para personalização
-  disabled?: boolean; // Propriedade para desativar o botão
+  onClick: (e: React.MouseEvent<HTMLButtonElement> | React.FormEvent<HTMLFormElement>) => void;
+  className?: string;
+  disabled?: boolean;
 }
 
 const Button: React.FC<ButtonProps> = ({ text, onClick, className, disabled }) => {

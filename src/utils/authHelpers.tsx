@@ -21,8 +21,7 @@ export const getUserRole = (): string | null => {
   }
 };
 
-
-export const getAuthenticatedUser = (): { id: number; role: string } | null => {
+export const getAuthenticatedUser = (): { id: number; role: string, name: string } | null => {
   const token = Cookies.get("leilao_jwt_token");
   if (!token) return null;
 
@@ -30,7 +29,8 @@ export const getAuthenticatedUser = (): { id: number; role: string } | null => {
     const payload = JSON.parse(atob(token.split(".")[1]));
     return {
       id: payload.id,
-      role: payload.role || null,
+      role: payload.role,
+      name: payload.name
     };
   } catch (error) {
     console.error("Erro ao decodificar token:", error);

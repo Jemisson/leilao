@@ -1,6 +1,6 @@
 import axios from "axios"
 import Cookies from "js-cookie"
-import { ProfileUser } from "../types";
+import { DecodedToken, ProfileUser } from "../types";
 
 const api = axios.create({
   baseURL: "http://localhost:3000/api/v1",
@@ -23,6 +23,27 @@ const authApi = axios.create({
     "Content-Type": "application/json",
   },
 })
+
+export const getToken = (): string | undefined => {
+  return Cookies.get("leilao_jwt_token");
+}
+
+export const getUserInfo = (): DecodedToken | null => {
+  const token = getToken();
+  if (!token) return null;
+
+  try {
+    const payload = JSON.parse(atob(token.split(".")[1]));
+    return {
+      id: payload.id,
+      role: payload.role,
+      name: payload.name
+    };
+  } catch (error) {
+    console.error("Erro ao decodificar o token:", error);
+    return null;
+  }
+}
 
 export const login = async (email: string, password: string) => {
   const response = await authApi.post("/login", {
@@ -156,3 +177,19 @@ export const createUser = async (profileUser: ProfileUser) => {
     throw error;
   }
 }
+
+export const updateUser = async (userId: number, profileUser: ProfileUser) => {
+  try {
+    // @ts-expect-error id_not_used
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const { id, ...profileUserData } = profileUser;
+
+    const response = await api.put(`/profile_users/${userId}`, {
+      profile_user: profileUserData
+    });
+    return response.data;
+  } catch (error) {
+    console.error("Erro ao atualizar usuário:", error);
+    throw error;
+  }
+};

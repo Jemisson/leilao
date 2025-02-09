@@ -7,6 +7,7 @@ import { useNavigate } from "react-router-dom";
 import IconButton from "../components/IconButton";
 import Button from "../components/Button";
 import { MdAdminPanelSettings } from "react-icons/md";
+import { CiEdit } from "react-icons/ci";
 
 const UserManagement: React.FC = () => {
   const [users, setUsers] = useState<User[]>([]);
@@ -46,7 +47,13 @@ const UserManagement: React.FC = () => {
   return (
     <div className="p-6 bg-gray-100 min-h-screen">
       <div className="flex justify-between items-center mb-6">
-        <h1 className="text-2xl font-bold">Lista de Usuários</h1>
+        <div>
+          <h1 className="text-2xl font-bold">Lista de Usuários</h1>
+          <div className="flex items-center mt-2">
+            <MdAdminPanelSettings className="text-redDark" />
+            <span className="text-sm text-gray-600 pl-2">Administrador do sistema</span>
+          </div>
+        </div>
         <Button text="Adicionar Usuário" onClick={handleAddUser} />
       </div>
 
@@ -69,14 +76,13 @@ const UserManagement: React.FC = () => {
                   <td className="py-2 px-4 border-b text-center">
                     <div className="flex items-center justify-center space-x-2">
                       <span>{user.attributes.name}</span>
-                      {user.attributes.role === "admin" && <MdAdminPanelSettings className="text-redDark" />}
+                      {user.attributes.user_attributes.role === "admin" && <MdAdminPanelSettings className="text-redDark" />}
                     </div>
                   </td>
                   <td className="py-2 px-4 border-b text-center">{user.attributes.phone}</td>
                   <td className="py-2 px-4 border-b text-center">
                     {`${user.attributes.street}, ${user.attributes.number}, 
-                      ${user.attributes.neighborhood}, ${user.attributes.city} - 
-                      ${user.attributes.state}`}
+                      ${user.attributes.neighborhood}, ${user.attributes.city}`}
                   </td>
                   <td className="py-2 px-4 border-b text-center">
                     <IconButton
@@ -84,6 +90,13 @@ const UserManagement: React.FC = () => {
                       icon={<FaEye className="size-6" />}
                       ariaLabel="Ver detalhes"
                       className="text-blue-500 hover:text-blue-700"
+                    />
+
+                    <IconButton
+                      onClick={() => navigate(`/dashboard/licitantes/${user.attributes.id}/edit`)}
+                      icon={<CiEdit className="size-6" />}
+                      ariaLabel="Editar"
+                      className="text-yellow-500 hover:text-yellow-700"
                     />
                     </td>
                 </tr>

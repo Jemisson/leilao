@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import { fetchCategories } from "../services/api";
+import { fetchCategories, getUserInfo } from "../services/api";
 import Logo from "./Logo";
 import { Category, NavBarProps } from "../types";
 import { isAuthenticated } from "../utils/authHelpers";
@@ -15,28 +15,30 @@ function Navbar({ onCategoryClick, activeCategory }: NavBarProps) {
   const location = useLocation();
   const navigate = useNavigate();
   const isLoggedIn = isAuthenticated();
+  const userInfo = getUserInfo();
+  const userId = userInfo?.id;
+  const userRole = userInfo?.role;
+  const shouldShowNavbar = location.pathname !== "/login";
 
-    const shouldShowNavbar = location.pathname !== "/login";
+  useEffect(() => {
+    const handleScroll = () => {
+      const currentScrollY = window.scrollY;
 
-    useEffect(() => {
-      const handleScroll = () => {
-        const currentScrollY = window.scrollY;
-  
-        if (currentScrollY > lastScrollY) {
-          setIsVisible(false);
-        } else {
-          setIsVisible(true);
-        }
-  
-        setLastScrollY(currentScrollY);
-      };
-  
-      window.addEventListener("scroll", handleScroll);
-  
-      return () => {
-        window.removeEventListener("scroll", handleScroll);
-      };
-    }, [lastScrollY]);
+      if (currentScrollY > lastScrollY) {
+        setIsVisible(false);
+      } else {
+        setIsVisible(true);
+      }
+
+      setLastScrollY(currentScrollY);
+    };
+
+    window.addEventListener("scroll", handleScroll);
+
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+    };
+  }, [lastScrollY]);
 
   useEffect(() => {
     const getCategories = async () => {
@@ -72,6 +74,12 @@ function Navbar({ onCategoryClick, activeCategory }: NavBarProps) {
     navigate("/login");
   };
 
+  const handleProfileClick = () => {
+    if (userId) {
+      navigate(`/dashboard/licitantes/${userId}/edit`);
+    }
+  }
+
   if (!shouldShowNavbar) return null;
 
   return (
@@ -82,7 +90,7 @@ function Navbar({ onCategoryClick, activeCategory }: NavBarProps) {
     >
       <div className="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-4">
         <div className="flex items-center space-x-2 sm:ml-0 ml-12">
-          <Logo />
+          <Logo onCategoryClick={handleCategoryClick} />
         </div>
 
         <button
@@ -109,7 +117,6 @@ function Navbar({ onCategoryClick, activeCategory }: NavBarProps) {
           </svg>
         </button>
   
-        {/* Menu responsivo */}
         <div
           className={`${
             isMenuOpen ? "block" : "hidden"
@@ -146,6 +153,19 @@ function Navbar({ onCategoryClick, activeCategory }: NavBarProps) {
   
             {isLoggedIn ? (
               <>
+                  {userRole === "user" ? (
+                    <li>
+                      <button onClick={handleProfileClick} className="px-3 py-2 text-beige hover:text-gold hover:border-b-2 hover:border-gold">
+                        Meus dados
+                      </button>
+                    </li>
+                  ) : (
+                    <li>
+                      <button onClick={ () => navigate("/dashboard") } className="px-3 py-2 text-beige hover:text-gold hover:border-b-2 hover:border-gold">
+                        Dashboard
+                      </button>
+                    </li>
+                  )}
                 <li>
                   <button
                     className="px-3 py-2 text-beige hover:text-gold hover:border-b-2 hover:border-gold"

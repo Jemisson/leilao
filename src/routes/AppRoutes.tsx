@@ -13,6 +13,7 @@ import Dashboard from "../pages/Dashboard";
 import UserManagement from "../pages/UserManagement";
 import UserDetails from "../pages/UserDetails";
 import UserRegistration from "../pages/UserRegistration";
+import UserEdit from "../pages/UserEdit";
 
 const PrivateRoute: React.FC<{ children: JSX.Element }> = ({ children }) => {
   return isAuthenticated() ? children : <Navigate to="/login" />;
@@ -24,9 +25,8 @@ interface AppRoutesProps {
 
 const AppRoutes: React.FC<AppRoutesProps> = ({ selectedCategory }) => {
   const user = getAuthenticatedUser();
-  console.log(user);
-  
   const profileUserId = user ? user.id : null;
+
   return (
     <Routes>
       {/* Página inicial pública */}
@@ -62,6 +62,7 @@ const AppRoutes: React.FC<AppRoutesProps> = ({ selectedCategory }) => {
         <Route path="licitantes" element={<UserManagement />} />
         <Route path="licitantes/:userId" element={<UserDetails />} />
         <Route path="licitantes/new" element={<UserRegistration />} />
+        <Route path="licitantes/:userId/edit" element={<UserEdit />} />
 
       </Route>
     </Routes>

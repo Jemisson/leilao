@@ -7,6 +7,7 @@ import NoData from "./NoData";
 import BidModal from "./BidModal";
 import { useWebSocket } from "../hooks/useWebSocket";
 import { useNavigate } from "react-router-dom";
+import { getAuthenticatedUser } from "../utils/authHelpers";
 
 function ProductCatalog({ selectedCategory, profileUserId }: ProductCatalogProps) {
   const [products, setProducts] = useState<Product[]>([]);
@@ -19,10 +20,10 @@ function ProductCatalog({ selectedCategory, profileUserId }: ProductCatalogProps
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
   const { cable } = useWebSocket();
   const navigate = useNavigate();
+  const user = getAuthenticatedUser();
 
-  console.log(profileUserId);
   const handleOpenBidModal = (product: Product) => {
-    
+
     if (!profileUserId) {
       navigate("/login");
       return;
@@ -105,6 +106,7 @@ function ProductCatalog({ selectedCategory, profileUserId }: ProductCatalogProps
 
   return (
     <div className="flex flex-col items-center min-h-screen bg-gray-100 p-6">
+      <p className="font-bold text-xl text-redDark mb-2">Olá {user?.name}!</p>
       <h1 className="text-3xl font-bold mb-6">Catálogo de Produtos</h1>
 
       {products.length === 0 ? (
