@@ -39,6 +39,7 @@ const UserRegistration: React.FC = () => {
           zip_code: "",
           phone: "",
           user_attributes: {
+            id: "",
             email: "",
             role: "user",
             password: "",
