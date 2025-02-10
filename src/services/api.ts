@@ -2,8 +2,11 @@ import axios from "axios"
 import Cookies from "js-cookie"
 import { DecodedToken, ProfileUser } from "../types";
 
+const BASE_URL = import.meta.env.VITE_API_BASE_URL;
+const AUTHBASEURL = import.meta.env.VITE_AUTH_API_BASE_URL;
+
 const api = axios.create({
-  baseURL: "http://localhost:3000/api/v1",
+  baseURL: BASE_URL,
   headers: {
     "Content-Type": "application/json",
   }
@@ -18,7 +21,7 @@ api.interceptors.request.use((config) => {
 })
 
 const authApi = axios.create({
-  baseURL: "http://localhost:3000",
+  baseURL: AUTHBASEURL,
   headers: {
     "Content-Type": "application/json",
   },
