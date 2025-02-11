@@ -12,7 +12,7 @@ const ProductCard = ({ product, isUpdated, onBid }: ProductCardProps) => {
           src={
             product.attributes.images && product.attributes.images.length > 0
               ? product.attributes.images[0].url
-              : "/public/empty.png"
+              : "/empty.png"
           }
           alt={product.attributes.description || "Imagem do produto"}
         />
