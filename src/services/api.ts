@@ -68,7 +68,7 @@ export const fetchProducts = async (
   const url = categoryId
   ? `/products?page=${page}&category_id=${categoryId}&auctioned=${auctioned}`
   : `/products?page=${page}&auctioned=${auctioned}`;
-  
+
   const response = await api.get(url);
   return response.data;
 }
