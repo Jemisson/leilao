@@ -4,6 +4,9 @@ import SelectField from "../components/SelectField";
 import Button from "../components/Button";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 import { ProfileUser, UserFormProps } from "../types";
+import { isAuthenticated } from "../utils/authHelpers";
+
+const isLoggedIn = isAuthenticated()
 
 const UserForm: React.FC<UserFormProps> = ({
   initialProfileUser = {
@@ -60,23 +63,27 @@ const UserForm: React.FC<UserFormProps> = ({
           required
         />
 
-        <div className="relative">
-          <InputField
-            label="Senha"
-            type={showPassword ? "text" : "password"}
-            name="password"
-            value={profileUser.user_attributes.password || ""}
-            onChange={handleChange}
-            required
-          />
-          <button
-            type="button"
-            onClick={() => setShowPassword((prev) => !prev)}
-            className="absolute inset-y-0 right-3 flex items-center text-gray-500 hover:text-gray-700"
-            style={{ transform: "translateY(20%)" }}
-          >
-            {showPassword ? <FaEyeSlash /> : <FaEye />}
-          </button>
+        <div>
+          <div className="relative">
+            <InputField
+              label="Senha"
+              type={showPassword ? "text" : "password"}
+              name="password"
+              value={profileUser.user_attributes.password || ""}
+              onChange={handleChange}
+              required
+            />
+            <button
+              type="button"
+              onClick={() => setShowPassword((prev) => !prev)}
+              className="absolute inset-y-0 right-3 flex items-center text-gray-500 hover:text-gray-700"
+              style={{ transform: "translateY(20%)" }}
+            >
+              {showPassword ? <FaEyeSlash /> : <FaEye />}
+            </button>
+
+          </div>
+          {isLoggedIn && <><small className="text-redDark">É necessário informar a senha para realizar alterações</small></>}
         </div>
 
         {currentUserRole === "admin" ? (

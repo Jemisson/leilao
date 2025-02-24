@@ -41,6 +41,11 @@ const BidModal: React.FC<BidModalProps> = ({
     setBidValue(Number(currentValue) + increment);
   };
 
+  const handleCancel = () => {
+    setBidValue("");
+    onClose()
+  }
+
   if (!isOpen) return null;
 
   return (
@@ -73,7 +78,7 @@ const BidModal: React.FC<BidModalProps> = ({
           <button
             type="button"
             className="px-4 py-2 text-redDark rounded hover:bg-redDark hover:text-white"
-            onClick={onClose}
+            onClick={handleCancel}
           >
             Cancelar
           </button>
