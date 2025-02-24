@@ -3,7 +3,7 @@ import SideBar from "../components/SideBar";
 import { useState } from "react";
 import { getUserInfo } from "../services/api";
 
-function DashboardLayout() {
+function DashboardLayout({ children }: { children?: React.ReactNode }) {
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
   const userInfo = getUserInfo();
   const userRole = userInfo?.role;
@@ -22,7 +22,7 @@ function DashboardLayout() {
           isSidebarOpen && userRole === "admin" ? "ml-64" : "ml-0"
         } `}
       >
-        <Outlet />
+        {children || <Outlet />}
       </div>
     </div>
   );

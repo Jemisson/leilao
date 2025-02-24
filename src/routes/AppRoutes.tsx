@@ -14,6 +14,7 @@ import UserManagement from "../pages/UserManagement";
 import UserDetails from "../pages/UserDetails";
 import UserRegistration from "../pages/UserRegistration";
 import UserEdit from "../pages/UserEdit";
+import ConditionalLayout from "../components/ConditionalLayout";
 
 const PrivateRoute: React.FC<{ children: JSX.Element }> = ({ children }) => {
   return isAuthenticated() ? children : <Navigate to="/login" />;
@@ -42,6 +43,9 @@ const AppRoutes: React.FC<AppRoutesProps> = ({ selectedCategory }) => {
 
       {/* Página de login */}
       <Route path="/login" element={<LoginForm />} />
+      <Route element={<ConditionalLayout />}>
+        <Route path="licitantes/new" element={<UserRegistration />} />
+      </Route>
 
       {/* Layout do Dashboard com rotas protegidas */}
       <Route
@@ -61,7 +65,6 @@ const AppRoutes: React.FC<AppRoutesProps> = ({ selectedCategory }) => {
         <Route path="produtos/:productId/edit" element={<ProductEdit />} />
         <Route path="licitantes" element={<UserManagement />} />
         <Route path="licitantes/:userId" element={<UserDetails />} />
-        <Route path="licitantes/new" element={<UserRegistration />} />
         <Route path="licitantes/:userId/edit" element={<UserEdit />} />
 
       </Route>

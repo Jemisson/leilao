@@ -38,7 +38,7 @@ const UserManagement: React.FC = () => {
   }, [currentPage]);
 
   const handleAddUser = () => {
-    navigate("/dashboard/licitantes/new");
+    navigate("/licitantes/new");
   };
 
   if (loading) return <p className="p-6">Carregando...</p>;

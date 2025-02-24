@@ -39,6 +39,10 @@ const LoginPage: React.FC = () => {
     }
   };
 
+  const handleCreateAccountClick = () => {
+    navigate('/licitantes/new'); // Redireciona para a rota desejada
+  };
+
   return (
     <div className="flex flex-col lg:flex-row h-screen">
       {/* Lado esquerdo */}
@@ -136,10 +140,13 @@ const LoginPage: React.FC = () => {
     
         {/* Link de registro */}
         <p className="text-sm leading-relaxed text-gray-900 w-2/3 text-center">
-          Não tem uma conta?{" "}
-          <a href="#" className="font-bold text-gray-700">
-            Crie uma agora
-          </a>
+          Primeira vez aqui?{" "}
+          <button
+            onClick={handleCreateAccountClick}
+            className="font-bold text-blue-700 hover:underline focus:outline-none"
+          >
+            Crie uma conta agora
+          </button>
         </p>
       </div>
     </div>
