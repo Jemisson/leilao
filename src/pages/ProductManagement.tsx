@@ -1,16 +1,17 @@
-import React, { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
-import { fetchProducts, deleteProduct, soldProduct } from "../services/api";
-import Pagination from "../components/Pagination";
-import Button from "../components/Button";
-import { Product } from "../types";
-import ConfirmationModal from "../components/ConfirmationModal";
+import React, { useEffect, useState } from "react";
 import { CiEdit, CiTrash } from "react-icons/ci";
 import { FaEye } from "react-icons/fa";
 import { ImHammer2 } from "react-icons/im";
-import AuctionModal from "../components/AuctionModal";
-import IconButton from "../components/IconButton";
+import { MdContentCopy } from "react-icons/md";
+import { useNavigate } from "react-router-dom";
 import { toast } from 'react-toastify';
+import AuctionModal from "../components/AuctionModal";
+import Button from "../components/Button";
+import ConfirmationModal from "../components/ConfirmationModal";
+import IconButton from "../components/IconButton";
+import Pagination from "../components/Pagination";
+import { createProduct, deleteProduct, fetchProducts, soldProduct } from "../services/api";
+import { Product } from "../types";
 
 const ProductManagement: React.FC = () => {
   const [products, setProducts] = useState<Product[]>([]);
@@ -21,6 +22,7 @@ const ProductManagement: React.FC = () => {
   const navigate = useNavigate();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isAuctionModalOpen, setIsAuctionModalOpen] = useState(false);
+  const [isDuplicateModalOpen, setIsDuplicateModalOpen] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
 
   useEffect(() => {
@@ -62,7 +64,7 @@ const ProductManagement: React.FC = () => {
     setSelectedProduct(product);
     setIsAuctionModalOpen(true);
   };
-  
+
   const handleMarkAsSold = async (productId: number) => {
     if (productId) {
       try {
@@ -78,6 +80,47 @@ const ProductManagement: React.FC = () => {
 
   const handleAddProduct = () => {
     navigate("/dashboard/produtos/new");
+  };
+
+  const handleDuplicateConfirmation = (product: Product) => {
+    setSelectedProduct(product);
+    setIsDuplicateModalOpen(true);
+  };
+
+  const handleConfirmDuplicate = async () => {
+    if (!selectedProduct) return;
+
+    setIsDuplicateModalOpen(false);
+
+    const newLotNumber = `${selectedProduct.attributes.lot_number.replace(/[A-Z]?$/, '')}${String.fromCharCode((selectedProduct.attributes.lot_number.match(/[A-Z]$/) ? selectedProduct.attributes.lot_number.slice(-1).charCodeAt(0) : 64) + 1)}`;
+
+    const duplicatedProduct = new FormData();
+
+    duplicatedProduct.append("product[category_id]", selectedProduct.attributes.category_id);
+    duplicatedProduct.append("product[lot_number]", newLotNumber);
+    duplicatedProduct.append("product[donor_name]", selectedProduct.attributes.donor_name || "");
+    duplicatedProduct.append("product[donor_phone]", selectedProduct.attributes.donor_phone || "");
+    if (selectedProduct.attributes.minimum_value !== undefined) {
+      duplicatedProduct.append("product[minimum_value]", selectedProduct.attributes.minimum_value.toString());
+    }
+    duplicatedProduct.append("product[description]", selectedProduct.attributes.description || "");
+
+    if (selectedProduct.attributes.images && selectedProduct.attributes.images.length > 0) {
+      await Promise.all(
+        selectedProduct.attributes.images.map(async (image) => {
+          const response = await fetch(image.url);
+          const blob = await response.blob();
+          duplicatedProduct.append("images[]", blob, `duplicated-${image.id}.jpg`);
+        })
+      );
+    }
+
+    try {
+      await createProduct(duplicatedProduct);
+      toast.success("Produto duplicado com sucesso!");
+    } catch (error) {
+      toast.error(`Erro ao duplicar produto: ${error}`);
+    }
   };
 
   if (loading) return <p>Carregando...</p>;
@@ -148,6 +191,13 @@ const ProductManagement: React.FC = () => {
                 />
 
                 <IconButton
+                  onClick={() =>  handleDuplicateConfirmation(product)}
+                  icon={<MdContentCopy className="size-6" />}
+                  ariaLabel="Duplicar Produto"
+                  className="text-green-500 hover:text-green-700"
+                />
+
+                <IconButton
                   onClick={() => handleMarkAsSoldConfirmation(product)}
                   icon={<ImHammer2 className="size-6" />}
                   ariaLabel="Arrematar"
@@ -168,9 +218,18 @@ const ProductManagement: React.FC = () => {
       <ConfirmationModal
         isOpen={isModalOpen}
         title="Confirmar Exclusão"
+        warning="Atenção, ao excluir um produto você também apagará todos os lances feitos a ele!"
         message={`Tem certeza de que deseja excluir o Lote ${selectedProduct?.attributes.lot_number}?`}
         onConfirm={handleDelete}
         onCancel={() => setIsModalOpen(false)}
+      />
+
+      <ConfirmationModal
+        isOpen={isDuplicateModalOpen}
+        title="Confirmar Duplicação"
+        message={`Tem certeza de que deseja duplicar o lote: ${selectedProduct?.attributes.lot_number}`}
+        onConfirm={handleConfirmDuplicate}
+        onCancel={() => setIsDuplicateModalOpen(false)}
       />
 
       {selectedProduct && (
