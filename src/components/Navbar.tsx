@@ -5,6 +5,7 @@ import Logo from "./Logo";
 import { Category, NavBarProps } from "../types";
 import { isAuthenticated } from "../utils/authHelpers";
 import Cookies from "js-cookie";
+import { toast } from "react-toastify";
 
 function Navbar({ onCategoryClick, activeCategory }: NavBarProps) {
   const [categories, setCategories] = useState<Category[]>([]);
@@ -45,8 +46,8 @@ function Navbar({ onCategoryClick, activeCategory }: NavBarProps) {
       try {
         const data = await fetchCategories();
         setCategories(data.data);
-      } catch (error) {
-        console.error("Erro ao carregar categorias", error);
+      } catch (err) {
+        toast.error(`Erro ao carregar categorias: ${err}`);
       }
     };
 

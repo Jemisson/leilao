@@ -4,6 +4,7 @@ import { fetchUserById, updateUser } from "../services/api";
 import { ProfileUser } from "../types";
 import UserForm from "../components/UserForm";
 import { getUserRole } from "../utils/authHelpers";
+import { toast } from "react-toastify";
 
 const UserEdit: React.FC = () => {
   const { userId } = useParams<{ userId: string }>();
@@ -21,8 +22,8 @@ const UserEdit: React.FC = () => {
           ...response.data.attributes,
           user_attributes: response.data.attributes.user_attributes
         });
-      } catch (error) {
-        console.error("Erro ao carregar dados do usuário:", error);
+      } catch (err) {
+        toast.error(`Erro ao carregar dados do usuário ${err}`);
       } finally {
         setLoading(false);
       }
@@ -38,8 +39,9 @@ const UserEdit: React.FC = () => {
     try {
       await updateUser(Number(userId), updatedProfileUser);
       navigate("/dashboard/licitantes");
-    } catch (error) {
-      console.error("Erro ao atualizar usuário:", error);
+      toast.success("Dados atualizados com sucesso!");
+    } catch (err) {
+      toast.error(`Erro ao atualizar usuário: ${err}`);
     } finally {
       setIsSubmitting(false);
     }

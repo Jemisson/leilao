@@ -8,6 +8,7 @@ import BidModal from "./BidModal";
 import { useWebSocket } from "../hooks/useWebSocket";
 import { useNavigate } from "react-router-dom";
 import { getAuthenticatedUser } from "../utils/authHelpers";
+import { toast } from "react-toastify";
 
 function ProductCatalog({ selectedCategory, profileUserId }: ProductCatalogProps) {
   const [products, setProducts] = useState<Product[]>([]);
@@ -51,8 +52,8 @@ function ProductCatalog({ selectedCategory, profileUserId }: ProductCatalogProps
           setProducts([]);
         }
       } catch (err) {
-        console.error(err);
         setError("Erro ao carregar produtos.");
+        toast.error(`Erro ao carregar produtos: ${err}`);
       } finally {
         setLoading(false);
       }

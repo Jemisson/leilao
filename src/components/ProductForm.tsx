@@ -3,6 +3,7 @@ import { deleteImage, fetchCategories } from "../services/api";
 import ImageUpload from "./ImageUploader";
 import Button from "./Button";
 import { Category, Product, ProductFormProps } from "../types";
+import { toast } from "react-toastify";
 
 const ProductForm: React.FC<ProductFormProps> = ({
   onSubmit,
@@ -37,8 +38,8 @@ const ProductForm: React.FC<ProductFormProps> = ({
       try {
         const data = await fetchCategories();
         setCategories(data.data);
-      } catch (error) {
-        console.error("Erro ao carregar categorias:", error);
+      } catch (err) {
+        toast.error(`Erro ao carregar categorias: ${err}`);
       }
     };
     getCategories();
@@ -76,8 +77,9 @@ const ProductForm: React.FC<ProductFormProps> = ({
     try {
       await deleteImage(initialData.id, imageId);
       setExistingImages((prevImages) => prevImages.filter((img) => img.id !== imageId));
-    } catch (error) {
-      console.error("Erro ao excluir imagem:", error);
+      toast.success("Imagem apagada com sucesso!");
+    } catch (err) {
+      toast.error(`Erro ao apagar imagem: ${err}`);
     }
   };
 

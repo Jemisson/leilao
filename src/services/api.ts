@@ -42,8 +42,8 @@ export const getUserInfo = (): DecodedToken | null => {
       role: payload.role,
       name: payload.name
     };
-  } catch (error) {
-    console.error("Erro ao decodificar o token:", error);
+  } catch (err) {
+    console.error("Erro ao decodificar o token:", err);
     return null;
   }
 }
@@ -81,9 +81,9 @@ export const deleteProduct = async (productId: number) => {
   try {
     const response = await api.delete(`/products/${productId}`);
     return response.data;
-  } catch (error) {
-    console.error("Erro ao excluir produto:", error);
-    throw error;
+  } catch (err) {
+    console.error("Erro ao excluir produto:", err);
+    throw err;
   }
 }
 
@@ -104,9 +104,9 @@ export const updateProduct = async (productId: number, formData: FormData) => {
       },
     });
     return response.data;
-  } catch (error) {
-    console.error("Erro ao atualizar produto:", error);
-    throw error;
+  } catch (err) {
+    console.error("Erro ao atualizar produto:", err);
+    throw err;
   }
 }
 
@@ -134,9 +134,9 @@ export const deleteImage = async (id: number, imageId: string) => {
   try {
     const response = await api.delete(`/products/${id}/images/${imageId}`);
     return response.data;
-  } catch (error) {
-    console.error("Erro ao excluir imagem:", error);
-    throw error;
+  } catch (err) {
+    console.error("Erro ao excluir imagem:", err);
+    throw err;
   }
 }
 
@@ -148,9 +148,9 @@ export const createBid = async (productId: number, value: number, profileUserId:
       profile_user_id: profileUserId,
     });
     return response.data;
-  } catch (error) {
-    console.error("Erro ao efetuar lance:", error);
-    throw error;
+  } catch (err) {
+    console.error("Erro ao efetuar lance:", err);
+    throw err;
   }
 }
 
@@ -158,9 +158,9 @@ export const fetchUsers = async (page: number = 1) => {
   try {
     const response = await api.get(`/profile_users?page=${page}`);
     return response.data;
-  } catch (error) {
-    console.error("Erro ao buscar usuários:", error);
-    throw error;
+  } catch (err) {
+    console.error("Erro ao buscar usuários:", err);
+    throw err;
   }
 }
 
@@ -175,9 +175,9 @@ export const createUser = async (profileUser: ProfileUser) => {
       profile_user: profileUser,
     });
     return response.data;
-  } catch (error) {
-    console.error("Erro ao criar usuário:", error);
-    throw error;
+  } catch (err) {
+    console.error("Erro ao criar usuário:", err);
+    throw err;
   }
 }
 
@@ -191,8 +191,8 @@ export const updateUser = async (userId: number, profileUser: ProfileUser) => {
       profile_user: profileUserData
     });
     return response.data;
-  } catch (error) {
-    console.error("Erro ao atualizar usuário:", error);
-    throw error;
+  } catch (err) {
+    console.error("Erro ao atualizar usuário:", err);
+    throw err;
   }
 };

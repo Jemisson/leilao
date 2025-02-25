@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { ProfileUser } from "../types";
 import { getUserRole } from "../utils/authHelpers";
 import UserForm from "../components/UserForm";
+import { toast } from "react-toastify";
 
 const UserRegistration: React.FC = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -15,8 +16,9 @@ const UserRegistration: React.FC = () => {
     try {
       await createUser(profileUser);
       navigate("/dashboard/licitantes");
-    } catch (error) {
-      console.error("Erro ao cadastrar usuário:", error);
+      toast.success("Cadastro realizado com sucesso!");
+    } catch (err) {
+      toast.error(`Erro ao cadastrar usuário: ${err}`);
     } finally {
       setIsSubmitting(false);
     }

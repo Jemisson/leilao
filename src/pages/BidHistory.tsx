@@ -4,6 +4,7 @@ import Pagination from "../components/Pagination";
 import { fetchBids } from "../services/api";
 import { Bid } from "../types";
 import { useWebSocket } from "../hooks/useWebSocket";
+import { toast } from "react-toastify";
 
 const BidHistory: React.FC = () => {
   const [bids, setBids] = useState<Bid[]>([]);
@@ -23,8 +24,8 @@ const BidHistory: React.FC = () => {
         setBids(response.data || []);
         setTotalPages(response.meta?.total_pages || 1);
       } catch (err) {
-        console.error("Erro ao carregar lances:", err);
         setError("Erro ao carregar o histórico de lances.");
+        toast.error(`Erro ao carregar lances: ${err}`);
       } finally {
         setLoading(false);
       }

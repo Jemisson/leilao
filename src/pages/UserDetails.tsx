@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { fetchUserById } from "../services/api";
 import { User } from "../types";
+import { toast } from "react-toastify";
 
 const UserDetails: React.FC = () => {
   const { userId } = useParams<{ userId: string }>();
@@ -18,8 +19,8 @@ const UserDetails: React.FC = () => {
         const response = await fetchUserById(Number(userId));
         setUser(response.data);
       } catch (err) {
-        console.error("Erro ao carregar detalhes do usuário:", err);
         setError("Erro ao carregar os detalhes do usuário. Tente novamente.");
+        toast.error(`Erro ao carregar detalhes do usuário: ${err}`);
       } finally {
         setLoading(false);
       }

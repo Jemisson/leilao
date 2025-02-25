@@ -5,6 +5,7 @@ import { Product, Bid } from "../types";
 import BidTable from "../components/BidTable";
 import Pagination from "../components/Pagination";
 import { useWebSocket } from "../hooks/useWebSocket";
+import { toast } from "react-toastify";
 
 const ProductDetails: React.FC = () => {
   const { productId } = useParams<{ productId: string }>();
@@ -23,8 +24,8 @@ const ProductDetails: React.FC = () => {
         const productData = await fetchProductById(Number(productId));
         setProduct(productData.data);
       } catch (err) {
-        console.error("Erro ao carregar detalhes do produto:", err);
         setError("Erro ao carregar os detalhes do produto. Tente novamente.");
+        toast.error(`Erro ao carregar detalhes do produto: ${err}`);
       } finally {
         setLoading(false);
       }
@@ -41,8 +42,8 @@ const ProductDetails: React.FC = () => {
         setBids(response.data || []);
         setTotalPages(response.meta?.total_pages || 1);
       } catch (err) {
-        console.error("Erro ao carregar lances:", err);
         setError("Erro ao carregar os lances.");
+        toast.error(`Erro ao carregar lances: ${err}`);
       }
     };
 

@@ -2,6 +2,7 @@ import { useState } from "react";
 import { createProduct } from "../services/api";
 import ProductForm from "../components/ProductForm";
 import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
 
 function ProductCreation () {
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -12,9 +13,8 @@ function ProductCreation () {
     try {
       await createProduct(formData);
       navigate("/dashboard/produtos");
-    } catch (error) {
-      console.error("Erro ao criar produto:", error);
-      alert("Erro ao criar produto. Tente novamente.");
+    } catch (err) {
+      toast.error(`Erro ao criar produto: ${err}`);
     } finally {
       setIsSubmitting(false);
     }

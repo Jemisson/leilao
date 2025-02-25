@@ -3,6 +3,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import { fetchProductById, updateProduct } from "../services/api";
 import { Product } from "../types";
 import ProductForm from "../components/ProductForm";
+import { toast } from "react-toastify";
 
 function ProductEdit() {
   const [productData, setProductData] = useState<Partial<Product["attributes"]> | null>(null);
@@ -21,9 +22,8 @@ function ProductEdit() {
         } else {
           throw new Error("Formato inesperado de dados do produto.");
         }
-      } catch (error) {
-        console.error("Erro ao buscar produto:", error);
-        alert("Erro ao carregar dados do produto.");
+      } catch (err) {
+        toast.error(`Erro ao buscar produto: ${err}`);
       } finally {
         setLoading(false);
       }
@@ -38,9 +38,9 @@ function ProductEdit() {
     try {
       await updateProduct(Number(productId), formData);
       navigate("/dashboard/produtos");
-    } catch (error) {
-      console.error("Erro ao atualizar produto:", error);
-      alert("Erro ao atualizar produto. Tente novamente.");
+      toast.success("Produto atualizado com sucesso!");
+    } catch (err) {
+      toast.error(`Erro ao atualizar produto: ${err}`);
     } finally {
       setIsSubmitting(false);
     }

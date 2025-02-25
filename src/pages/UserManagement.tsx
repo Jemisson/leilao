@@ -8,6 +8,7 @@ import IconButton from "../components/IconButton";
 import Button from "../components/Button";
 import { MdAdminPanelSettings } from "react-icons/md";
 import { CiEdit } from "react-icons/ci";
+import { toast } from "react-toastify";
 
 const UserManagement: React.FC = () => {
   const [users, setUsers] = useState<User[]>([]);
@@ -27,7 +28,7 @@ const UserManagement: React.FC = () => {
         setUsers(response.data || []);
         setTotalPages(response.meta?.total_pages || 1);
       } catch (err) {
-        console.error("Erro ao carregar usuários:", err);
+        toast.error(`Erro ao carregar usuários: ${err}`);
         setError("Erro ao carregar os usuários.");
       } finally {
         setLoading(false);

@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { BidModalProps } from "../types";
 import { createBid } from "../services/api";
+import { toast } from "react-toastify";
 
 const BidModal: React.FC<BidModalProps> = ({ 
   isOpen,
@@ -29,8 +30,9 @@ const BidModal: React.FC<BidModalProps> = ({
     try {
       await createBid(productId, bidValue, profileUserId);
       onClose();
-    } catch (error) {
-      console.log("Erro ao enviar lance. Tente novamente.", error);
+      toast.success("Lance registrado com sucesso");
+    } catch (err) {
+      toast.error(`Erro ao efetuar lance: ${err}.`);
     } finally {
       setBidValue("");
       setLoading(false);

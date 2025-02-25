@@ -4,6 +4,7 @@ import { login } from "../services/api";
 import Cookies from "js-cookie";
 import { AxiosError } from "axios";
 import Logo from "../components/Logo"; // Certifique-se de ter um componente Logo.
+import { toast } from "react-toastify";
 
 const LoginPage: React.FC = () => {
   const [email, setEmail] = useState<string>("");
@@ -28,13 +29,14 @@ const LoginPage: React.FC = () => {
       }
 
       setMessage(data.message || "Login realizado com sucesso!");
-
+      toast.success("Autenticado com sucesso");
     } catch (error) {
       const axiosError = error as AxiosError;
       if (axiosError.response && axiosError.response.data) {
         setMessage((axiosError.response.data as { message?: string }).message || "Erro ao realizar login.");
       } else {
         setMessage("Erro de conexão com o servidor.");
+        toast.error(`Erro de conexão com o servidor: ${error}`);
       }
     }
   };

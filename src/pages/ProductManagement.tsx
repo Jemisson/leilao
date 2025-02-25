@@ -10,6 +10,7 @@ import { FaEye } from "react-icons/fa";
 import { ImHammer2 } from "react-icons/im";
 import AuctionModal from "../components/AuctionModal";
 import IconButton from "../components/IconButton";
+import { toast } from 'react-toastify';
 
 const ProductManagement: React.FC = () => {
   const [products, setProducts] = useState<Product[]>([]);
@@ -29,8 +30,8 @@ const ProductManagement: React.FC = () => {
         setProducts(data.data);
         setTotalPages(data.meta.total_pages);
       } catch (err) {
-        console.error(err);
         setError("Erro ao carregar produtos.");
+        toast.error(`Erro ao carregar produto: ${err}`);
       } finally {
         setLoading(false);
       }
@@ -50,8 +51,9 @@ const ProductManagement: React.FC = () => {
         await deleteProduct(selectedProduct.id);
         setProducts(products.filter((product) => product.id !== selectedProduct.id));
         setIsModalOpen(false);
+        toast.success("Produto excluído com sucesso!");
       } catch (err) {
-        console.error("Erro ao deletar produto:", err);
+        toast.error(`Erro ao excluir produto: ${err}`);
       }
     }
   };
@@ -67,8 +69,9 @@ const ProductManagement: React.FC = () => {
         await soldProduct(productId);
         setProducts(products.filter((product) => product.id !== productId));
         setIsAuctionModalOpen(false);
+        toast.success("Lote arrematado com sucesso!");
       } catch (err) {
-        console.error("Erro ao arrematar produto:", err);
+        toast.error(`Erro ao arrematar produto: ${err}`);
       }
     }
   };

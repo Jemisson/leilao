@@ -3,6 +3,8 @@ import { BrowserRouter as Router } from "react-router-dom";
 import Navbar from "./components/Navbar";
 import AppRoutes from "./routes/AppRoutes";
 import { WebSocketProvider } from "./contexts/WebSocketProvider";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 function App() {
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
@@ -14,6 +16,7 @@ function App() {
   return (
     <WebSocketProvider>
       <Router>
+        <ToastContainer />
         <Navbar
           activeCategory={selectedCategory}
           onCategoryClick={handleCategoryClick}

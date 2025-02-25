@@ -15,8 +15,8 @@ export const getUserRole = (): string | null => {
   try {
     const payload = JSON.parse(atob(token.split(".")[1]));
     return payload.role || null;
-  } catch (error) {
-    console.error("Erro ao decodificar token:", error);
+  } catch (err) {
+    console.error("Erro ao decodificar token:", err);
     return null;
   }
 };
@@ -32,8 +32,8 @@ export const getAuthenticatedUser = (): { id: number; role: string, name: string
       role: payload.role,
       name: payload.name
     };
-  } catch (error) {
-    console.error("Erro ao decodificar token:", error);
+  } catch (err) {
+    console.error("Erro ao decodificar token:", err);
     return null;
   }
 };

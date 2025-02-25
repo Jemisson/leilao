@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react"
 import { fetchCategories } from "../services/api"
 import { Category } from "../types"
+import { toast } from "react-toastify";
 
 function  CategoryList() {
   const [categories, setCategories] = useState<Category[]>([]);
@@ -15,11 +16,11 @@ function  CategoryList() {
           setCategories(data.data);
         } else {
           setError("Nenhuma categoria disponível.");
+          toast.warning("Nenhuma categoria disponível.");
         }
       } catch (err) {
-        console.log(err);
-        
         setError("Erro ao carregar categorias.");
+        toast.error(`Erro ao carregar categorias: ${err}.`);
       } finally {
         setLoading(false);
       }
