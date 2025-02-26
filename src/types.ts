@@ -89,7 +89,10 @@ export interface ProductCardProps {
 
 export interface BidTableProps {
   showLotNumber?: boolean;
+  showName?: boolean;
+  showPhone?: boolean;
   bids: Bid[];
+  productId?: number;
 }
 
 export interface AuctionModalProps {
@@ -107,10 +110,6 @@ export interface NavBarProps {
 
 export interface WebSocketContextProps {
   cable: ActionCable.Cable | null;
-}
-export interface BidTableProps {
-  showLotNumber?: boolean;
-  productId?: number;
 }
 
 export interface MenuItemProps {

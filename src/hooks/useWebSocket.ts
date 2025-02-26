@@ -1,7 +1,6 @@
 import { useContext } from "react";
 import { WebSocketContext } from "../contexts/WebSocketContext";
 
-// Hook customizado para consumir o WebSocketContext
 export const useWebSocket = () => {
   const context = useContext(WebSocketContext);
   if (!context) {

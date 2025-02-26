@@ -196,3 +196,13 @@ export const updateUser = async (userId: number, profileUser: ProfileUser) => {
     throw err;
   }
 };
+
+export const fetchUserBids = async (userId: number) => {
+  try {
+    const response = await api.get(`/profile_users/${userId}/bids`);
+    return response.data;
+  } catch (error) {
+    console.error("Erro ao buscar lances do usuário:", error);
+    throw error;
+  }
+};
