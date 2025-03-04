@@ -18,12 +18,12 @@ const BidModal: React.FC<BidModalProps> = ({
     setLoading(true);
 
     if (!profileUserId) {
-      alert("Você precisa estar logado para fazer um lance.");
+      alert("Você precisa estar autenticado para fazer um lance.");
       return;
     }
 
     if (typeof bidValue !== "number" || bidValue <= currentValue) {
-      alert("Por favor, insira um valor maior que o valor atual");
+      toast.warning("Por favor, insira um valor maior que o valor atual");
       return;
     }
 

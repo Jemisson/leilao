@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { login } from "../services/api";
 import Cookies from "js-cookie";
 import { AxiosError } from "axios";
-import Logo from "../components/Logo"; // Certifique-se de ter um componente Logo.
+import Logo from "../components/Logo";
 import { toast } from "react-toastify";
 
 const LoginPage: React.FC = () => {
@@ -42,12 +42,11 @@ const LoginPage: React.FC = () => {
   };
 
   const handleCreateAccountClick = () => {
-    navigate('/licitantes/new'); // Redireciona para a rota desejada
+    navigate('/licitantes/new');
   };
 
   return (
     <div className="flex flex-col lg:flex-row h-screen">
-      {/* Lado esquerdo */}
       <div className="w-full lg:w-1/2 relative bg-redDark text-white flex flex-col justify-center items-center p-6">
         <Logo />
         <h1 className="text-4xl font-bold mt-6 text-center">Bem-vindo(a) à plataforma de leilões!</h1>
@@ -62,12 +61,10 @@ const LoginPage: React.FC = () => {
         ></div>
       </div>
 
-      {/* Lado direito */}
       <div className="w-full lg:w-1/2 flex flex-col justify-center items-center bg-gray-50 p-6">
         <h3 className="mb-3 text-4xl font-extrabold text-gray-900">Login</h3>
         <p className="mb-4 text-gray-700">Entre com sua conta Goole</p>
 
-        {/* Mensagem de Erro ou Sucesso */}
         {message && (
           <p
             className={`mb-4 text-sm font-medium ${
@@ -78,12 +75,11 @@ const LoginPage: React.FC = () => {
           </p>
         )}
 
-        {/* Formulário de Login */}
         <form
           onSubmit={handleLogin}
           className="flex flex-col items-center w-2/3"
         >
-          {/* Botão de login com Google */}
+
           <a
             className="flex items-center justify-center w-full py-4 mb-6 text-sm font-medium transition duration-300 rounded-2xl text-gray-900 bg-gray-300 hover:bg-gray-400 focus:ring-4 focus:ring-gray-300"
             href="#"
@@ -96,14 +92,12 @@ const LoginPage: React.FC = () => {
             Entrar com Google
           </a>
 
-          {/* Divider */}
           <div className="flex items-center mb-3 w-full">
             <hr className="h-0 border-b border-solid border-gray-500 grow" />
             <p className="mx-4 text-gray-600">ou</p>
             <hr className="h-0 border-b border-solid border-gray-500 grow" />
           </div>
 
-          {/* Email */}
           <label htmlFor="email" className="mb-2 text-sm text-start text-gray-900 w-full">
             Email*
           </label>
@@ -117,7 +111,6 @@ const LoginPage: React.FC = () => {
             className="flex items-center w-full px-5 py-4 mb-7 text-sm font-medium outline-none focus:bg-gray-400 placeholder:text-gray-700 bg-gray-200 text-gray-900 rounded-2xl"
           />
 
-          {/* Senha */}
           <label htmlFor="password" className="mb-2 text-sm text-start text-gray-900 w-full">
             Senha*
           </label>
@@ -131,7 +124,6 @@ const LoginPage: React.FC = () => {
             className="flex items-center w-full px-5 py-4 mb-5 text-sm font-medium outline-none focus:bg-gray-400 placeholder:text-gray-700 bg-gray-200 text-gray-900 rounded-2xl"
           />
     
-          {/* Botão de login */}
           <button
             type="submit"
             className="w-full px-6 py-5 mb-5 text-sm font-bold leading-none text-white transition duration-300 rounded-2xl !bg-redDark hover:!bg-redBright focus:!ring-4 focus:!ring-redBright"
@@ -140,7 +132,6 @@ const LoginPage: React.FC = () => {
           </button>
         </form>
     
-        {/* Link de registro */}
         <p className="text-sm leading-relaxed text-gray-900 w-2/3 text-center">
           Primeira vez aqui?{" "}
           <button
