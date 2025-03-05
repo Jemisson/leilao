@@ -206,3 +206,10 @@ export const fetchUserBids = async (userId: number) => {
     throw error;
   }
 };
+
+export const googleLogin = async (googleAccessToken: string) => {
+  const response = await authApi.post("/users/auth/google_oauth2", {
+    token: googleAccessToken,
+  });
+  return response.data;
+};
