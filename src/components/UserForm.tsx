@@ -1,8 +1,8 @@
 import React, { useState } from "react";
+import { FaEye, FaEyeSlash } from "react-icons/fa";
+import Button from "../components/Button";
 import InputField from "../components/InputField";
 import SelectField from "../components/SelectField";
-import Button from "../components/Button";
-import { FaEye, FaEyeSlash } from "react-icons/fa";
 import { ProfileUser, UserFormProps } from "../types";
 import { isAuthenticated } from "../utils/authHelpers";
 
@@ -105,9 +105,27 @@ const UserForm: React.FC<UserFormProps> = ({
       <h2 className="text-xl font-bold mt-6 mb-4">Dados Pessoais</h2>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <InputField label="Nome" type="text" name="name" value={profileUser.name} onChange={handleChange} required />
-        <InputField label="CPF" type="text" name="cpf" value={profileUser.cpf} onChange={handleChange} required />
+        <InputField
+          label="CPF"
+          type="text"
+          name="cpf"
+          value={profileUser.cpf}
+          placeholder="000.000.000-00"
+          onChange={handleChange}
+          mask={"999.999.999-99"}
+          required
+        />
         <InputField label="Data de Nascimento" type="date" name="birth" value={profileUser.birth} onChange={handleChange} required />
-        <InputField label="Telefone" type="text" name="phone" value={profileUser.phone} onChange={handleChange} required />
+        <InputField
+          label="Telefone"
+          type="text"
+          name="phone"
+          value={profileUser.phone}
+          mask="(99) 9 9999-9999"
+          placeholder="(00) 0 0000-0000"
+          onChange={handleChange}
+          required
+        />
       </div>
 
       <h2 className="text-xl font-bold mt-6 mb-4">Endereço</h2>
@@ -118,7 +136,16 @@ const UserForm: React.FC<UserFormProps> = ({
         <InputField label="Cidade" type="text" name="city" value={profileUser.city} onChange={handleChange} required />
         <InputField label="Estado" type="text" name="state" value={profileUser.state} onChange={handleChange} required />
         <InputField label="País" type="text" name="country" value={profileUser.country} onChange={handleChange} required />
-        <InputField label="CEP" type="text" name="zip_code" value={profileUser.zip_code} onChange={handleChange} required />
+        <InputField
+          label="CEP"
+          type="text"
+          name="zip_code"
+          value={profileUser.zip_code}
+          placeholder="00000-000"
+          mask="99999-999"
+          onChange={handleChange}
+          required
+        />
       </div>
 
       <Button

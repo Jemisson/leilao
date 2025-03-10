@@ -36,17 +36,27 @@ export const getUserInfo = (): DecodedToken | null => {
   if (!token) return null;
 
   try {
-    const payload = JSON.parse(atob(token.split(".")[1]));
+    const base64Url = token.split(".")[1];
+    if (!base64Url) {
+      console.error("Token inválido: Payload ausente.");
+      return null;
+    }
+
+    const base64 = base64Url.replace(/-/g, "+").replace(/_/g, "/");
+    const payload = JSON.parse(atob(base64));
+
     return {
-      id: payload.id,
-      role: payload.role,
-      name: payload.name
+      id: payload.user_id,
+      role: payload.role || "user",
+      name: payload.name || "Visitante"
     };
   } catch (err) {
     console.error("Erro ao decodificar o token:", err);
     return null;
   }
-}
+};
+
+
 
 export const login = async (email: string, password: string) => {
   const response = await authApi.post("/login", {
@@ -208,8 +218,14 @@ export const fetchUserBids = async (userId: number) => {
 };
 
 export const googleLogin = async (googleAccessToken: string) => {
-  const response = await authApi.post("/users/auth/google_oauth2", {
+  const googleResponse = await fetch(`https://www.googleapis.com/oauth2/v3/userinfo?access_token=${googleAccessToken}`);
+  const userData = await googleResponse.json();
+
+  const response = await api.post("/google_auth", {
     token: googleAccessToken,
+    email: userData.email,
   });
+
   return response.data;
 };
+

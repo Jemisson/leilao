@@ -16,22 +16,26 @@ const LoginPage: React.FC = () => {
 
   const handleGoogleLogin = useGoogleLogin({
     onSuccess: async (tokenResponse) => {
-      console.log("Token Response:", tokenResponse);
       try {
         const response = await googleLogin(tokenResponse.access_token);
-  
-        Cookies.set("leilao_jwt_token", response.token, { expires: 5 });
-  
-        const payload = JSON.parse(atob(response.token.split(".")[1]));
-        const userRole = payload.role;
-  
-        if (userRole === "admin") {
-          navigate("/dashboard");
+        
+        if (response.message === "Usuário não cadastrado"){
+          navigate("/licitantes/new", {
+            state: { email: response.user.email, name: response.user.name },
+          });
+
+          toast.warning("Você precisa completar o cadastro para continuar!", {
+            autoClose: 15000,
+          });
         } else {
-          navigate("/");
+          Cookies.set("leilao_jwt_token", response.token, { expires: 5 });
+          if (response.role === "admin") {
+            navigate("/dashboard");
+          } else {
+            navigate("/");
+          }
+          toast.success("Autenticado com sucesso via Google!");
         }
-  
-        toast.success("Autenticado com sucesso via Google!");
       } catch (err) {
         toast.error(`Erro ao autenticar com Google: ${err}`);
       }
