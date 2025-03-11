@@ -5,12 +5,45 @@ import Cookies from "js-cookie";
 import { AxiosError } from "axios";
 import Logo from "../components/Logo";
 import { toast } from "react-toastify";
+import { useGoogleLogin } from "@react-oauth/google";
+import { googleLogin } from "../services/api";
 
 const LoginPage: React.FC = () => {
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
   const [message, setMessage] = useState<string | null>(null);
   const navigate = useNavigate();
+
+  const handleGoogleLogin = useGoogleLogin({
+    onSuccess: async (tokenResponse) => {
+      try {
+        const response = await googleLogin(tokenResponse.access_token);
+        
+        if (response.message === "Usuário não cadastrado"){
+          navigate("/licitantes/new", {
+            state: { email: response.user.email, name: response.user.name },
+          });
+
+          toast.warning("Você precisa completar o cadastro para continuar!", {
+            autoClose: 15000,
+          });
+        } else {
+          Cookies.set("leilao_jwt_token", response.token, { expires: 5 });
+          if (response.role === "admin") {
+            navigate("/dashboard");
+          } else {
+            navigate("/");
+          }
+          toast.success("Autenticado com sucesso via Google!");
+        }
+      } catch (err) {
+        toast.error(`Erro ao autenticar com Google: ${err}`);
+      }
+    },
+    onError: () => {
+      toast.error("Falha no login com Google");
+    }
+  });
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -63,7 +96,6 @@ const LoginPage: React.FC = () => {
 
       <div className="w-full lg:w-1/2 flex flex-col justify-center items-center bg-gray-50 p-6">
         <h3 className="mb-3 text-4xl font-extrabold text-gray-900">Login</h3>
-        <p className="mb-4 text-gray-700">Entre com sua conta Goole</p>
 
         {message && (
           <p
@@ -80,17 +112,13 @@ const LoginPage: React.FC = () => {
           className="flex flex-col items-center w-2/3"
         >
 
-          <a
-            className="flex items-center justify-center w-full py-4 mb-6 text-sm font-medium transition duration-300 rounded-2xl text-gray-900 bg-gray-300 hover:bg-gray-400 focus:ring-4 focus:ring-gray-300"
-            href="#"
-          >
-            <img
-              className="h-5 mr-2"
-              src="https://raw.githubusercontent.com/Loopple/loopple-public-assets/main/motion-tailwind/img/logos/logo-google.png"
-              alt="Google Logo"
-            />
-            Entrar com Google
-          </a>
+        <a
+          onClick={() => handleGoogleLogin()}
+          className="flex items-center justify-center w-full py-4 mb-6 text-sm font-medium transition duration-300 rounded-2xl text-gray-900 bg-gray-300 hover:bg-gray-400 focus:ring-4 focus:ring-gray-300 cursor-pointer"
+        >
+          <img className="h-5 mr-2" src="https://raw.githubusercontent.com/Loopple/loopple-public-assets/main/motion-tailwind/img/logos/logo-google.png" alt="Google Logo" />
+          Entrar com Google
+        </a>
 
           <div className="flex items-center mb-3 w-full">
             <hr className="h-0 border-b border-solid border-gray-500 grow" />

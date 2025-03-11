@@ -189,8 +189,10 @@ export interface InputFieldProps {
   type: string;
   name: string;
   value: string;
+  placeholder?: string;
   onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
   required?: boolean;
+  mask?: string;
 }
 
 export interface SelectFieldProps {
