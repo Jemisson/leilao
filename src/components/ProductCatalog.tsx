@@ -24,7 +24,6 @@ function ProductCatalog({ selectedCategory, profileUserId }: ProductCatalogProps
   const user = getAuthenticatedUser();
 
   const handleOpenBidModal = (product: Product) => {
-
     if (!profileUserId) {
       navigate("/login");
       return;

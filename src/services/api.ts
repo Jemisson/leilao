@@ -5,6 +5,10 @@ import { DecodedToken, ProfileUser } from "../types";
 const BASE_URL = import.meta.env.VITE_API_BASE_URL;
 const AUTHBASEURL = import.meta.env.VITE_AUTH_API_BASE_URL;
 
+export const getToken = (): string | undefined => {
+  return Cookies.get("leilao_jwt_token");
+}
+
 const api = axios.create({
   baseURL: BASE_URL,
   headers: {
@@ -13,7 +17,7 @@ const api = axios.create({
 })
 
 api.interceptors.request.use((config) => {
-  const token = Cookies.get("leilao_jwt_token");
+  const token = getToken();
   if (token) {
     config.headers.Authorization = `Bearer ${token}`;
   }
@@ -26,10 +30,6 @@ const authApi = axios.create({
     "Content-Type": "application/json",
   },
 })
-
-export const getToken = (): string | undefined => {
-  return Cookies.get("leilao_jwt_token");
-}
 
 export const getUserInfo = (): DecodedToken | null => {
   const token = getToken();
@@ -46,7 +46,7 @@ export const getUserInfo = (): DecodedToken | null => {
     const payload = JSON.parse(atob(base64));
 
     return {
-      id: payload.user_id,
+      id: payload.id,
       role: payload.role || "user",
       name: payload.name || "Visitante"
     };
@@ -56,12 +56,16 @@ export const getUserInfo = (): DecodedToken | null => {
   }
 };
 
-
-
 export const login = async (email: string, password: string) => {
   const response = await authApi.post("/login", {
     user: { email, password },
   });
+
+  const { token } = response.data;
+  if (token) {
+    Cookies.set("leilao_jwt_token", token, { expires: 7 });
+  }
+
   return response.data;
 }
 

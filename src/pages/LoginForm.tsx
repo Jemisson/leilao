@@ -50,8 +50,6 @@ const LoginPage: React.FC = () => {
     try {
       const data = await login(email, password);
 
-      Cookies.set("leilao_jwt_token", data.token, { expires: 5 });
-
       const payload = JSON.parse(atob(data.token.split(".")[1]));
       const userRole = payload.role;
 

@@ -27,6 +27,7 @@ export const getAuthenticatedUser = (): { id: number; role: string, name: string
 
   try {
     const payload = JSON.parse(atob(token.split(".")[1]));
+
     return {
       id: payload.id,
       role: payload.role,

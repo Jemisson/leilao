@@ -31,8 +31,16 @@ const BidModal: React.FC<BidModalProps> = ({
       await createBid(productId, bidValue, profileUserId);
       onClose();
       toast.success("Lance registrado com sucesso");
-    } catch (err) {
-      toast.error(`Erro ao efetuar lance: ${err}.`);
+    } catch (err: unknown) {
+      if (err instanceof Error) {
+        if ((err as { status?: number }).status === 401) {
+          toast.error("Você precisa estar autenticado para fazer um lance.");
+        } else {
+          toast.error(`Erro ao efetuar lance: ${err.message}`);
+        }
+      } else {
+        toast.error("Erro desconhecido ao efetuar lance.");
+      }
     } finally {
       setBidValue("");
       setLoading(false);
