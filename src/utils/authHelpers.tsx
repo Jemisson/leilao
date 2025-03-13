@@ -21,7 +21,7 @@ export const getUserRole = (): string | null => {
   }
 };
 
-export const getAuthenticatedUser = (): { id: number; role: string, name: string } | null => {
+export const getAuthenticatedUser = (): { id: number; role: string, name: string, profile_id: number } | null => {
   const token = Cookies.get("leilao_jwt_token");
   if (!token) return null;
 
@@ -30,6 +30,7 @@ export const getAuthenticatedUser = (): { id: number; role: string, name: string
 
     return {
       id: payload.id,
+      profile_id: payload.profile_id,
       role: payload.role,
       name: payload.name
     };

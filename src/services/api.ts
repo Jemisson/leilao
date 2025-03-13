@@ -47,6 +47,7 @@ export const getUserInfo = (): DecodedToken | null => {
 
     return {
       id: payload.id,
+      profile_id: payload.profile_id,
       role: payload.role || "user",
       name: payload.name || "Visitante"
     };

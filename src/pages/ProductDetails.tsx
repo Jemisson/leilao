@@ -16,6 +16,7 @@ const ProductDetails: React.FC = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const { cable } = useWebSocket();
+  const [isWebSocketReady, setIsWebSocketReady] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -51,7 +52,13 @@ const ProductDetails: React.FC = () => {
   }, [productId, currentPage]);
 
   useEffect(() => {
-    if (!cable) return;
+    if (cable) {
+      setIsWebSocketReady(true);
+    }
+  }, [cable]);
+
+  useEffect(() => {
+    if (!isWebSocketReady || !cable) return;
 
     const subscription = cable.subscriptions.create("BidsChannel", {
       received(data: { data: Bid }) {
@@ -75,7 +82,7 @@ const ProductDetails: React.FC = () => {
     return () => {
       subscription.unsubscribe();
     };
-  }, [cable, productId]);
+  }, [isWebSocketReady, cable, productId]);
 
   if (loading) return <p>Carregando...</p>;
   if (error) return <p>{error}</p>;

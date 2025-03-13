@@ -4,7 +4,7 @@ import ProductCatalog from "../components/ProductCatalog";
 import DashboardLayout from "../components/DashboardLayout";
 import LoginForm from "../pages/LoginForm";
 import ProductManagement from "../pages/ProductManagement";
-import { getAuthenticatedUser, isAuthenticated } from "../utils/authHelpers";
+import { isAuthenticated } from "../utils/authHelpers";
 import ProductCreation from "../pages/ProductCreation";
 import BidHistory from "../pages/BidHistory";
 import ProductEdit from "../pages/ProductEdit";
@@ -25,8 +25,6 @@ interface AppRoutesProps {
 }
 
 const AppRoutes: React.FC<AppRoutesProps> = ({ selectedCategory }) => {
-  const user = getAuthenticatedUser();
-  const profileUserId = user ? user.id : null;
 
   return (
     <Routes>
@@ -36,7 +34,6 @@ const AppRoutes: React.FC<AppRoutesProps> = ({ selectedCategory }) => {
         element={
           <ProductCatalog
             selectedCategory={selectedCategory}
-            profileUserId={profileUserId}
           />
         }
       />

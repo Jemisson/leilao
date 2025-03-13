@@ -3,6 +3,7 @@ export interface DecodedToken {
   id: string;
   role: string;
   name: string;
+  profile_id: number;
 }
 export interface PaginationProps {
   currentPage: number;
@@ -72,13 +73,12 @@ export interface BidModalProps {
   onClose: () => void;
   productName: string;
   productId: number;
-  profileUserId: number | null;
+  profileUserId: number;
   currentValue: number;
 }
 
 export interface ProductCatalogProps {
   selectedCategory: string | null;
-  profileUserId: number | null;
 }
 
 export interface ProductCardProps {

@@ -10,7 +10,7 @@ import { useNavigate } from "react-router-dom";
 import { getAuthenticatedUser } from "../utils/authHelpers";
 import { toast } from "react-toastify";
 
-function ProductCatalog({ selectedCategory, profileUserId }: ProductCatalogProps) {
+function ProductCatalog({ selectedCategory }: ProductCatalogProps) {
   const [products, setProducts] = useState<Product[]>([]);
   const [updatedProducts, setUpdatedProducts] = useState<Set<number>>(new Set());
   const [loading, setLoading] = useState(true);
@@ -20,17 +20,26 @@ function ProductCatalog({ selectedCategory, profileUserId }: ProductCatalogProps
   const [isBidModalOpen, setBidModalOpen] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
   const { cable } = useWebSocket();
+  const [isWebSocketReady, setIsWebSocketReady] = useState(false);
   const navigate = useNavigate();
   const user = getAuthenticatedUser();
 
   const handleOpenBidModal = (product: Product) => {
-    if (!profileUserId) {
+
+    if (!user?.profile_id) {
       navigate("/login");
+      toast.error("Você precisa estar autenticado para dar lances.");
       return;
     }
     setSelectedProduct(product);
     setBidModalOpen(true);
   };
+
+  useEffect(() => {
+    if (cable) {
+      setIsWebSocketReady(true);
+    }
+  }, [cable]); 
 
   useEffect(() => {
     setCurrentPage(1);
@@ -62,7 +71,7 @@ function ProductCatalog({ selectedCategory, profileUserId }: ProductCatalogProps
   }, [currentPage, selectedCategory]);
 
   useEffect(() => {
-    if (!cable) return;
+    if (!isWebSocketReady || !cable) return;
 
     const subscription = cable.subscriptions.create("BidsChannel", {
       received(data: {data: Bid}) {
@@ -99,7 +108,7 @@ function ProductCatalog({ selectedCategory, profileUserId }: ProductCatalogProps
     return () => {
       subscription.unsubscribe();
     };
-  }, [cable]);
+  }, [cable, isWebSocketReady]);
 
   if (loading) return <p>Carregando...</p>;
   if (error) return <p>{error}</p>;
@@ -147,7 +156,7 @@ function ProductCatalog({ selectedCategory, profileUserId }: ProductCatalogProps
         onClose={() => setBidModalOpen(false)}
         productName={selectedProduct?.attributes.lot_number || ''}
         productId={selectedProduct?.id || 0}
-        profileUserId={profileUserId}
+        profileUserId={user?.profile_id || 0}
         currentValue={selectedProduct?.attributes.current_value || 0}
       />
     </div>
