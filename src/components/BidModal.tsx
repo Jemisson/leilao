@@ -16,7 +16,6 @@ const BidModal: React.FC<BidModalProps> = ({
 
   const handleSubmit = async () => {
     setLoading(true);
-    console.log('--- profileUserId no BidModal', profileUserId);
 
     if (!profileUserId) {
       toast.error("Você precisa estar autenticado para fazer um lance.");
@@ -35,7 +34,7 @@ const BidModal: React.FC<BidModalProps> = ({
     } catch (err: unknown) {
       if (err instanceof Error) {
         if ((err as { status?: number }).status === 401) {
-          toast.error("Você precisa estar autenticado para fazer um lance.");
+          toast.error("Você precisa estar autenticado para fazer um lance!");
         } else {
           toast.error(`Erro ao efetuar lance: ${err.message}`);
         }

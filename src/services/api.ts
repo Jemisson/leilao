@@ -18,11 +18,24 @@ const api = axios.create({
 
 api.interceptors.request.use((config) => {
   const token = getToken();
+  
   if (token) {
     config.headers.Authorization = `Bearer ${token}`;
   }
   return config;
 })
+
+api.interceptors.response.use(
+  (response) => response,
+  async (error) => {
+    if (error.response && error.response.status === 401) {
+      console.warn("Token expirado ou inválido. Redirecionando para login...");
+      logout();
+      window.location.href = "/login";
+    }
+    return Promise.reject(error);
+  }
+);
 
 const authApi = axios.create({
   baseURL: AUTHBASEURL,
@@ -162,6 +175,7 @@ export const createBid = async (productId: number, value: number, profileUserId:
       value,
       profile_user_id: profileUserId,
     });
+    
     return response.data;
   } catch (err) {
     console.error("Erro ao efetuar lance:", err);
