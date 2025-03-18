@@ -16,36 +16,40 @@ const BidModal: React.FC<BidModalProps> = ({
 
   const handleSubmit = async () => {
     setLoading(true);
-
-    if (!profileUserId) {
-      toast.error("Você precisa estar autenticado para fazer um lance.");
-      return;
-    }
-
-    if (typeof bidValue !== "number" || bidValue <= currentValue) {
-      toast.warning("Por favor, insira um valor maior que o valor atual");
-      return;
-    }
-
+  
     try {
+      if (!profileUserId) {
+        toast.error("Você precisa estar autenticado para fazer um lance.");
+        return;
+      }
+  
+      if (typeof bidValue !== "number" || bidValue <= currentValue) {
+        toast.warning("Por favor, insira um valor maior que o valor atual.");
+        return;
+      }
+  
       await createBid(productId, bidValue, profileUserId);
-      onClose();
+  
       toast.success("Lance registrado com sucesso");
+      onClose();
     } catch (err: unknown) {
       if (err instanceof Error) {
-        if ((err as { status?: number }).status === 401) {
-          toast.error("Você precisa estar autenticado para fazer um lance!");
+        const status = (err as { status?: number }).status;
+  
+        if (status === 401) {
+          toast.error("Sua sessão expirou. Faça login novamente!");
         } else {
           toast.error(`Erro ao efetuar lance: ${err.message}`);
         }
       } else {
-        toast.error("Erro desconhecido ao efetuar lance.");
+        toast.error("Erro inesperado ao efetuar lance.");
       }
     } finally {
       setBidValue("");
       setLoading(false);
     }
   };
+  
 
   const handleTagClick = (increment: number) => {
     setBidValue(Number(currentValue) + increment);
