@@ -5,6 +5,7 @@ import InputField from "../components/InputField";
 import SelectField from "../components/SelectField";
 import { ProfileUser, UserFormProps } from "../types";
 import { isAuthenticated } from "../utils/authHelpers";
+import { sanitizeProfileUserData } from "../utils/formSanitizers";
 
 const isLoggedIn = isAuthenticated()
 
@@ -47,7 +48,9 @@ const UserForm: React.FC<UserFormProps> = ({
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    onSubmit(profileUser);
+
+    const sanitizedData = sanitizeProfileUserData(profileUser);
+    onSubmit(sanitizedData);
   };
 
   return (
