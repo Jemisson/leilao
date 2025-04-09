@@ -259,3 +259,8 @@ export const searchProducts = async (query: string, auctioned: number, page = 1)
 
   return response.data;
 };
+
+export const fetchDashboardStats = async () => {
+  const response = await api.get("/dashboard");
+  return response.data;
+};
