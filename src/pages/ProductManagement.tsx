@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { CiEdit, CiTrash } from "react-icons/ci";
 import { FaEye } from "react-icons/fa";
 import { ImHammer2 } from "react-icons/im";
@@ -10,7 +10,7 @@ import Button from "../components/Button";
 import ConfirmationModal from "../components/ConfirmationModal";
 import IconButton from "../components/IconButton";
 import Pagination from "../components/Pagination";
-import { createProduct, deleteProduct, fetchProducts, soldProduct } from "../services/api";
+import { createProduct, deleteProduct, fetchProducts, searchProducts, soldProduct } from "../services/api";
 import { Product } from "../types";
 
 const ProductManagement: React.FC = () => {
@@ -25,23 +25,25 @@ const ProductManagement: React.FC = () => {
   const [isDuplicateModalOpen, setIsDuplicateModalOpen] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
   const [auctioned, setAuctioned] = useState(0);
+  const [searchQuery, setSearchQuery] = useState("");
+
+  const loadProducts = useCallback(async (page = 1, auctionedValue = auctioned) => {
+    try {
+      const data = await fetchProducts(page, null , auctionedValue);
+      setProducts(data.data);
+      setTotalPages(data.meta.total_pages);
+    } catch (err) {
+      setError("Erro ao carregar produtos.");
+      toast.error(`Erro ao carregar produto: ${err}`);
+    } finally {
+      setLoading(false);
+    }
+  }, [auctioned]);
 
   useEffect(() => {
-    const getProducts = async () => {
-      try {
-        const data = await fetchProducts(currentPage, null , auctioned);
-        setProducts(data.data);
-        setTotalPages(data.meta.total_pages);
-      } catch (err) {
-        setError("Erro ao carregar produtos.");
-        toast.error(`Erro ao carregar produto: ${err}`);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    getProducts();
-  }, [currentPage, auctioned]);
+    setLoading(true);
+    loadProducts(currentPage, auctioned);
+  }, [currentPage, auctioned, loadProducts]);
 
   const handleDeleteConfirmation = (product: Product) => {
     setSelectedProduct(product);
@@ -124,6 +126,25 @@ const ProductManagement: React.FC = () => {
     }
   };
 
+  const handleSearch = async (query: string) => {
+    if (!query) {
+      setCurrentPage(1);
+      setLoading(true);
+      return;
+    }
+
+    setLoading(true);
+    try {
+      const data = await searchProducts(query, auctioned);
+      setProducts(data.data);
+      setTotalPages(data.meta.total_pages);
+    } catch (err) {
+      toast.error(`Erro ao buscar produtos: ${err}`);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   if (loading) return <p>Carregando...</p>;
   if (error) return <p>{error}</p>;
 
@@ -163,6 +184,42 @@ const ProductManagement: React.FC = () => {
           </button>
         </div>
       </div>
+
+      <div className="flex gap-2 w-full md:w-1/2 mb-5">
+        <div className="relative w-full">
+          <input
+            type="text"
+            placeholder="Buscar por lote, descrição, valor..."
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            className="p-2 pr-10 border border-gray-300 rounded-md w-full focus:outline-none focus:ring-2 focus:ring-redBright"
+          />
+
+          {searchQuery && (
+            <button
+              type="button"
+              onClick={() => {
+                setSearchQuery("");
+                setCurrentPage(1);
+                setLoading(true);
+                loadProducts(1);
+              }}
+              className="absolute right-2 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-red-600 text-lg"
+              aria-label="Limpar busca"
+            >
+              ×
+            </button>
+          )}
+        </div>
+
+        <button
+          onClick={() => handleSearch(searchQuery)}
+          className="bg-redDark text-white px-4 py-2 rounded hover:bg-redBright shrink-0"
+        >
+          Buscar
+        </button>
+      </div>
+
 
       <table className="min-w-full bg-white border border-gray-300 shadow-sm rounded-lg">
         <thead>

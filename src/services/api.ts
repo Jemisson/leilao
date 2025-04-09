@@ -248,3 +248,19 @@ export const googleLogin = async (googleAccessToken: string) => {
   return response.data;
 };
 
+export const searchProducts = async (query: string, auctioned: number, page = 1) => {
+  const response = await api.get("/products/search", {
+    params: {
+      query,
+      page,
+      auctioned
+    },
+  });
+
+  return response.data;
+};
+
+export const fetchDashboardStats = async () => {
+  const response = await api.get("/dashboard");
+  return response.data;
+};
