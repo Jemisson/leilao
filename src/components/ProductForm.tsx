@@ -4,6 +4,7 @@ import ImageUpload from "./ImageUploader";
 import Button from "./Button";
 import { Category, Product, ProductFormProps } from "../types";
 import { toast } from "react-toastify";
+import VideoModal from "./VideoModal";
 
 const ProductForm: React.FC<ProductFormProps> = ({
   onSubmit,
@@ -15,6 +16,8 @@ const ProductForm: React.FC<ProductFormProps> = ({
   const [categories, setCategories] = useState<Category[]>([]);
   const [productImages, setProductImages] = useState<File[]>([]);
   const [existingImages, setExistingImages] = useState<{ id: string; url: string }[]>([]);
+  const [isVideoModalOpen, setIsVideoModalOpen] = useState(false);
+
 
   useEffect(() => {
     if (initialData?.category_title && categories.length > 0) {
@@ -86,9 +89,9 @@ const ProductForm: React.FC<ProductFormProps> = ({
   return (
     <div className="flex flex-wrap gap-6">
       <h1 className="text-2xl font-bold">{mode === "edit" ? "Editar Produto" : "Cadastrar Produto"}</h1>
-      <form onSubmit={handleSubmit} className="flex w-full gap-6">
+      <form onSubmit={handleSubmit} className="flex flex-col md:flex-row w-full gap-6">
 
-        <div className="w-full md:w-1/2 space-y-6">
+        <div className="w-full md:w-1/2 space-y-6 order-1">
 
           <div>
             <label
@@ -119,6 +122,7 @@ const ProductForm: React.FC<ProductFormProps> = ({
             { label: "Nome do Doador", name: "donor_name", type: "text" },
             { label: "Telefone do Doador", name: "donor_phone", type: "tel" },
             { label: "Valor Mínimo", name: "minimum_value", type: "number" },
+            { label: "Link do vídeo (opcional)", name: "link_video", type: "text" },
           ].map(({ label, name, type }) => {
 
             const value = productData[name as keyof Pick<Product["attributes"], "lot_number" | "donor_name" | "donor_phone" | "minimum_value">];
@@ -142,6 +146,18 @@ const ProductForm: React.FC<ProductFormProps> = ({
             );
           })}
 
+          {productData.link_video && (
+            <div>
+              <button
+                type="button"
+                onClick={() => setIsVideoModalOpen(true)}
+                className="text-blue-600 underline hover:text-blue-800 transition"
+              >
+                Ver vídeo
+              </button>
+            </div>
+          )}
+
           <div>
             <label htmlFor="description" className="block mb-2 text-sm font-medium text-gray-700">
               Descrição
@@ -159,8 +175,8 @@ const ProductForm: React.FC<ProductFormProps> = ({
           </div>
         </div>
 
-        <div className="w-full flex flex-col items-center space-y-6">
-          <label className="block text-sm font-medium text-gray-700">
+        <div className="w-full md:w-1/2 flex flex-col items-center space-y-6 order-2">
+          <label className="block text-2xl font-medium text-gray-700">
             Envio de Imagens
           </label>
 
@@ -195,6 +211,12 @@ const ProductForm: React.FC<ProductFormProps> = ({
           />
         </div>
       </form>
+
+      <VideoModal
+        isOpen={isVideoModalOpen}
+        videoUrl={productData.link_video || ""}
+        onClose={() => setIsVideoModalOpen(false)}
+      />
     </div>
   );
 };

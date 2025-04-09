@@ -1,14 +1,14 @@
 import React, { useEffect, useState } from "react";
+import { CiEdit } from "react-icons/ci";
+import { FaEye } from "react-icons/fa";
+import { MdAdminPanelSettings } from "react-icons/md";
+import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
+import Button from "../components/Button";
+import IconButton from "../components/IconButton";
+import Pagination from "../components/Pagination";
 import { fetchUsers } from "../services/api";
 import { User, UsersResponse } from "../types";
-import Pagination from "../components/Pagination";
-import { FaEye } from "react-icons/fa";
-import { useNavigate } from "react-router-dom";
-import IconButton from "../components/IconButton";
-import Button from "../components/Button";
-import { MdAdminPanelSettings } from "react-icons/md";
-import { CiEdit } from "react-icons/ci";
-import { toast } from "react-toastify";
 
 const UserManagement: React.FC = () => {
   const [users, setUsers] = useState<User[]>([]);
@@ -39,7 +39,7 @@ const UserManagement: React.FC = () => {
   }, [currentPage]);
 
   const handleAddUser = () => {
-    navigate("/licitantes/new");
+    navigate("/participantes/new");
   };
 
   if (loading) return <p className="p-6">Carregando...</p>;
@@ -87,14 +87,14 @@ const UserManagement: React.FC = () => {
                   </td>
                   <td className="py-2 px-4 border-b text-center">
                     <IconButton
-                      onClick={() => navigate(`/dashboard/licitantes/${user.attributes.id}`)}
+                      onClick={() => navigate(`/dashboard/participantes/${user.attributes.id}`)}
                       icon={<FaEye className="size-6" />}
                       ariaLabel="Ver detalhes"
                       className="text-blue-500 hover:text-blue-700"
                     />
 
                     <IconButton
-                      onClick={() => navigate(`/dashboard/licitantes/${user.attributes.id}/edit`)}
+                      onClick={() => navigate(`/dashboard/participantes/${user.attributes.id}/edit`)}
                       icon={<CiEdit className="size-6" />}
                       ariaLabel="Editar"
                       className="text-yellow-500 hover:text-yellow-700"

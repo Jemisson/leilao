@@ -16,6 +16,7 @@ export interface Product {
   attributes: {
     id: number;
     lot_number: string;
+    link_video?: string;
     donor_name?: string;
     donor_phone?: string;
     minimum_value?: number;
@@ -116,6 +117,7 @@ export interface MenuItemProps {
   to: string;
   icon: JSX.Element;
   label: string;
+  onClick?: () => void;
 }
 
 export interface SideBarProps {

@@ -1,10 +1,10 @@
 import React, { useState } from "react";
-import { createUser } from "../services/api";
 import { useLocation, useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
+import UserForm from "../components/UserForm";
+import { createUser } from "../services/api";
 import { ProfileUser } from "../types";
 import { getUserRole } from "../utils/authHelpers";
-import UserForm from "../components/UserForm";
-import { toast } from "react-toastify";
 
 const UserRegistration: React.FC = () => {
   const location = useLocation();
@@ -18,7 +18,7 @@ const UserRegistration: React.FC = () => {
     setIsSubmitting(true);
     try {
       await createUser(profileUser);
-      navigate("/dashboard/licitantes");
+      navigate("/dashboard/participantes");
       toast.success("Cadastro realizado com sucesso!");
     } catch (err) {
       toast.error(`Erro ao cadastrar usuário: ${err}`);

@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from "react";
-import { useParams, useNavigate } from "react-router-dom";
-import { fetchUserById, fetchUserBids, fetchBids } from "../services/api";
-import { User, Bid } from "../types";
+import { useNavigate, useParams } from "react-router-dom";
 import { toast } from "react-toastify";
 import BidTable from "../components/BidTable";
 import Pagination from "../components/Pagination";
+import { fetchBids, fetchUserBids, fetchUserById } from "../services/api";
+import { Bid, User } from "../types";
 
 const UserDetails: React.FC = () => {
   const { userId } = useParams<{ userId: string }>();
@@ -60,7 +60,7 @@ const UserDetails: React.FC = () => {
           setLoading(false);
         }
       };
-  
+
       getBids();
     }, [currentPage]);
 
@@ -72,7 +72,7 @@ const UserDetails: React.FC = () => {
       <h1 className="text-3xl font-bold mb-6">Detalhes do Usuário</h1>
 
       {user ? (
-        <div className="grid grid-cols-2 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div className="bg-white p-6 rounded-lg shadow-md">
             <p><strong>ID:</strong> {user.id}</p>
             <p><strong>Nome:</strong> {user.attributes.name}</p>
@@ -87,7 +87,7 @@ const UserDetails: React.FC = () => {
             </p>
 
             <button 
-              onClick={() => navigate("/dashboard/licitantes")} 
+              onClick={() => navigate("/dashboard/participantes")} 
               className="mt-4 px-4 py-2 bg-redDark text-white rounded hover:bg-red-700"
             >
               Voltar para lista de usuários
@@ -97,7 +97,7 @@ const UserDetails: React.FC = () => {
           <div className="bg-white p-6 rounded-lg shadow-md">
             <h2 className="text-xl font-bold mb-4">Lances realizados</h2>
             {bids && bids.length > 0 ? (
-              <>
+              <div className="w-full overflow-x-auto">
                 <BidTable
                   bids={bids}
                   showLotNumber={true}
@@ -110,7 +110,7 @@ const UserDetails: React.FC = () => {
                   totalPages={totalPages}
                   onPageChange={(page) => setCurrentPage(page)}
                 />
-              </>
+              </div>
             ) : (
               <p className="text-gray-500">Este usuário ainda não fez lances.</p>
             )}
