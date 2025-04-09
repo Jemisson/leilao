@@ -14,7 +14,6 @@ function SideBar({ isSidebarOpen, setIsSidebarOpen }: SideBarProps) {
     setIsSidebarOpen((prev) => !prev);
   };
 
-  // Fecha a sidebar ao redimensionar para mobile
   useEffect(() => {
     const handleResize = () => {
       if (window.innerWidth >= 768) {
@@ -31,7 +30,6 @@ function SideBar({ isSidebarOpen, setIsSidebarOpen }: SideBarProps) {
   }, [setIsSidebarOpen]);
   
 
-  // Função para fechar sidebar no mobile ao clicar em um menu
   const handleMenuClick = () => {
     if (window.innerWidth < 768) {
       setIsSidebarOpen(false);
@@ -40,7 +38,6 @@ function SideBar({ isSidebarOpen, setIsSidebarOpen }: SideBarProps) {
 
   return (
     <>
-      {/* Botão hamburguer para abrir menu em telas pequenas */}
       <button
         onClick={toggleSidebar}
         className="absolute top-4 left-4 z-50 p-2 rounded-md bg-redDark text-white md:hidden focus:outline-none"
@@ -57,7 +54,6 @@ function SideBar({ isSidebarOpen, setIsSidebarOpen }: SideBarProps) {
         </svg>
       </button>
 
-      {/* Sidebar */}
       <aside
         className={`fixed top-16 left-0 z-40 h-screen bg-white border-r border-gray-200 shadow-md transition-transform duration-300 ${
           isSidebarOpen ? "translate-x-0" : "-translate-x-full"
