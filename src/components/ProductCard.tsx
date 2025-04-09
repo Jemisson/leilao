@@ -1,6 +1,11 @@
+import { useState } from "react";
 import { ProductCardProps } from "../types";
+import { FaPlayCircle } from "react-icons/fa";
+import VideoModal from "./VideoModal";
 
-const ProductCard = ({ product, isUpdated, onBid }: ProductCardProps) => { 
+const ProductCard = ({ product, isUpdated, onBid }: ProductCardProps) => {
+  const [isVideoModalOpen, setIsVideoModalOpen] = useState(false);
+
   return (
     <div
       className={`relative max-w-sm bg-white border  rounded-lg shadow-md dark:bg-gray-800 dark:border-gray-700 ${isUpdated ? " border-2 border-solid border-gold" : "border-gray-200"}`}
@@ -19,6 +24,17 @@ const ProductCard = ({ product, isUpdated, onBid }: ProductCardProps) => {
         <span className="absolute bottom-2 right-2 bg-redDark text-beige text-xs font-semibold px-2 py-1 rounded-lg shadow">
           {product.attributes.category_title}
         </span>
+
+        {product.attributes.link_video && (
+          <button
+            type="button"
+            onClick={() => setIsVideoModalOpen(true)}
+            className="absolute top-2 right-2 text-redDark hover:text-red-500 transition"
+            title="Ver vídeo do produto"
+          >
+            <FaPlayCircle className="w-7 h-7 drop-shadow-md" />
+          </button>
+        )}
       </div>
 
       <div className="p-5">
@@ -50,6 +66,15 @@ const ProductCard = ({ product, isUpdated, onBid }: ProductCardProps) => {
           </svg>
         </button>
       </div>
+
+      {product.attributes.link_video && (
+        <VideoModal
+          isOpen={isVideoModalOpen}
+          videoUrl={product.attributes.link_video}
+          onClose={() => setIsVideoModalOpen(false)}
+        />
+      )}
+
     </div>
   );
 };

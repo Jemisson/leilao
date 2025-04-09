@@ -24,11 +24,12 @@ const ProductManagement: React.FC = () => {
   const [isAuctionModalOpen, setIsAuctionModalOpen] = useState(false);
   const [isDuplicateModalOpen, setIsDuplicateModalOpen] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
+  const [auctioned, setAuctioned] = useState(0);
 
   useEffect(() => {
     const getProducts = async () => {
       try {
-        const data = await fetchProducts(currentPage, null ,0);
+        const data = await fetchProducts(currentPage, null , auctioned);
         setProducts(data.data);
         setTotalPages(data.meta.total_pages);
       } catch (err) {
@@ -40,7 +41,7 @@ const ProductManagement: React.FC = () => {
     };
 
     getProducts();
-  }, [currentPage]);
+  }, [currentPage, auctioned]);
 
   const handleDeleteConfirmation = (product: Product) => {
     setSelectedProduct(product);
@@ -133,6 +134,36 @@ const ProductManagement: React.FC = () => {
         <Button text="Adicionar Produto" onClick={handleAddProduct} />
       </div>
 
+      <div className="mb-4">
+        <span className="mr-4 font-semibold">Exibir produtos:</span>
+        <div className="inline-flex space-x-2">
+          <button
+            className={`px-4 py-2 rounded-full border ${
+              auctioned === 0 ? "bg-redDark text-white" : "bg-white text-gray-700 border-gray-300"
+            }`}
+            onClick={() => {
+              setAuctioned(0);
+              setCurrentPage(1);
+              setLoading(true);
+            }}
+          >
+            Não arrematados
+          </button>
+          <button
+            className={`px-4 py-2 rounded-full border ${
+              auctioned === 1 ? "bg-redDark text-white" : "bg-white text-gray-700 border-gray-300"
+            }`}
+            onClick={() => {
+              setAuctioned(1);
+              setCurrentPage(1);
+              setLoading(true);
+            }}
+          >
+            Arrematados
+          </button>
+        </div>
+      </div>
+
       <table className="min-w-full bg-white border border-gray-300 shadow-sm rounded-lg">
         <thead>
           <tr className="bg-gray-100">
@@ -176,19 +207,23 @@ const ProductManagement: React.FC = () => {
                   className="text-blue-500 hover:text-blue-700"
                 />
 
-                <IconButton
-                  onClick={() => navigate(`/dashboard/produtos/${product.id}/edit`)}
-                  icon={<CiEdit className="size-6" />}
-                  ariaLabel="Editar"
-                  className="text-yellow-500 hover:text-yellow-700"
-                />
+                {product.attributes.auctioned !== 1 && (
+                  <IconButton
+                    onClick={() => navigate(`/dashboard/produtos/${product.id}/edit`)}
+                    icon={<CiEdit className="size-6" />}
+                    ariaLabel="Editar"
+                    className="text-yellow-500 hover:text-yellow-700"
+                  />
+                )}
 
-                <IconButton
-                  onClick={() => handleDeleteConfirmation(product)}
-                  icon={<CiTrash className="size-6" />}
-                  ariaLabel="Excluir"
-                  className="text-red-500 hover:text-red-700"
-                />
+                {product.attributes.auctioned !== 1 && (
+                  <IconButton
+                    onClick={() => handleDeleteConfirmation(product)}
+                    icon={<CiTrash className="size-6" />}
+                    ariaLabel="Excluir"
+                    className="text-red-500 hover:text-red-700"
+                  />
+                )}
 
                 <IconButton
                   onClick={() =>  handleDuplicateConfirmation(product)}
@@ -197,12 +232,14 @@ const ProductManagement: React.FC = () => {
                   className="text-green-500 hover:text-green-700"
                 />
 
-                <IconButton
-                  onClick={() => handleMarkAsSoldConfirmation(product)}
-                  icon={<ImHammer2 className="size-6" />}
-                  ariaLabel="Arrematar"
-                  className="text-redDark hover:text-red-700"
-                />
+                {product.attributes.auctioned !== 1 && (
+                  <IconButton
+                    onClick={() => handleMarkAsSoldConfirmation(product)}
+                    icon={<ImHammer2 className="size-6" />}
+                    ariaLabel="Arrematar"
+                    className="text-redDark hover:text-red-700"
+                  />
+                )}
               </td>
             </tr>
           ))}

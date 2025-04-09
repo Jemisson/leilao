@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from "react";
-import { useParams, useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
+import { toast } from "react-toastify";
+import UserForm from "../components/UserForm";
 import { fetchUserById, updateUser } from "../services/api";
 import { ProfileUser } from "../types";
-import UserForm from "../components/UserForm";
 import { getUserRole } from "../utils/authHelpers";
-import { toast } from "react-toastify";
 
 const UserEdit: React.FC = () => {
   const { userId } = useParams<{ userId: string }>();
@@ -38,7 +38,7 @@ const UserEdit: React.FC = () => {
     setIsSubmitting(true);
     try {
       await updateUser(Number(userId), updatedProfileUser);
-      navigate("/dashboard/licitantes");
+      navigate("/dashboard/participantes");
       toast.success("Dados atualizados com sucesso!");
     } catch (err) {
       toast.error(`Erro ao atualizar usuário: ${err}`);

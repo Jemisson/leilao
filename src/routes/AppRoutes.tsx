@@ -1,20 +1,20 @@
 import React from "react";
-import { Routes, Route, Navigate } from "react-router-dom";
-import ProductCatalog from "../components/ProductCatalog";
-import DashboardLayout from "../components/DashboardLayout";
-import LoginForm from "../pages/LoginForm";
-import ProductManagement from "../pages/ProductManagement";
-import { isAuthenticated } from "../utils/authHelpers";
-import ProductCreation from "../pages/ProductCreation";
-import BidHistory from "../pages/BidHistory";
-import ProductEdit from "../pages/ProductEdit";
-import ProductDetails from "../pages/ProductDetails";
-import Dashboard from "../pages/Dashboard";
-import UserManagement from "../pages/UserManagement";
-import UserDetails from "../pages/UserDetails";
-import UserRegistration from "../pages/UserRegistration";
-import UserEdit from "../pages/UserEdit";
+import { Navigate, Route, Routes } from "react-router-dom";
 import ConditionalLayout from "../components/ConditionalLayout";
+import DashboardLayout from "../components/DashboardLayout";
+import ProductCatalog from "../components/ProductCatalog";
+import BidHistory from "../pages/BidHistory";
+import Dashboard from "../pages/Dashboard";
+import LoginForm from "../pages/LoginForm";
+import ProductCreation from "../pages/ProductCreation";
+import ProductDetails from "../pages/ProductDetails";
+import ProductEdit from "../pages/ProductEdit";
+import ProductManagement from "../pages/ProductManagement";
+import UserDetails from "../pages/UserDetails";
+import UserEdit from "../pages/UserEdit";
+import UserManagement from "../pages/UserManagement";
+import UserRegistration from "../pages/UserRegistration";
+import { isAuthenticated } from "../utils/authHelpers";
 
 const PrivateRoute: React.FC<{ children: JSX.Element }> = ({ children }) => {
   return isAuthenticated() ? children : <Navigate to="/login" />;
@@ -41,7 +41,7 @@ const AppRoutes: React.FC<AppRoutesProps> = ({ selectedCategory }) => {
       {/* Página de login */}
       <Route path="/login" element={<LoginForm />} />
       <Route element={<ConditionalLayout />}>
-        <Route path="licitantes/new" element={<UserRegistration />} />
+        <Route path="participantes/new" element={<UserRegistration />} />
       </Route>
 
       {/* Layout do Dashboard com rotas protegidas */}
@@ -60,9 +60,9 @@ const AppRoutes: React.FC<AppRoutesProps> = ({ selectedCategory }) => {
         <Route path="produtos/new" element={<ProductCreation />} />
         <Route path="produtos/:productId/lances" element={ <ProductDetails />} />
         <Route path="produtos/:productId/edit" element={<ProductEdit />} />
-        <Route path="licitantes" element={<UserManagement />} />
-        <Route path="licitantes/:userId" element={<UserDetails />} />
-        <Route path="licitantes/:userId/edit" element={<UserEdit />} />
+        <Route path="participantes" element={<UserManagement />} />
+        <Route path="participantes/:userId" element={<UserDetails />} />
+        <Route path="participantes/:userId/edit" element={<UserEdit />} />
 
       </Route>
     </Routes>

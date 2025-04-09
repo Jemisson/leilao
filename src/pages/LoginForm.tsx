@@ -1,12 +1,11 @@
+import { useGoogleLogin } from "@react-oauth/google";
+import { AxiosError } from "axios";
+import Cookies from "js-cookie";
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { login } from "../services/api";
-import Cookies from "js-cookie";
-import { AxiosError } from "axios";
-import Logo from "../components/Logo";
 import { toast } from "react-toastify";
-import { useGoogleLogin } from "@react-oauth/google";
-import { googleLogin } from "../services/api";
+import Logo from "../components/Logo";
+import { googleLogin, login } from "../services/api";
 
 const LoginPage: React.FC = () => {
   const [email, setEmail] = useState<string>("");
@@ -20,7 +19,7 @@ const LoginPage: React.FC = () => {
         const response = await googleLogin(tokenResponse.access_token);
         
         if (response.message === "Usuário não cadastrado"){
-          navigate("/licitantes/new", {
+          navigate("/participantes/new", {
             state: { email: response.user.email, name: response.user.name },
           });
 
@@ -73,7 +72,7 @@ const LoginPage: React.FC = () => {
   };
 
   const handleCreateAccountClick = () => {
-    navigate('/licitantes/new');
+    navigate('/participantes/new');
   };
 
   return (

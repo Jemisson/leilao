@@ -88,58 +88,65 @@ const ProductDetails: React.FC = () => {
   if (error) return <p>{error}</p>;
 
   return (
-    <div className="p-6 bg-gray-100 flex flex-wrap justify-between">
-      <div className="flex justify-between w-full min-h-1">
+    <div className="p-6 bg-gray-100 min-h-screen">
+      {/* Título e botão de editar */}
+      <div className="flex justify-between items-center mb-6 w-full">
         <h1 className="font-bold text-5xl">Lote</h1>
         <a
           onClick={() => navigate(`/dashboard/produtos/${product?.id}/edit`)}
-          className="font-bold flex justify-center items-center text-yellow-500 hover:text-yellow-700 border border-yellow-700 rounded py-2 px-4"
+          className="font-bold flex justify-center items-center text-yellow-500 hover:text-yellow-700 border border-yellow-700 rounded py-2 px-4 cursor-pointer"
           aria-label="Editar"
         >
           Editar produto
         </a>
       </div>
-
-      <div className="w-1/3">
-        {product && (
-          <div className="mb-6">
-            <h1 className="text-7xl font-bold mb-2 text-redBright">{product.attributes.lot_number}</h1>
-            <p className="text-gray-700">
-              <strong>Descrição:</strong> {product.attributes.description}
-            </p>
-            <p className="text-gray-700 mt-2">
-              <strong>Valor Inicial:</strong> R$ {product.attributes.minimum_value}
-            </p>
-            <p className="text-2xl mt-5 text-redBright">
-              <strong>Valor atual: R$ {Number(product.attributes.current_value).toFixed(2)} </strong>
-            </p>
-            <div className="flex gap-10 justify-start flex-wrap mt-10">
-              {product.attributes.images?.map((image) => (
-                <img
-                  key={image.id}
-                  src={image.url}
-                  alt={`Imagem ${image.id}`}
-                  className="w-1/6 h-1/6 object-cover rounded-lg"
-                />
-              ))}
+  
+      {/* Conteúdo principal: detalhes + histórico */}
+      <div className="flex flex-col md:flex-row gap-8">
+        {/* Detalhes do produto */}
+        <div className="w-full md:w-1/3">
+          {product && (
+            <div className="mb-6">
+              <h1 className="text-5xl font-bold mb-2 text-redBright">{product.attributes.lot_number}</h1>
+              <p className="text-gray-700">
+                <strong>Descrição:</strong> {product.attributes.description}
+              </p>
+              <p className="text-gray-700 mt-2">
+                <strong>Valor Inicial:</strong> R$ {product.attributes.minimum_value}
+              </p>
+              <p className="text-2xl mt-5 text-redBright">
+                <strong>Valor atual: R$ {Number(product.attributes.current_value).toFixed(2)} </strong>
+              </p>
+              <div className="flex gap-4 flex-wrap mt-6">
+                {product.attributes.images?.map((image) => (
+                  <img
+                    key={image.id}
+                    src={image.url}
+                    alt={`Imagem ${image.id}`}
+                    className="w-24 h-24 object-cover rounded-lg"
+                  />
+                ))}
+              </div>
             </div>
-          </div>
-        )}
-      </div>
-
-      <div className="w-2/3 pl-10">
-        <h2 className="text-xl font-bold mb-4">Histórico de Lances</h2>
-        <BidTable showLotNumber={false} bids={bids} />
-
-        {/* Paginação */}
-        <Pagination
-          currentPage={currentPage}
-          totalPages={totalPages}
-          onPageChange={setCurrentPage}
-        />
+          )}
+        </div>
+  
+        {/* Histórico de lances */}
+        <div className="w-full md:w-2/3">
+          <h2 className="text-xl font-bold mb-4">Histórico de Lances</h2>
+          <BidTable showLotNumber={false} bids={bids} />
+  
+          <Pagination
+            currentPage={currentPage}
+            totalPages={totalPages}
+            onPageChange={setCurrentPage}
+          />
+        </div>
       </div>
     </div>
   );
+  
+  
 };
 
 export default ProductDetails;
