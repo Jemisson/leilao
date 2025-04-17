@@ -1,9 +1,14 @@
 import React from "react";
+import { FaTimes } from "react-icons/fa";
+import { formatCurrency } from "../utils/currency";
 
 interface VideoModalProps {
   isOpen: boolean;
   videoUrl: string;
   onClose: () => void;
+  lotNumber: string;
+  description: string;
+  value: string | number;
 }
 
 const getYouTubeEmbedUrl = (url: string): string | null => {
@@ -22,20 +27,43 @@ const getYouTubeEmbedUrl = (url: string): string | null => {
   }
 };
 
-const VideoModal: React.FC<VideoModalProps> = ({ isOpen, videoUrl, onClose }) => {
+const VideoModal: React.FC<VideoModalProps> = ({
+  isOpen,
+  videoUrl,
+  onClose,
+  lotNumber,
+  description,
+  value,
+}) => {
+
   if (!isOpen) return null;
 
   const embedUrl = getYouTubeEmbedUrl(videoUrl);
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-60">
-      <div className="bg-white p-4 rounded-lg w-full max-w-2xl relative">
+      <div className="bg-white p-6 rounded-lg w-full max-w-2xl relative dark:bg-gray-800">
+
         <button
           onClick={onClose}
-          className="absolute top-2 right-2 text-gray-500 hover:text-red-600 font-bold text-xl"
+          className="absolute top-3 right-3 bg-black/60 hover:bg-black/80 text-white rounded-full p-2 shadow-lg transition"
+          title="Fechar"
         >
-          &times;
+          <FaTimes className="w-6 h-6" />
         </button>
+  
+        {/* Infos acima do vídeo */}
+        <div className="mb-4">
+          <h3 className="text-xl font-bold text-gray-800 dark:text-white mb-1">
+            LOTE: {lotNumber}
+          </h3>
+          <p className="text-gray-700 dark:text-gray-300 mb-2">
+            {description}
+          </p>
+          <p className="text-lg font-semibold text-red-600 dark:text-red-400">
+            Valor: {formatCurrency(Number(value))}
+          </p>
+        </div>
 
         {embedUrl ? (
           <div className="aspect-w-16 aspect-h-9 w-full">
@@ -43,7 +71,6 @@ const VideoModal: React.FC<VideoModalProps> = ({ isOpen, videoUrl, onClose }) =>
               className="w-full h-96"
               src={embedUrl}
               title="YouTube video player"
-              frameBorder="0"
               allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
               allowFullScreen
             ></iframe>
@@ -56,6 +83,7 @@ const VideoModal: React.FC<VideoModalProps> = ({ isOpen, videoUrl, onClose }) =>
       </div>
     </div>
   );
+
 };
 
 export default VideoModal;

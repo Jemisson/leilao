@@ -1,11 +1,12 @@
 import { Link } from 'react-router-dom';
-import coracao from '../assets/images/logo_coracao.png'
+import logo from '../assets/images/logo2.png'
 interface LogoProps {
   onCategoryClick?: (categoryId: string | null) => void;
   isLink?: boolean;
+  colorText?: string
 }
 
-function Logo({ onCategoryClick, isLink = true }: LogoProps) {
+function Logo({ onCategoryClick, isLink = true, colorText = "text-beige" }: LogoProps) {
   const handleClick = () => {
     if (onCategoryClick) {
       onCategoryClick(null);
@@ -15,12 +16,12 @@ function Logo({ onCategoryClick, isLink = true }: LogoProps) {
   const content = (
     <div className="flex items-center space-x-2" onClick={handleClick}>
       <img
-        src={coracao}
+        src={logo}
         alt="Logo Imagem Peregrina"
         className="h-9 w-18"
       />
-      <span className="text-2xl font-semibold whitespace-nowrap text-beige">
-        Leilões Virtuais
+      <span className={`text-2xl font-semibold whitespace-nowrap ${colorText}`}>
+        2° leilão das Paróquias
       </span>
     </div>
   );

@@ -78,8 +78,8 @@ const LoginPage: React.FC = () => {
   return (
     <div className="flex flex-col lg:flex-row h-screen">
       <div className="w-full lg:w-1/2 relative bg-redDark text-white flex flex-col justify-center items-center p-6">
-        <Logo />
-        <h1 className="text-4xl font-bold mt-6 text-center">Bem-vindo(a) à plataforma de leilões!</h1>
+        
+        <h1 className="text-4xl font-bold mt-6 text-center">Bem-vindo(a) à plataforma de leilões Virtuais!</h1>
         <p className="mt-4 text-lg text-center">
           Aqui você encontra as melhores oportunidades para comprar itens exclusivos.
         </p>
@@ -92,7 +92,8 @@ const LoginPage: React.FC = () => {
       </div>
 
       <div className="w-full lg:w-1/2 flex flex-col justify-center items-center bg-gray-50 p-6">
-        <h3 className="mb-3 text-4xl font-extrabold text-gray-900">Login</h3>
+        <Logo colorText="text-black"/>
+        <h3 className="mt-5 mb-3 text-2xl text-gray-900">Autentique-se com uma das opções abaixo</h3>
 
         {message && (
           <p
