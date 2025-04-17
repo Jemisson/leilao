@@ -216,6 +216,9 @@ const ProductForm: React.FC<ProductFormProps> = ({
         isOpen={isVideoModalOpen}
         videoUrl={productData.link_video || ""}
         onClose={() => setIsVideoModalOpen(false)}
+        lotNumber={productData.lot_number || ""}
+        description={productData.description || ""}
+        value={productData.minimum_value || ""}
       />
     </div>
   );
