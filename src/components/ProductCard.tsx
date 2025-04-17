@@ -1,17 +1,20 @@
-import { useState } from "react";
-import { ProductCardProps } from "../types";
 import { FaPlayCircle } from "react-icons/fa";
-import VideoModal from "./VideoModal";
+import { ProductCardProps } from "../types";
+import { formatCurrency } from "../utils/currency";
 
-const ProductCard = ({ product, isUpdated, onBid }: ProductCardProps) => {
-  const [isVideoModalOpen, setIsVideoModalOpen] = useState(false);
+const ProductCard = ({ product, isUpdated, onBid, onViewDetails }: ProductCardProps) => {
 
   return (
     <div
-      className={`relative max-w-sm bg-white border  rounded-lg shadow-md dark:bg-gray-800 dark:border-gray-700 ${isUpdated ? " border-2 border-solid border-gold" : "border-gray-200"}`}
+      className={`relative w-full md:w-[300px] lg:w-[320px] xl:w-[350px] h-auto md:h-[520px] bg-white border rounded-lg shadow-md dark:bg-gray-800 dark:border-gray-700 ${
+        isUpdated ? "border-2 border-solid border-gold" : "border-gray-200"
+      }`}
       key={product.id}
     >
-      <div className="relative">
+      <div
+        className="relative"
+        onClick={onViewDetails}
+      >
         <img
           className="rounded-t-lg w-full h-48 object-cover"
           src={
@@ -26,14 +29,7 @@ const ProductCard = ({ product, isUpdated, onBid }: ProductCardProps) => {
         </span>
 
         {product.attributes.link_video && (
-          <button
-            type="button"
-            onClick={() => setIsVideoModalOpen(true)}
-            className="absolute top-2 right-2 text-redDark hover:text-red-500 transition"
-            title="Ver vídeo do produto"
-          >
-            <FaPlayCircle className="w-7 h-7 drop-shadow-md" />
-          </button>
+          <FaPlayCircle className="w-7 h-7 drop-shadow-md absolute top-2 right-2 text-redDark fill-white" />
         )}
       </div>
 
@@ -45,7 +41,7 @@ const ProductCard = ({ product, isUpdated, onBid }: ProductCardProps) => {
           {product.attributes.description || ""}
         </p>
         <p className={`mb-3 font-semibold text-lg ${isUpdated ? "text-redBright" : "text-gray-900"}`}>
-          Valor: R$ {product.attributes.current_value}
+          Valor: {formatCurrency(Number(product.attributes.current_value))}
         </p>
         <button
           type="button"
@@ -66,14 +62,6 @@ const ProductCard = ({ product, isUpdated, onBid }: ProductCardProps) => {
           </svg>
         </button>
       </div>
-
-      {product.attributes.link_video && (
-        <VideoModal
-          isOpen={isVideoModalOpen}
-          videoUrl={product.attributes.link_video}
-          onClose={() => setIsVideoModalOpen(false)}
-        />
-      )}
 
     </div>
   );

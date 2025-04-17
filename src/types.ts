@@ -86,6 +86,7 @@ export interface ProductCardProps {
   product: Product;
   isUpdated: boolean;
   onBid: () => void;
+  onViewDetails: () => void;
 }
 
 export interface BidTableProps {
