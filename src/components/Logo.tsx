@@ -20,9 +20,10 @@ function Logo({ onCategoryClick, isLink = true, colorText = "text-beige" }: Logo
         alt="Logo Imagem Peregrina"
         className="h-9 w-18"
       />
-      <span className={`text-2xl font-semibold whitespace-nowrap ${colorText}`}>
+      <span className={`text-base sm:text-lg md:text-xl lg:text-2xl font-semibold whitespace-nowrap ${colorText}`}>
         2° leilão das Paróquias
       </span>
+
     </div>
   );
 
