@@ -15,6 +15,7 @@ import UserEdit from "../pages/UserEdit";
 import UserManagement from "../pages/UserManagement";
 import UserRegistration from "../pages/UserRegistration";
 import { isAuthenticated } from "../utils/authHelpers";
+import ProductPage from "../components/ProductPage";
 
 const PrivateRoute: React.FC<{ children: JSX.Element }> = ({ children }) => {
   return isAuthenticated() ? children : <Navigate to="/login" />;
@@ -37,6 +38,7 @@ const AppRoutes: React.FC<AppRoutesProps> = ({ selectedCategory }) => {
           />
         }
       />
+      <Route path="produto/:id" element={<ProductPage />} />
 
       {/* Página de login */}
       <Route path="/login" element={<LoginForm />} />
