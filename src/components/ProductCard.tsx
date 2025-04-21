@@ -1,6 +1,8 @@
 import { FaPlayCircle } from "react-icons/fa";
 import { ProductCardProps } from "../types";
 import { formatCurrency } from "../utils/currency";
+import { CiShare2 } from "react-icons/ci";
+import { toast } from "react-toastify";
 
 const ProductCard = ({ product, isUpdated, onBid, onViewDetails }: ProductCardProps) => {
 
@@ -34,9 +36,34 @@ const ProductCard = ({ product, isUpdated, onBid, onViewDetails }: ProductCardPr
       </div>
 
       <div className="p-5">
-        <h5 className="mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white">
+
+      <div className="flex items-center justify-between mb-2">
+        <h5 className="text-2xl font-bold tracking-tight text-gray-900 dark:text-white">
           LOTE: {product.attributes.lot_number}
         </h5>
+        
+        <CiShare2
+          title="Compartilhar"
+          className="w-6 h-6 text-gray-500 hover:text-redDark cursor-pointer"
+          onClick={() => {
+            const shareUrl = `${window.location.origin}/produto/${product.id}`;
+            const text = `Confira este produto: LOTE ${product.attributes.lot_number}`;
+            
+            if (navigator.share) {
+              navigator.share({
+                title: "Leilão Virtual",
+                text,
+                url: shareUrl,
+              }).catch((err) => console.log("Erro ao compartilhar:", err));
+            } else {
+              navigator.clipboard.writeText(shareUrl).then(() => {
+                toast.success("Link copiado!")
+              });
+            }
+          }}
+        />
+      </div>
+
         <p className="mb-3 font-normal text-gray-700 dark:text-gray-400">
           {product.attributes.description || ""}
         </p>
@@ -49,17 +76,6 @@ const ProductCard = ({ product, isUpdated, onBid, onViewDetails }: ProductCardPr
           className="inline-flex items-center px-3 py-2 text-sm font-medium text-center text-white !bg-redDark rounded-lg hover:bg-redBright focus:ring-4 focus:outline-none focus:ring-redBright dark:bg-redBright"
         >
           Fazer um Lance
-          <svg
-            className="w-4 h-4 ml-2"
-            aria-hidden="true"
-            xmlns="http://www.w3.org/2000/svg"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
-            strokeWidth="2"
-          >
-            <path strokeLinecap="round" strokeLinejoin="round" d="M17 9l-5 5-5-5" />
-          </svg>
         </button>
       </div>
 
