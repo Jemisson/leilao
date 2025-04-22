@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Produto | Leilão</title>
+
+    <meta property="og:title" content="Leilão Virtual" />
+    <meta property="og:description" content="Confira os produtos disponíveis" />
+    <meta property="og:image" content="/default.jpg" />
+    <meta property="og:type" content="website" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <script>
+      async function renderSharePage() {
+        const params = new URLSearchParams(window.location.search);
+        const id = params.get("id");
+
+        if (!id) return;
+
+        try {
+          const res = await fetch(`${window.location.origin}/api/products/${id}`);
+
+          const data = await res.json();
+          const produto = data.data;
+
+          const ogTitle = `Lote ${produto.attributes.lot_number} - Leilão Virtual`;
+          const ogDesc = produto.attributes.description || "Confira este lote incrível!";
+          const ogImage = produto.attributes.images?.[0]?.url || "/default.jpg";
+
+          const setMeta = (property, content) => {
+            const tag = document.createElement("meta");
+            tag.setAttribute("property", property);
+            tag.setAttribute("content", content);
+            document.head.appendChild(tag);
+          };
+
+          setMeta("og:title", ogTitle);
+          setMeta("og:description", ogDesc);
+          setMeta("og:image", ogImage);
+          setMeta("og:url", window.location.href);
+        } catch (err) {
+          console.error("Erro ao buscar produto:", err);
+        } finally {
+          // Redireciona para a SPA principal
+          setTimeout(() => {
+            window.location.href = `/produto/${id}`;
+          }, 500);
+        }
+      }
+
+      renderSharePage();
+    </script>
+  </head>
+  <body>
+    <p style="text-align: center; font-family: sans-serif;">
+      Carregando detalhes do produto...
+    </p>
+  </body>
+</html>

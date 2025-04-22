@@ -88,7 +88,7 @@ const ProductPage = () => {
   if (!product) return <p className="text-center mt-10">Produto não encontrado ou já arrematado.</p>;
 
   const handleShare = () => {
-    const url = `${window.location.origin}/produto/${product.id}`;
+    const url = `${window.location.origin}/share/index.html?id=${product.id}`;
     const text = `Confira este produto: LOTE ${product.attributes.lot_number}`;
 
     if (navigator.share) {

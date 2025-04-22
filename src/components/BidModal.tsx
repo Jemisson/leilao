@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { BidModalProps } from "../types";
 import { createBid } from "../services/api";
 import { toast } from "react-toastify";
+import { FaTimes } from "react-icons/fa";
 
 const BidModal: React.FC<BidModalProps> = ({ 
   isOpen,
@@ -16,22 +17,21 @@ const BidModal: React.FC<BidModalProps> = ({
 
   const handleSubmit = async () => {
     setLoading(true);
-  
+
     try {
       if (!profileUserId) {
         toast.error("Você precisa estar autenticado para fazer um lance.");
         return;
       }
-  
+
       if (typeof bidValue !== "number" || bidValue <= currentValue) {
         toast.warning("Por favor, insira um valor maior que o valor atual.");
         return;
       }
-  
+
       await createBid(productId, bidValue, profileUserId);
-  
+
       toast.success("Lance registrado com sucesso");
-      onClose();
     } catch (err: unknown) {
       if (err instanceof Error) {
         const status = (err as { status?: number }).status;
@@ -49,7 +49,6 @@ const BidModal: React.FC<BidModalProps> = ({
       setLoading(false);
     }
   };
-  
 
   const handleTagClick = (increment: number) => {
     setBidValue(Number(currentValue) + increment);
@@ -64,9 +63,18 @@ const BidModal: React.FC<BidModalProps> = ({
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
-      <div className="bg-white p-6 rounded shadow-lg w-96">
+      <div className="relative bg-white p-6 rounded shadow-lg w-96">
+
+      <button
+        type="button"
+        className="absolute top-3 right-3 !bg-black/60 hover:bg-black/80 text-white rounded-full p-2 shadow-lg transition"
+        onClick={handleCancel}
+      >
+          <FaTimes className="w-6 h-6" />
+        </button>
+
         <h1 className="text-4xl text-center font-bold mb-4 text-redDark">Lote {productName}</h1>
-        <h2 className="text-center font-bold mb-10"> Valor atual: R$ {currentValue}</h2>
+        {/* <h2 className="text-center font-bold mb-10"> Valor atual: R$ {currentValue}</h2> */}
 
         <div className="flex gap-2 mb-4">
           {[10, 20, 50, 100].map((increment) => (
@@ -89,13 +97,6 @@ const BidModal: React.FC<BidModalProps> = ({
           onChange={(e) => setBidValue(Number(e.target.value))}
         />
         <div className="flex justify-end space-x-4">
-          <button
-            type="button"
-            className="px-4 py-2 text-redDark rounded hover:bg-redDark hover:text-white"
-            onClick={handleCancel}
-          >
-            Cancelar
-          </button>
           <button
             type="button"
             className="px-4 py-2 !bg-redDark text-white rounded hover:!bg-redBright"
