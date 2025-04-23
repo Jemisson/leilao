@@ -46,7 +46,7 @@ const ProductCard = ({ product, isUpdated, onBid, onViewDetails }: ProductCardPr
           title="Compartilhar"
           className="w-6 h-6 text-gray-500 hover:text-redDark cursor-pointer"
           onClick={() => {
-            const shareUrl = `${window.location.origin}/share/products/${product.id}`;
+            const shareUrl = `https://apileilao.codenova.com.br/share/products/${product.id}`;
             const text = `Confira este produto incrível: LOTE ${product.attributes.lot_number}`;
 
             if (navigator.share) {
