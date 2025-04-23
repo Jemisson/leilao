@@ -41,14 +41,14 @@ const ProductCard = ({ product, isUpdated, onBid, onViewDetails }: ProductCardPr
         <h5 className="text-2xl font-bold tracking-tight text-gray-900 dark:text-white">
           LOTE: {product.attributes.lot_number}
         </h5>
-        
+
         <CiShare2
           title="Compartilhar"
           className="w-6 h-6 text-gray-500 hover:text-redDark cursor-pointer"
           onClick={() => {
-            const shareUrl = `${window.location.origin}/produto/${product.id}`;
-            const text = `Confira este produto: LOTE ${product.attributes.lot_number}`;
-            
+            const shareUrl = `${window.location.origin}/share/products/${product.id}`;
+            const text = `Confira este produto incrível: LOTE ${product.attributes.lot_number}`;
+
             if (navigator.share) {
               navigator.share({
                 title: "Leilão Virtual",
