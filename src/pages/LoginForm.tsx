@@ -85,6 +85,7 @@ const LoginPage: React.FC = () => {
         </p>
         <p>Participe de leilões de forma prática e segura!</p>
         <p className="mt-6 text-center">Entre em contato para automatizar o seu leilão!</p>
+        <p className="mt-6 text-center">(67) 9 9861-5428</p>
         <div
           className="absolute inset-0 bg-cover bg-center opacity-20"
           style={{ backgroundImage: "url('/gado.jpg')" }}
