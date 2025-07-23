@@ -8,7 +8,7 @@ import "react-toastify/dist/ReactToastify.css";
 import { GoogleOAuthProvider } from "@react-oauth/google";
 
 function App() {
-  const CLIENT_ID = "278675836812-aa24q86tnv33scefsei4tvkf8rb63pa4.apps.googleusercontent.com";
+  const CLIENT_ID = "278675836812-upp77kl8ioiea5sdv5pc490flvvhpik3.apps.googleusercontent.com";
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
 
   const handleCategoryClick = (categoryId: string | null) => {
