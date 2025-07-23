@@ -31,7 +31,7 @@ const ProductForm: React.FC<ProductFormProps> = ({
         }));
       }
     }
-    if (initialData?.images) {
+    if (initialData?.images && Array.isArray(initialData.images)) {
       setExistingImages(initialData.images);
     }
   }, [initialData, categories]);
@@ -40,7 +40,11 @@ const ProductForm: React.FC<ProductFormProps> = ({
     const getCategories = async () => {
       try {
         const data = await fetchCategories();
-        setCategories(data.data);
+        if (Array.isArray(data.data)) {
+          setCategories(data.data);
+        } else {
+          setCategories([]);
+        }
       } catch (err) {
         toast.error(`Erro ao carregar categorias: ${err}`);
       }

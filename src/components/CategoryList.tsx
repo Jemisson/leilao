@@ -36,7 +36,7 @@ function  CategoryList() {
     <div>
       <h1>Categorias</h1>
       <ul>
-        {categories.map((category) => (
+        {Array.isArray(categories) && categories.map((category) => (
           <li key={category.id}>
             <strong>{category.attributes.title}</strong>
             <p>ID: {category.attributes.id}</p>

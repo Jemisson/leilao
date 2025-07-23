@@ -39,9 +39,14 @@ function Navbar({ onCategoryClick, activeCategory }: NavBarProps) {
     const getCategories = async () => {
       try {
         const data = await fetchCategories();
-        setCategories(data.data);
+        if (Array.isArray(data.data)) {
+            setCategories(data.data);
+          } else {
+            setCategories([]);
+          }
       } catch (err) {
         toast.error(`Erro ao carregar categorias: ${err}`);
+        setCategories([]);
       }
     };
 
@@ -122,7 +127,7 @@ function Navbar({ onCategoryClick, activeCategory }: NavBarProps) {
           } md:block transition-all duration-300 ease-in-out`}
         >
           <ul className="flex flex-col md:flex-row md:space-x-4 items-center">
-            {categories.map((category) => (
+            {Array.isArray(categories) && categories.map((category) => (
               <li key={category.id}>
                 <button
                   className={`px-3 py-2 text-beige ${

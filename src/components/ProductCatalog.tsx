@@ -76,7 +76,7 @@ function ProductCatalog({ selectedCategory }: ProductCatalogProps) {
       try {
         const data = await fetchProducts(currentPage, selectedCategory, 0);
 
-        if (data.data && data.data.length > 0) {
+        if (Array.isArray(data.data) && data.data.length > 0) {
           setProducts(data.data);
           setTotalPages(data.meta.total_pages);
         } else {

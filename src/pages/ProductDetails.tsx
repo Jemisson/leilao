@@ -112,13 +112,13 @@ const ProductDetails: React.FC = () => {
                 <strong>Descrição:</strong> {product.attributes.description}
               </p>
               <p className="text-gray-700 mt-2">
-                <strong>Valor Inicial:</strong> R$ {product.attributes.minimum_value}
+                <strong>Valor Inicial:</strong> R$ {Number(product.attributes.minimum_value ?? 0).toFixed(2)}
               </p>
               <p className="text-2xl mt-5 text-redBright">
                 <strong>Valor atual: R$ {Number(product.attributes.current_value).toFixed(2)} </strong>
               </p>
               <div className="flex gap-4 flex-wrap mt-6">
-                {product.attributes.images?.map((image) => (
+                {Array.isArray(product.attributes.images) && product.attributes.images?.map((image) => (
                   <img
                     key={image.id}
                     src={image.url}

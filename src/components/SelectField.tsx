@@ -6,7 +6,7 @@ const SelectField: React.FC<SelectFieldProps> = ({
   name,
   value,
   onChange,
-  options,
+  options = [],
   required = false,
 }) => {
   return (
@@ -22,7 +22,7 @@ const SelectField: React.FC<SelectFieldProps> = ({
         required={required}
         className="mt-1 p-2 w-full border border-gray-300 rounded-md"
       >
-        {options.map((option) => (
+        {Array.isArray(options) && options.map((option) => (
           <option key={option.value} value={option.value}>
             {option.label}
           </option>

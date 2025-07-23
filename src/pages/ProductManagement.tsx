@@ -30,8 +30,8 @@ const ProductManagement: React.FC = () => {
   const loadProducts = useCallback(async (page = 1, auctionedValue = auctioned) => {
     try {
       const data = await fetchProducts(page, null , auctionedValue);
-      setProducts(data.data);
-      setTotalPages(data.meta.total_pages);
+      setProducts(Array.isArray(data.data) ? data.data : []);
+      setTotalPages(data.meta.total_pages ?? 1);
     } catch (err) {
       setError("Erro ao carregar produtos.");
       toast.error(`Erro ao carregar produto: ${err}`);

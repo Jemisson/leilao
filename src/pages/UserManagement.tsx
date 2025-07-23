@@ -76,14 +76,14 @@ const UserManagement: React.FC = () => {
                   <td className="py-2 px-4 border-b text-center">{user.id}</td>
                   <td className="py-2 px-4 border-b text-center">
                     <div className="flex items-center justify-center space-x-2">
-                      <span>{user.attributes.name}</span>
+                      <span>{user.attributes.name ?? ""}</span>
                       {user.attributes.user_attributes.role === "admin" && <MdAdminPanelSettings className="text-redDark" />}
                     </div>
                   </td>
-                  <td className="py-2 px-4 border-b text-center">{user.attributes.phone}</td>
+                  <td className="py-2 px-4 border-b text-center">{user.attributes.phone ?? "Sem telefone"}</td>
                   <td className="py-2 px-4 border-b text-center">
-                    {`${user.attributes.street}, ${user.attributes.number}, 
-                      ${user.attributes.neighborhood}, ${user.attributes.city}`}
+                    {`${user.attributes.street}, ${user.attributes.number ?? ""}, 
+                      ${user.attributes.neighborhood}, ${user.attributes.city ?? ""}`}
                   </td>
                   <td className="py-2 px-4 border-b text-center">
                     <IconButton

@@ -6,7 +6,7 @@ const BidTable: React.FC<BidTableProps> = ({
   showLotNumber = false,
   showName = true,
   showPhone = true,
-  bids
+  bids = [],
 }) => {
   const formatDate = (isoDate: string): string => {
     const parsedDate = parseISO(isoDate);
@@ -15,7 +15,7 @@ const BidTable: React.FC<BidTableProps> = ({
 
   return (
     <div>
-      {bids.length > 0 ? (
+      {Array.isArray(bids) &&  bids.length > 0 ? (
         <>
           <table className="min-w-full bg-white border border-gray-300 shadow-sm rounded-lg">
             <thead>

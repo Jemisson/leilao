@@ -27,15 +27,15 @@ function DashboardPage() {
   const pieData = [
     {
       name: "Arrematados",
-      value: stats?.products_auctioned,
+      value: stats?.products_auctioned ?? 0,
     },
     {
       name: "Não Arrematados",
-      value: stats?.products_not_auctioned,
+      value: stats?.products_not_auctioned ?? 0,
     },
   ];
   
-  const COLORS = [colors.gold, colors.redDark]; // verde e amarelo
+  const COLORS = [colors.gold, colors.redDark];
 
   useEffect(() => {
     const loadStats = async () => {
