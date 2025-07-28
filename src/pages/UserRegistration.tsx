@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import UserForm from "../components/UserForm";
 import { createUser } from "../services/api";
@@ -7,8 +7,6 @@ import { ProfileUser } from "../types";
 import { getUserRole } from "../utils/authHelpers";
 
 const UserRegistration: React.FC = () => {
-  const location = useLocation();
-  const userFromGoogle = location.state || {};
 
   const [isSubmitting, setIsSubmitting] = useState(false);
   const navigate = useNavigate();
@@ -32,7 +30,7 @@ const UserRegistration: React.FC = () => {
       <h1 className="text-3xl font-bold mb-6">Cadastro de Usuário</h1>
       <UserForm
         initialProfileUser={{
-          name: userFromGoogle.name || "",
+          name: "",
           cpf: "",
           birth: "",
           street: "",
@@ -45,7 +43,7 @@ const UserRegistration: React.FC = () => {
           phone: "",
           user_attributes: {
             id: "",
-            email: userFromGoogle.email || "",
+            email: "",
             role: "user",
             password: "",
           },

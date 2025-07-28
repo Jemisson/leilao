@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import logo from '../assets/images/logo2.png'
+import logo from '../assets/images/ha.png'
 interface LogoProps {
   onCategoryClick?: (categoryId: string | null) => void;
   isLink?: boolean;
@@ -21,7 +21,7 @@ function Logo({ onCategoryClick, isLink = true, colorText = "text-beige" }: Logo
         className="h-9 w-18"
       />
       <span className={`text-base sm:text-lg md:text-xl lg:text-2xl font-semibold whitespace-nowrap ${colorText}`}>
-        2° leilão das Paróquias
+        22° Leilão Direito de Viver
       </span>
 
     </div>

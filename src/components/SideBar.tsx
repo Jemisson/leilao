@@ -4,11 +4,9 @@ import { FaMoneyBill } from "react-icons/fa";
 import { IoBagHandle } from "react-icons/io5";
 import { MdDashboard } from "react-icons/md";
 import { SideBarProps } from "../types";
-import { getAuthenticatedUser } from "../utils/authHelpers";
 import MenuItem from "./MenuItem";
 
 function SideBar({ isSidebarOpen, setIsSidebarOpen }: SideBarProps) {
-  const user = getAuthenticatedUser();
 
   const toggleSidebar = () => {
     setIsSidebarOpen((prev) => !prev);
@@ -61,9 +59,6 @@ function SideBar({ isSidebarOpen, setIsSidebarOpen }: SideBarProps) {
         aria-label="Sidebar"
       >
         <div className="h-full px-3 py-4 overflow-y-auto">
-          <p className="font-bold text-xl text-redDark mb-2 p-2">
-            Olá {user?.name}!
-          </p>
           <ul className="space-y-4">
             <MenuItem
               to="/dashboard"

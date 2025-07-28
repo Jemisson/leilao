@@ -95,111 +95,114 @@ function Navbar({ onCategoryClick, activeCategory }: NavBarProps) {
   if (!shouldShowNavbar) return null;
 
   return (
-    <nav
-      className={`bg-redDark border-gold sticky top-0 left-0 w-full z-50 ${
-        isVisible ? "translate-y-0" : "-translate-y-full"
-      } transition-transform duration-300`}
-    >
-      <div className="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-4">
-        <div className="flex items-center space-x-2 sm:ml-0 ml-12">
-          <Logo onCategoryClick={handleCategoryClick} />
-        </div>
+    <div className=" bg-pinkDark">
+      <div className="pb-5"></div>
+      <nav
+        className={`bg-blueBright border-white sticky top-0 left-0 w-full z-50 ${
+          isVisible ? "translate-y-0" : "-translate-y-full"
+        } transition-transform duration-300`}
+      >
+        <div className="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-4">
+          <div className="flex items-center space-x-2 sm:ml-0 ml-12">
+            <Logo onCategoryClick={handleCategoryClick} />
+          </div>
 
-        {/* Botão menu mobile */}
-        <button
-          onClick={() => setIsMenuOpen(!isMenuOpen)}
-          className="inline-flex items-center p-2 w-10 h-10 justify-center text-gold rounded-lg md:hidden hover:bg-redBright focus:outline-none focus:ring-2 focus:ring-gold"
-          aria-controls="navbar-default"
-          aria-expanded={isMenuOpen}
-        >
-          {isMenuOpen ? <FaTimes className="w-5 h-5" /> : <FaBars className="w-5 h-5" />}
-        </button>
+          {/* Botão menu mobile */}
+          <button
+            onClick={() => setIsMenuOpen(!isMenuOpen)}
+            className="inline-flex items-center p-2 w-10 h-10 justify-center text-white rounded-lg md:hidden hover:bg-pinkDark focus:outline-none focus:ring-2 focus:white"
+            aria-controls="navbar-default"
+            aria-expanded={isMenuOpen}
+          >
+            {isMenuOpen ? <FaTimes className="w-5 h-5" /> : <FaBars className="w-5 h-5" />}
+          </button>
 
-        {/* Menu */}
-        <div
-          id="navbar-default"
-          className={`w-full md:w-auto ${
-            isMenuOpen ? "block" : "hidden"
-          } md:block transition-all duration-300 ease-in-out`}
-        >
-          <ul className="flex flex-col md:flex-row md:space-x-4 items-center">
-            {categories?.map((category) => (
-              <li key={category.id}>
+          {/* Menu */}
+          <div
+            id="navbar-default"
+            className={`w-full md:w-auto ${
+              isMenuOpen ? "block" : "hidden"
+            } md:block transition-all duration-300 ease-in-out`}
+          >
+            <ul className="flex flex-col md:flex-row md:space-x-4 items-center">
+              {categories?.map((category) => (
+                <li key={category.id}>
+                  <button
+                    className={`px-3 py-2 text-beige ${
+                      activeCategory === category.id
+                        ? "border-b-2 border-gold text-gold"
+                        : "hover:text-gold hover:border-b-2 hover:border-gold"
+                    }`}
+                    onClick={() => handleMenuItemClick(category.id)}
+                  >
+                    {category.attributes.title}
+                  </button>
+                </li>
+              ))}
+              <li>
                 <button
                   className={`px-3 py-2 text-beige ${
-                    activeCategory === category.id
+                    activeCategory === null && location.pathname === "/"
                       ? "border-b-2 border-gold text-gold"
                       : "hover:text-gold hover:border-b-2 hover:border-gold"
                   }`}
-                  onClick={() => handleMenuItemClick(category.id)}
+                  onClick={() => handleMenuItemClick(null)}
                 >
-                  {category.attributes.title}
+                  Ver Tudo
                 </button>
               </li>
-            ))}
-            <li>
-              <button
-                className={`px-3 py-2 text-beige ${
-                  activeCategory === null && location.pathname === "/"
-                    ? "border-b-2 border-gold text-gold"
-                    : "hover:text-gold hover:border-b-2 hover:border-gold"
-                }`}
-                onClick={() => handleMenuItemClick(null)}
-              >
-                Ver Tudo
-              </button>
-            </li>
 
-            {isLoggedIn ? (
-              <>
-                {userRole === "user" ? (
+              {isLoggedIn ? (
+                <>
+                  {userRole === "user" ? (
+                    <li>
+                      <button
+                        onClick={handleProfileClick}
+                        className="px-3 py-2 text-beige hover:text-gold hover:border-b-2 hover:border-gold"
+                      >
+                        Meus dados
+                      </button>
+                    </li>
+                  ) : (
+                    <li>
+                      <button
+                        onClick={() => {
+                          navigate("/dashboard");
+                          if (window.innerWidth < 768) setIsMenuOpen(false);
+                        }}
+                        className="px-3 py-2 text-beige hover:text-gold hover:border-b-2 hover:border-gold"
+                      >
+                        Dashboard
+                      </button>
+                    </li>
+                  )}
                   <li>
                     <button
-                      onClick={handleProfileClick}
                       className="px-3 py-2 text-beige hover:text-gold hover:border-b-2 hover:border-gold"
+                      onClick={handleLogout}
                     >
-                      Meus dados
+                      Sair
                     </button>
                   </li>
-                ) : (
-                  <li>
-                    <button
-                      onClick={() => {
-                        navigate("/dashboard");
-                        if (window.innerWidth < 768) setIsMenuOpen(false);
-                      }}
-                      className="px-3 py-2 text-beige hover:text-gold hover:border-b-2 hover:border-gold"
-                    >
-                      Dashboard
-                    </button>
-                  </li>
-                )}
+                </>
+              ) : (
                 <li>
                   <button
                     className="px-3 py-2 text-beige hover:text-gold hover:border-b-2 hover:border-gold"
-                    onClick={handleLogout}
+                    onClick={() => {
+                      navigate("/login");
+                      if (window.innerWidth < 768) setIsMenuOpen(false);
+                    }}
                   >
-                    Sair
+                    Entrar
                   </button>
                 </li>
-              </>
-            ) : (
-              <li>
-                <button
-                  className="px-3 py-2 text-beige hover:text-gold hover:border-b-2 hover:border-gold"
-                  onClick={() => {
-                    navigate("/login");
-                    if (window.innerWidth < 768) setIsMenuOpen(false);
-                  }}
-                >
-                  Entrar
-                </button>
-              </li>
-            )}
-          </ul>
+              )}
+            </ul>
+          </div>
         </div>
-      </div>
-    </nav>
+      </nav>
+    </div>
   );
 }
 

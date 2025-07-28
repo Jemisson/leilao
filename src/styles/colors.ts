@@ -1,7 +1,7 @@
 const tailwindColors = {
-  redDark: "#8B0000",
+  redDark: "#00AEEF",
   redBright: "#FF0000",
-  gold: "#D4AF37",
+  gold: "#EC008C",
   beige: "#F5F5DC",
 };
 
