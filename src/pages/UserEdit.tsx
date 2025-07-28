@@ -38,7 +38,13 @@ const UserEdit: React.FC = () => {
     setIsSubmitting(true);
     try {
       await updateUser(Number(userId), updatedProfileUser);
-      navigate("/dashboard/participantes");
+
+      if (updatedProfileUser.user_attributes?.role === "admin") {
+        navigate("/dashboard");
+      } else {
+        navigate("/");
+      }
+
       toast.success("Dados atualizados com sucesso!");
     } catch (err) {
       toast.error(`Erro ao atualizar usuário: ${err}`);

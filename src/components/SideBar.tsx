@@ -59,7 +59,7 @@ function SideBar({ isSidebarOpen, setIsSidebarOpen }: SideBarProps) {
         aria-label="Sidebar"
       >
         <div className="h-full px-3 py-4 overflow-y-auto">
-          <ul className="space-y-4">
+          <ul className="space-y-4 mt-5">
             <MenuItem
               to="/dashboard"
               icon={<MdDashboard />}
