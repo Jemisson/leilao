@@ -8,7 +8,7 @@ export default {
   theme: {
     extend: {
       fontFamily: {
-        sans: ['Inter', 'sans-serif'],
+        sans: ['"Open Sans"', 'sans-serif'],
       },
       colors: {
         redDark: "#00AEEF", // Vermelho escuro

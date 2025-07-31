@@ -5,7 +5,6 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { fetchCategories, getUserInfo } from "../services/api";
 import { Category, NavBarProps } from "../types";
-import { isAuthenticated } from "../utils/authHelpers";
 import Logo from "./Logo";
 
 function Navbar({ onCategoryClick, activeCategory }: NavBarProps) {
@@ -16,9 +15,7 @@ function Navbar({ onCategoryClick, activeCategory }: NavBarProps) {
   const [pendingCategory, setPendingCategory] = useState<string | null>(null);
   const location = useLocation();
   const navigate = useNavigate();
-  const isLoggedIn = isAuthenticated();
   const userInfo = getUserInfo();
-  const userId = userInfo?.id;
   const userRole = userInfo?.role;
   const shouldShowNavbar = location.pathname !== "/login";
 
@@ -85,25 +82,17 @@ function Navbar({ onCategoryClick, activeCategory }: NavBarProps) {
     navigate("/login");
   };
 
-  const handleProfileClick = () => {
-    if (userId) {
-      navigate(`/dashboard/participantes/${userId}/edit`);
-      if (window.innerWidth < 768) setIsMenuOpen(false);
-    }
-  };
-
   if (!shouldShowNavbar) return null;
 
   return (
-    <div className=" bg-pinkDark">
-      <div className="pb-5"></div>
+    <div className="bg-pinkDark w-full pt-3">
       <nav
-        className={`bg-blueBright border-white sticky top-0 left-0 w-full z-50 ${
+        className={`bg-blueBright border-white sticky top-0 left-0 w-full z-50 h-20 ${
           isVisible ? "translate-y-0" : "-translate-y-full"
         } transition-transform duration-300`}
       >
         <div className="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-4">
-          <div className="flex items-center space-x-2 sm:ml-0 ml-12">
+          <div className="max-w-screen-xl h-full mx-auto px-4 flex items-center">
             <Logo onCategoryClick={handleCategoryClick} />
           </div>
 
@@ -120,9 +109,9 @@ function Navbar({ onCategoryClick, activeCategory }: NavBarProps) {
           {/* Menu */}
           <div
             id="navbar-default"
-            className={`w-full md:w-auto ${
-              isMenuOpen ? "block" : "hidden"
-            } md:block transition-all duration-300 ease-in-out`}
+            className={`w-full md:w-auto overflow-x-hidden ${
+                        isMenuOpen ? "block" : "hidden"
+                      } md:block transition-all duration-300 ease-in-out`}
           >
             <ul className="flex flex-col md:flex-row md:space-x-4 items-center">
               {categories?.map((category) => (
@@ -152,52 +141,29 @@ function Navbar({ onCategoryClick, activeCategory }: NavBarProps) {
                 </button>
               </li>
 
-              {isLoggedIn ? (
-                <>
-                  {userRole === "user" ? (
-                    <li>
-                      <button
-                        onClick={handleProfileClick}
-                        className="px-3 py-2 text-beige hover:text-gold hover:border-b-2 hover:border-gold"
-                      >
-                        Meus dados
-                      </button>
-                    </li>
-                  ) : (
-                    <li>
-                      <button
-                        onClick={() => {
-                          navigate("/dashboard");
-                          if (window.innerWidth < 768) setIsMenuOpen(false);
-                        }}
-                        className="px-3 py-2 text-beige hover:text-gold hover:border-b-2 hover:border-gold"
-                      >
-                        Dashboard
-                      </button>
-                    </li>
-                  )}
-                  <li>
-                    <button
-                      className="px-3 py-2 text-beige hover:text-gold hover:border-b-2 hover:border-gold"
-                      onClick={handleLogout}
-                    >
-                      Sair
-                    </button>
-                  </li>
-                </>
-              ) : (
+              {userRole === "admin" &&
+              <>
+                <li>
+                  <button
+                    onClick={() => {
+                      navigate("/dashboard");
+                      if (window.innerWidth < 768) setIsMenuOpen(false);
+                    }}
+                    className="px-3 py-2 text-beige hover:text-gold hover:border-b-2 hover:border-gold"
+                  >
+                    Dashboard
+                  </button>
+                </li>
                 <li>
                   <button
                     className="px-3 py-2 text-beige hover:text-gold hover:border-b-2 hover:border-gold"
-                    onClick={() => {
-                      navigate("/login");
-                      if (window.innerWidth < 768) setIsMenuOpen(false);
-                    }}
+                    onClick={handleLogout}
                   >
-                    Entrar
+                    Sair
                   </button>
                 </li>
-              )}
+              </>
+              }
             </ul>
           </div>
         </div>
