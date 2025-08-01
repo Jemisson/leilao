@@ -51,11 +51,11 @@ const ProductCard = ({ product, isUpdated, onBid, onViewDetails }: ProductCardPr
           className="w-6 h-6 text-gray-500 hover:text-redDark cursor-pointer"
           onClick={() => {
             const shareUrl = `https://api.leiloescapuci.com.br/share/products/${product.id}`;
-            const text = `Confira este produto incrível: LOTE ${product.attributes.lot_number}`;
+            const text = `Confira este lote incrível: LOTE ${product.attributes.lot_number}`;
 
             if (navigator.share) {
               navigator.share({
-                title: "Leilão Virtual",
+                title: "22° Leilão Direito de Viver.",
                 text,
                 url: shareUrl,
               }).catch((err) => console.log("Erro ao compartilhar:", err));

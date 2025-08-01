@@ -18,6 +18,7 @@ const ProductPage = () => {
   const [isBidModalOpen, setBidModalOpen] = useState(false);
   const { cable } = useWebSocket();
   const [isWebSocketReady, setIsWebSocketReady] = useState(false);
+  const isAdmin = user?.role === "admin";
 
   const getYouTubeEmbedUrl = (url: string): string | null => {
     const match = url.match(
@@ -92,7 +93,7 @@ const ProductPage = () => {
     const text = `Confira este produto: LOTE ${product.attributes.lot_number}`;
 
     if (navigator.share) {
-      navigator.share({ title: "Leilão Virtual", text, url });
+      navigator.share({ title: "22° Leilão Direito de Viver", text, url });
     } else {
       navigator.clipboard.writeText(url);
       toast.success("Link copiado!");
@@ -139,14 +140,15 @@ const ProductPage = () => {
             Valor: {formatCurrency(Number(product.attributes?.current_value))}
           </p>
 
-          <button
-            type="button"
-            onClick={handleOpenBidModal}
-            className="inline-flex items-center px-3 py-2 mt-5 text-sm font-medium text-center text-white !bg-redDark rounded-lg hover:bg-redBright focus:ring-4 focus:outline-none focus:ring-redBright dark:bg-redBright"
-          >
-            Fazer um Lance
-          </button>
-
+          {isAdmin && (
+            <button
+              type="button"
+              onClick={handleOpenBidModal}
+              className="inline-flex items-center px-3 py-2 mt-5 text-sm font-medium text-center text-white !bg-redDark rounded-lg hover:bg-redBright focus:ring-4 focus:outline-none focus:ring-redBright dark:bg-redBright"
+            >
+              Fazer um Lance
+            </button>
+          )}
         </div>
       </div>
 
