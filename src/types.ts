@@ -51,6 +51,7 @@ export interface Bid {
     id: number;
     name: string;
     value: number;
+    notes: string;
     phone: string;
     created_at: string;
     product: number;

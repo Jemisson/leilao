@@ -168,14 +168,15 @@ export const deleteImage = async (id: number, imageId: string) => {
   }
 }
 
-export const createBid = async (productId: number, value: number, profileUserId: number) => {
+export const createBid = async (productId: number, value: number, notes: string, profileUserId: number) => {
   try {
     const response = await api.post("/bids", {
       product_id: productId,
       value,
+      notes,
       profile_user_id: profileUserId,
     });
-    
+
     return response.data;
   } catch (err) {
     console.error("Erro ao efetuar lance:", err);

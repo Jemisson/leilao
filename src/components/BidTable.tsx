@@ -26,6 +26,7 @@ const BidTable: React.FC<BidTableProps> = ({
                 {showName && <th className="py-2 px-4 border-b">Nome do Licitante</th>}
                 {showPhone && <th className="py-2 px-4 border-b">Telefone</th>}
                 <th className="py-2 px-4 border-b">Valor do Lance</th>
+                <th className="py-2 px-4 border-b">Observações</th>
               </tr>
             </thead>
             <tbody>
@@ -46,6 +47,9 @@ const BidTable: React.FC<BidTableProps> = ({
                   )}
                   <td className="py-2 px-4 border-b text-center">
                     R$ {Number(bid.attributes.value).toFixed(2)}
+                  </td>
+                  <td className="py-2 px-4 border-b text-center">
+                    {bid.attributes.notes || '-'}
                   </td>
                 </tr>
               ))}

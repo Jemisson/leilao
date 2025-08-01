@@ -12,6 +12,7 @@ const BidModal: React.FC<BidModalProps> = ({
   currentValue,
  }) => {
   const [bidValue, setBidValue] = useState<number | "">("");
+  const [noteValue, setNoteValue] = useState("");
   const [loading, setLoading] = useState(false);
 
   const handleSubmit = async () => {
@@ -28,7 +29,7 @@ const BidModal: React.FC<BidModalProps> = ({
         return;
       }
   
-      await createBid(productId, bidValue, profileUserId);
+      await createBid(productId, bidValue, noteValue, profileUserId);
   
       toast.success("Lance registrado com sucesso");
       onClose();
@@ -87,6 +88,13 @@ const BidModal: React.FC<BidModalProps> = ({
           placeholder="Informe o valor do lance"
           value={bidValue}
           onChange={(e) => setBidValue(Number(e.target.value))}
+        />
+        <input
+          type="text"
+          className="w-full p-2 border border-gray-300 rounded mb-4"
+          placeholder="Anotações (opcional)"
+          value={noteValue}
+          onChange={(e) => setNoteValue(e.target.value)}
         />
         <div className="flex justify-end space-x-4">
           <button
