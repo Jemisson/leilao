@@ -1,50 +1,99 @@
-# React + TypeScript + Vite
+# 🎯 Leilão Virtual - Direito de Viver
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Este é o sistema **Leilão Virtual Direito de Viver**, desenvolvido para apoiar o evento beneficente em prol do **Hospital de Amor de Nova Andradina - MS**. O projeto visa facilitar a exibição, lances e gerenciamento de produtos do leilão de forma prática e acessível, tanto para participantes quanto para administradores do evento.
 
-Currently, two official plugins are available:
+---
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## 🚀 Finalidade do Projeto
 
-## Expanding the ESLint configuration
+A plataforma tem como objetivo proporcionar uma experiência moderna e eficiente para o **Leilão Direito de Viver**, com foco em:
 
-If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
+- Facilitar a navegação e visualização dos produtos leiloados;
+- Tornar acessível a participação de qualquer pessoa via dispositivos conectados;
+- Oferecer uma área administrativa completa para gestão e acompanhamento dos lances.
 
-- Configure the top-level `parserOptions` property like this:
+---
 
-```js
-export default tseslint.config({
-  languageOptions: {
-    // other options...
-    parserOptions: {
-      project: ['./tsconfig.node.json', './tsconfig.app.json'],
-      tsconfigRootDir: import.meta.dirname,
-    },
-  },
-})
+## 🧰 Requisitos
+
+- Node.js (versão 18 ou superior)
+- Yarn ou npm
+- Backend Ruby on Rails disponível na porta 3000 (API e WebSocket)
+- `.env` com variáveis de ambiente corretamente definidas (veja abaixo)
+
+---
+
+## ⚙️ Instalação e Execução Local
+
+1. **Clone o repositório:**
+
+```bash
+git clone https://github.com/jemisson/leilao.git
+cd leilao
 ```
 
-- Replace `tseslint.configs.recommended` to `tseslint.configs.recommendedTypeChecked` or `tseslint.configs.strictTypeChecked`
-- Optionally add `...tseslint.configs.stylisticTypeChecked`
-- Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and update the config:
+2. **Instale as dependências:**
 
-```js
-// eslint.config.js
-import react from 'eslint-plugin-react'
 
-export default tseslint.config({
-  // Set the react version
-  settings: { react: { version: '18.3' } },
-  plugins: {
-    // Add the react plugin
-    react,
-  },
-  rules: {
-    // other rules...
-    // Enable its recommended rules
-    ...react.configs.recommended.rules,
-    ...react.configs['jsx-runtime'].rules,
-  },
-})
+```bash
+npm install
 ```
+
+
+3. **Configure as variáveis de ambiente:**
+
+Crie um arquivo `.env` na raiz do projeto com o seguinte conteúdo:
+
+```env
+VITE_API_BASE_URL=http://localhost:3000/api/v1
+VITE_AUTH_API_BASE_URL=http://localhost:3000
+VITE_WEBSOCKET_URL=ws://localhost:3000/cable
+```
+
+4. **Execute o projeto em modo desenvolvimento:**
+
+```bash
+npm run dev
+```
+
+A aplicação estará acessível em: [http://localhost:5173](http://localhost:5173)
+
+---
+
+## ✨ Funcionalidades
+
+### 🛍️ Para Participantes
+- ✅ Catálogo de produtos leiloados;
+- ✅ Compartilhamento de produtos via redes sociais ou link direto;
+
+### 🛠️ Para Administradores
+- ✅ Dashboard com estatísticas gerais do evento;
+- ✅ Listagem e gerenciamento de produtos (duplicar, editar, visualizar, finalizar/arrematar);
+- ✅ Detalhamento de lances por produto;
+- ✅ Listagem de participantes cadastrados;
+- ✅ Listagem de lances por participante.
+
+---
+
+## 📦 Scripts disponíveis
+
+- `dev`: inicia o servidor local com Vite;
+- `start`: inicia a prévia de produção na porta 3001;
+- `build`: compila o projeto para produção;
+- `lint`: verifica problemas de código com ESLint.
+
+---
+
+## 🧪 Stack Utilizada
+
+- **React 18 + TypeScript**
+- **Tailwind CSS + Flowbite**
+- **Axios + ActionCable**
+- **Recharts, React Router DOM, React Toastify**
+- **Vite como bundler**
+
+---
+
+## 🤝 Apoie o Hospital de Amor
+
+Este sistema foi desenvolvido com ❤️ e carinho por voluntários e profissionais para apoiar uma causa nobre. Todo envolvimento e divulgação é bem-vindo!

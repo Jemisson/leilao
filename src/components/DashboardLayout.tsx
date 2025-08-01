@@ -9,7 +9,7 @@ function DashboardLayout({ children }: { children?: React.ReactNode }) {
   const userRole = userInfo?.role;
 
   return (
-    <div className="flex h-screen">
+    <div className="flex">
       {userRole === "admin" && (
         <SideBar
           isSidebarOpen={isSidebarOpen}

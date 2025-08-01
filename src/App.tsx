@@ -6,6 +6,7 @@ import { WebSocketProvider } from "./contexts/WebSocketProvider";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { GoogleOAuthProvider } from "@react-oauth/google";
+import Footer from "./components/Footer";
 
 function App() {
   const CLIENT_ID = "278675836812-upp77kl8ioiea5sdv5pc490flvvhpik3.apps.googleusercontent.com";
@@ -15,20 +16,24 @@ function App() {
     setSelectedCategory(categoryId);
   };
 
-
   return (
     <GoogleOAuthProvider clientId={CLIENT_ID}>
       <WebSocketProvider>
         <Router>
           <ToastContainer />
-          <Navbar
-            activeCategory={selectedCategory}
-            onCategoryClick={handleCategoryClick}
-          />
 
-          <AppRoutes
-            selectedCategory={selectedCategory}
-          />
+          <div className="flex flex-col min-h-screen bg-gray-100">
+            <Navbar
+              activeCategory={selectedCategory}
+              onCategoryClick={handleCategoryClick}
+            />
+
+            <AppRoutes
+              selectedCategory={selectedCategory}
+            />
+
+            <Footer />
+          </div>
         </Router>
       </WebSocketProvider>
     </GoogleOAuthProvider>

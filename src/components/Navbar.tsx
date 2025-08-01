@@ -85,9 +85,9 @@ function Navbar({ onCategoryClick, activeCategory }: NavBarProps) {
   if (!shouldShowNavbar) return null;
 
   return (
-    <div className="bg-pinkDark w-full pt-3">
+    <div className="">
       <nav
-        className={`bg-blueBright border-white sticky top-0 left-0 w-full z-50 h-20 ${
+        className={`bg-blueBright border-pinkDark sticky top-0 left-0 w-full z-50 h-20 border-t-8 ${
           isVisible ? "translate-y-0" : "-translate-y-full"
         } transition-transform duration-300`}
       >

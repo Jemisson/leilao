@@ -52,7 +52,7 @@ function DashboardPage() {
 
   return (
     <div className="flex">
-      <div className="flex-1 transition-all p-6 bg-gray-100 min-h-screen">
+      <div className="flex-1 transition-all p-6 bg-gray-100">
         <h1 className="text-2xl font-bold mb-6">Bem-vindo(a) ao Dashboard</h1>
 
         {!stats ? (

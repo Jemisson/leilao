@@ -149,193 +149,196 @@ const ProductManagement: React.FC = () => {
   if (error) return <p>{error}</p>;
 
   return (
-    <div className="p-6 bg-gray-100 min-h-screen">
-      <div className="flex justify-between items-center mb-6">
-        <h1 className="text-2xl font-bold">Gerenciamento de Produtos</h1>
-        <Button text="Adicionar Produto" onClick={handleAddProduct} />
-      </div>
+    <div className="flex flex-col flex-grow">
+      <main className="flex-grow p-6">
 
-      <div className="mb-4">
-        <span className="mr-4 font-semibold">Exibir produtos:</span>
-        <div className="inline-flex space-x-2">
-          <button
-            className={`px-4 py-2 rounded-full border ${
-              auctioned === 0 ? "bg-redDark text-white" : "bg-white text-gray-700 border-gray-300"
-            }`}
-            onClick={() => {
-              setAuctioned(0);
-              setCurrentPage(1);
-              setLoading(true);
-            }}
-          >
-            Não arrematados
-          </button>
-          <button
-            className={`px-4 py-2 rounded-full border ${
-              auctioned === 1 ? "bg-redDark text-white" : "bg-white text-gray-700 border-gray-300"
-            }`}
-            onClick={() => {
-              setAuctioned(1);
-              setCurrentPage(1);
-              setLoading(true);
-            }}
-          >
-            Arrematados
-          </button>
+        <div className="flex justify-between items-center mb-6">
+          <h1 className="text-2xl font-bold">Gerenciamento de Produtos</h1>
+          <Button text="Adicionar Produto" onClick={handleAddProduct} />
         </div>
-      </div>
 
-      <div className="flex gap-2 w-full md:w-1/2 mb-5">
-        <div className="relative w-full">
-          <input
-            type="text"
-            placeholder="Buscar por lote, descrição, valor..."
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            className="p-2 pr-10 border border-gray-300 rounded-md w-full focus:outline-none focus:ring-2 focus:ring-redBright"
-          />
-
-          {searchQuery && (
+        <div className="mb-4">
+          <span className="mr-4 font-semibold">Exibir produtos:</span>
+          <div className="inline-flex space-x-2">
             <button
-              type="button"
+              className={`px-4 py-2 rounded-full border ${
+                auctioned === 0 ? "bg-redDark text-white" : "bg-white text-gray-700 border-gray-300"
+              }`}
               onClick={() => {
-                setSearchQuery("");
+                setAuctioned(0);
                 setCurrentPage(1);
                 setLoading(true);
-                loadProducts(1);
               }}
-              className="absolute right-2 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-red-600 text-lg"
-              aria-label="Limpar busca"
             >
-              ×
+              Não arrematados
             </button>
-          )}
+            <button
+              className={`px-4 py-2 rounded-full border ${
+                auctioned === 1 ? "bg-redDark text-white" : "bg-white text-gray-700 border-gray-300"
+              }`}
+              onClick={() => {
+                setAuctioned(1);
+                setCurrentPage(1);
+                setLoading(true);
+              }}
+            >
+              Arrematados
+            </button>
+          </div>
         </div>
 
-        <button
-          onClick={() => handleSearch(searchQuery)}
-          className="bg-redDark text-white px-4 py-2 rounded hover:bg-redBright shrink-0"
-        >
-          Buscar
-        </button>
-      </div>
+        <div className="flex gap-2 w-full md:w-1/2 mb-5">
+          <div className="relative w-full">
+            <input
+              type="text"
+              placeholder="Buscar por lote, descrição, valor..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="p-2 pr-10 border border-gray-300 rounded-md w-full focus:outline-none focus:ring-2 focus:ring-redBright"
+            />
+
+            {searchQuery && (
+              <button
+                type="button"
+                onClick={() => {
+                  setSearchQuery("");
+                  setCurrentPage(1);
+                  setLoading(true);
+                  loadProducts(1);
+                }}
+                className="absolute right-2 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-red-600 text-lg"
+                aria-label="Limpar busca"
+              >
+                ×
+              </button>
+            )}
+          </div>
+
+          <button
+            onClick={() => handleSearch(searchQuery)}
+            className="bg-redDark text-white px-4 py-2 rounded hover:bg-redBright shrink-0"
+          >
+            Buscar
+          </button>
+        </div>
 
 
-      <table className="min-w-full bg-white border border-gray-300 shadow-sm rounded-lg">
-        <thead>
-          <tr className="bg-gray-100">
-            <th className="py-2 px-4 border-b">ID</th>
-            <th className="py-2 px-4 border-b">Imagem</th> 
-            <th className="py-2 px-4 border-b">Lote</th>
-            <th className="py-2 px-4 border-b">Categoria</th>
-            <th className="py-2 px-4 border-b">Nome</th>
-            <th className="py-2 px-4 border-b">Valor</th>
-            <th className="py-2 px-4 border-b">Ações</th>
-          </tr>
-        </thead>
-        <tbody>
-          {products.map((product) => (
-            <tr key={product.id}>
-              <td className="py-2 px-4 border-b text-center">{product.id}</td>
-              <td className="py-2 px-4 border-b  text-center">
-              {product.attributes.images && product.attributes.images.length > 0 ? (
-                <img
-                  src={product.attributes.images[0].url}
-                  alt={`Lote ${product.attributes.lot_number}`}
-                  className="h-12 w-12 object-cover rounded-lg"
-                />
-              ) : (
-                  <span className="text-gray-400 italic">Sem Imagem</span>
-                )}
-              </td>
-              <td className="py-2 px-4 border-b  text-center">{product.attributes.lot_number}</td>
-              <td className="py-2 px-4 border-b  text-center">{product.attributes.category_title}</td>
-              <td className="py-2 px-4 border-b">
-                {product.attributes.description}
-              </td>
-              <td className="py-2 px-4 border-b text-center">
-                R$ {Number(product.attributes.current_value).toFixed(2)}
-              </td>
-              <td className="py-2 px-4 border-b text-center">
-                <IconButton
-                  onClick={() => navigate(`/dashboard/produtos/${product.id}/lances`)}
-                  icon={<FaEye className="size-6" />}
-                  ariaLabel="Ver detalhes"
-                  className="text-blue-500 hover:text-blue-700"
-                />
-
-                {product.attributes.auctioned !== 1 && (
-                  <IconButton
-                    onClick={() => navigate(`/dashboard/produtos/${product.id}/edit`)}
-                    icon={<CiEdit className="size-6" />}
-                    ariaLabel="Editar"
-                    className="text-yellow-500 hover:text-yellow-700"
-                  />
-                )}
-
-                {product.attributes.auctioned !== 1 && (
-                  <IconButton
-                    onClick={() => handleDeleteConfirmation(product)}
-                    icon={<CiTrash className="size-6" />}
-                    ariaLabel="Excluir"
-                    className="text-red-500 hover:text-red-700"
-                  />
-                )}
-
-                <IconButton
-                  onClick={() =>  handleDuplicateConfirmation(product)}
-                  icon={<MdContentCopy className="size-6" />}
-                  ariaLabel="Duplicar Produto"
-                  className="text-green-500 hover:text-green-700"
-                />
-
-                {product.attributes.auctioned !== 1 && (
-                  <IconButton
-                    onClick={() => handleMarkAsSoldConfirmation(product)}
-                    icon={<ImHammer2 className="size-6" />}
-                    ariaLabel="Arrematar"
-                    className="text-redDark hover:text-red-700"
-                  />
-                )}
-              </td>
+        <table className="min-w-full bg-white border border-gray-300 shadow-sm rounded-lg">
+          <thead>
+            <tr className="bg-gray-100">
+              <th className="py-2 px-4 border-b">ID</th>
+              <th className="py-2 px-4 border-b">Imagem</th> 
+              <th className="py-2 px-4 border-b">Lote</th>
+              <th className="py-2 px-4 border-b">Categoria</th>
+              <th className="py-2 px-4 border-b">Nome</th>
+              <th className="py-2 px-4 border-b">Valor</th>
+              <th className="py-2 px-4 border-b">Ações</th>
             </tr>
-          ))}
-        </tbody>
-      </table>
+          </thead>
+          <tbody>
+            {products.map((product) => (
+              <tr key={product.id}>
+                <td className="py-2 px-4 border-b text-center">{product.id}</td>
+                <td className="py-2 px-4 border-b  text-center">
+                {product.attributes.images && product.attributes.images.length > 0 ? (
+                  <img
+                    src={product.attributes.images[0].url}
+                    alt={`Lote ${product.attributes.lot_number}`}
+                    className="h-12 w-12 object-cover rounded-lg"
+                  />
+                ) : (
+                    <span className="text-gray-400 italic">Sem Imagem</span>
+                  )}
+                </td>
+                <td className="py-2 px-4 border-b  text-center">{product.attributes.lot_number}</td>
+                <td className="py-2 px-4 border-b  text-center">{product.attributes.category_title}</td>
+                <td className="py-2 px-4 border-b">
+                  {product.attributes.description}
+                </td>
+                <td className="py-2 px-4 border-b text-center">
+                  R$ {Number(product.attributes.current_value).toFixed(2)}
+                </td>
+                <td className="py-2 px-4 border-b text-center">
+                  <IconButton
+                    onClick={() => navigate(`/dashboard/produtos/${product.id}/lances`)}
+                    icon={<FaEye className="size-6" />}
+                    ariaLabel="Ver detalhes"
+                    className="text-blue-500 hover:text-blue-700"
+                  />
 
-      <Pagination
-        currentPage={currentPage}
-        totalPages={totalPages}
-        onPageChange={(page) => setCurrentPage(page)}
-      />
+                  {product.attributes.auctioned !== 1 && (
+                    <IconButton
+                      onClick={() => navigate(`/dashboard/produtos/${product.id}/edit`)}
+                      icon={<CiEdit className="size-6" />}
+                      ariaLabel="Editar"
+                      className="text-yellow-500 hover:text-yellow-700"
+                    />
+                  )}
 
-      <ConfirmationModal
-        isOpen={isModalOpen}
-        title="Confirmar Exclusão"
-        warning="Atenção, ao excluir um produto você também apagará todos os lances feitos a ele!"
-        message={`Tem certeza de que deseja excluir o Lote ${selectedProduct?.attributes.lot_number}?`}
-        onConfirm={handleDelete}
-        onCancel={() => setIsModalOpen(false)}
-      />
+                  {product.attributes.auctioned !== 1 && (
+                    <IconButton
+                      onClick={() => handleDeleteConfirmation(product)}
+                      icon={<CiTrash className="size-6" />}
+                      ariaLabel="Excluir"
+                      className="text-red-500 hover:text-red-700"
+                    />
+                  )}
 
-      <ConfirmationModal
-        isOpen={isDuplicateModalOpen}
-        title="Confirmar Duplicação"
-        message={`Tem certeza de que deseja duplicar o lote: ${selectedProduct?.attributes.lot_number}`}
-        onConfirm={handleConfirmDuplicate}
-        onCancel={() => setIsDuplicateModalOpen(false)}
-      />
+                  <IconButton
+                    onClick={() =>  handleDuplicateConfirmation(product)}
+                    icon={<MdContentCopy className="size-6" />}
+                    ariaLabel="Duplicar Produto"
+                    className="text-green-500 hover:text-green-700"
+                  />
 
-      {selectedProduct && (
-        <AuctionModal
-          isOpen={isAuctionModalOpen}
-          onClose={() => setIsAuctionModalOpen(false)}
-          onConfirm={() => handleMarkAsSold(selectedProduct.id)}
-          lotNumber={selectedProduct.attributes.lot_number}
-          currentValue={selectedProduct.attributes.current_value || 0}
-          winning_name={selectedProduct.attributes.winning_name || "Vencedor"}
+                  {product.attributes.auctioned !== 1 && (
+                    <IconButton
+                      onClick={() => handleMarkAsSoldConfirmation(product)}
+                      icon={<ImHammer2 className="size-6" />}
+                      ariaLabel="Arrematar"
+                      className="text-redDark hover:text-red-700"
+                    />
+                  )}
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+
+        <Pagination
+          currentPage={currentPage}
+          totalPages={totalPages}
+          onPageChange={(page) => setCurrentPage(page)}
         />
-      )}
+
+        <ConfirmationModal
+          isOpen={isModalOpen}
+          title="Confirmar Exclusão"
+          warning="Atenção, ao excluir um produto você também apagará todos os lances feitos a ele!"
+          message={`Tem certeza de que deseja excluir o Lote ${selectedProduct?.attributes.lot_number}?`}
+          onConfirm={handleDelete}
+          onCancel={() => setIsModalOpen(false)}
+        />
+
+        <ConfirmationModal
+          isOpen={isDuplicateModalOpen}
+          title="Confirmar Duplicação"
+          message={`Tem certeza de que deseja duplicar o lote: ${selectedProduct?.attributes.lot_number}`}
+          onConfirm={handleConfirmDuplicate}
+          onCancel={() => setIsDuplicateModalOpen(false)}
+        />
+
+        {selectedProduct && (
+          <AuctionModal
+            isOpen={isAuctionModalOpen}
+            onClose={() => setIsAuctionModalOpen(false)}
+            onConfirm={() => handleMarkAsSold(selectedProduct.id)}
+            lotNumber={selectedProduct.attributes.lot_number}
+            currentValue={selectedProduct.attributes.current_value || 0}
+            winning_name={selectedProduct.attributes.winning_name || "Vencedor"}
+          />
+        )}
+      </main>
     </div>
   );
 };

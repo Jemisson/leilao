@@ -64,7 +64,7 @@ const BidHistory: React.FC = () => {
   if (error) return <p className="p-6 text-red-500">{error}</p>;
 
   return (
-    <div className="p-6 bg-gray-100 min-h-screen">
+    <div className="p-6 bg-gray-100">
       <h1 className="text-3xl font-bold mb-6">Histórico de Lances</h1>
       
       <BidTable showLotNumber={true} bids={bids} />

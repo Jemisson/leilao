@@ -46,7 +46,7 @@ const UserManagement: React.FC = () => {
   if (error) return <p className="p-6 text-red-500">{error}</p>;
 
   return (
-    <div className="p-6 bg-gray-100 min-h-screen">
+    <div className="p-6 bg-gray-100">
       <div className="flex justify-between items-center mb-6">
         <div>
           <h1 className="text-2xl font-bold">Lista de Usuários</h1>
