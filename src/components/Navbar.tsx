@@ -109,10 +109,11 @@ function Navbar({ onCategoryClick, activeCategory }: NavBarProps) {
           {/* Menu */}
           <div
             id="navbar-default"
-            className={`w-full md:w-auto overflow-x-hidden ${
-                        isMenuOpen ? "block" : "hidden"
-                      } md:block transition-all duration-300 ease-in-out`}
+            className={`w-full md:w-auto overflow-x-hidden bg-blueBright transition-all duration-300 ease-in-out ${
+              isMenuOpen ? "block" : "hidden"
+            } md:block`}
           >
+
             <ul className="flex flex-col md:flex-row md:space-x-4 items-center">
               {categories?.map((category) => (
                 <li key={category.id}>
