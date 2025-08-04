@@ -6,7 +6,7 @@ const Pagination: React.FC<PaginationProps> = ({ currentPage, totalPages, onPage
       <button
         onClick={() => onPageChange(currentPage - 1)}
         disabled={currentPage === 1}
-        className="px-4 py-2 bg-gray-300 text-gray-700 rounded hover:bg-gray-400 disabled:opacity-50"
+        className="px-4 py-2 bg-pinkDark text-white rounded hover:bg-blueBright disabled:opacity-50"
       >
         Anterior
       </button>
@@ -16,7 +16,7 @@ const Pagination: React.FC<PaginationProps> = ({ currentPage, totalPages, onPage
       <button
         onClick={() => onPageChange(currentPage + 1)}
         disabled={currentPage === totalPages}
-        className="px-4 py-2 bg-gray-300 text-gray-700 rounded hover:bg-gray-400 disabled:opacity-50"
+        className="px-4 py-2 bg-pinkDark text-white rounded hover:bg-blueBright disabled:opacity-50"
       >
         Próximo
       </button>

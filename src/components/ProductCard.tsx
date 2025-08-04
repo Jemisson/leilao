@@ -12,11 +12,12 @@ const ProductCard = ({ product, isUpdated, onBid, onViewDetails }: ProductCardPr
 
   return (
     <div
-      className={`relative w-full md:w-[300px] lg:w-[320px] xl:w-[350px] h-auto md:h-[520px] bg-white border rounded-lg shadow-md dark:bg-gray-800 dark:border-gray-700 ${
+      className={`relative w-full max-w-[350px] h-auto md:h-[520px] bg-white border rounded-lg shadow-md dark:bg-gray-800 dark:border-gray-700 ${
         isUpdated ? "border-2 border-solid border-gold" : "border-gray-200"
       }`}
       key={product.id}
     >
+
       <div
         className="relative"
         onClick={onViewDetails}

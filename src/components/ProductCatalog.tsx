@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { fetchProducts } from "../services/api";
+import { fetchProducts, searchProducts } from "../services/api";
 import { Bid, Product, ProductCatalogProps } from "../types";
 import Pagination from "./Pagination";
 import ProductCard from "./ProductCard";
@@ -11,6 +11,7 @@ import { getAuthenticatedUser } from "../utils/authHelpers";
 import { toast } from "react-toastify";
 import ProductDetailsModal from "./ProductDetailsModal";
 import VideoModal from "./VideoModal";
+import ProductSearch from "./ProductSearch";
 
 function ProductCatalog({ selectedCategory }: ProductCatalogProps) {
   const [products, setProducts] = useState<Product[]>([]);
@@ -30,6 +31,7 @@ function ProductCatalog({ selectedCategory }: ProductCatalogProps) {
   const [isWebSocketReady, setIsWebSocketReady] = useState(false);
   const navigate = useNavigate();
   const user = getAuthenticatedUser();
+  const [searchQuery, setSearchQuery] = useState<string | null>(null);
 
   const handleOpenDetails = (product: Product) => {
     if (product.attributes.link_video) {
@@ -40,7 +42,6 @@ function ProductCatalog({ selectedCategory }: ProductCatalogProps) {
       setIsProductModalOpen(true);
     }
   };
-  
 
   const handleCloseDetails = () => {
     setIsProductModalOpen(false);
@@ -58,6 +59,16 @@ function ProductCatalog({ selectedCategory }: ProductCatalogProps) {
     setBidModalOpen(true);
   };
 
+  const handleSearch = (query: string) => {
+    setSearchQuery(query);
+    setCurrentPage(1);
+  };
+
+  const handleClearSearch = () => {
+    setSearchQuery(null);
+    setCurrentPage(1);
+  };
+
   useEffect(() => {
     if (cable) {
       setIsWebSocketReady(true);
@@ -69,29 +80,33 @@ function ProductCatalog({ selectedCategory }: ProductCatalogProps) {
   }, [selectedCategory]);
 
   useEffect(() => {
-    const getProducts = async () => {
-      setLoading(true);
-      setError(null);
+  const getProducts = async () => {
+    setLoading(true);
+    setError(null);
 
-      try {
-        const data = await fetchProducts(currentPage, selectedCategory, 0);
+    try {
+      const data = searchQuery
+        ? await searchProducts(searchQuery, 0, currentPage)
+        : await fetchProducts(currentPage, selectedCategory, 0);
 
-        if (Array.isArray(data.data) && data.data.length > 0) {
-          setProducts(data.data);
-          setTotalPages(data.meta.total_pages);
-        } else {
-          setProducts([]);
-        }
-      } catch (err) {
-        setError("Erro ao carregar produtos.");
-        toast.error(`Erro ao carregar produtos: ${err}`);
-      } finally {
-        setLoading(false);
+      if (Array.isArray(data.data) && data.data.length > 0) {
+        setProducts(data.data);
+        setTotalPages(data.meta.total_pages);
+      } else {
+        setProducts([]);
+        setTotalPages(1);
       }
-    };
+    } catch (err) {
+      setError("Erro ao carregar produtos.");
+      toast.error(`Erro ao carregar produtos: ${err}`);
+    } finally {
+      setLoading(false);
+    }
+  };
 
-      getProducts();
-  }, [currentPage, selectedCategory]);
+  getProducts();
+}, [currentPage, selectedCategory, searchQuery]);
+
 
   useEffect(() => {
     if (!isWebSocketReady || !cable) return;
@@ -139,6 +154,12 @@ function ProductCatalog({ selectedCategory }: ProductCatalogProps) {
   return (
     <div className="flex flex-col items-center min-h-screen bg-gray-100 p-6">
       <h1 className="text-3xl font-bold mb-6">Catálogo de Produtos</h1>
+      
+      <ProductSearch
+        onSearch={handleSearch}
+        onClear={handleClearSearch}
+        defaultValue={searchQuery || ''}
+      />
 
       {products.length === 0 ? (
         <NoData />
