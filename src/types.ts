@@ -187,16 +187,14 @@ export interface ProfileUser {
   user_attributes: UserAttributes;
 }
 
-export interface InputFieldProps {
+export type InputFieldProps = {
   label: string;
-  type: string;
   name: string;
-  value: string;
-  placeholder?: string;
-  onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
-  required?: boolean;
   mask?: string;
-}
+  containerClassName?: string;
+  className?: string;
+} & Omit<React.InputHTMLAttributes<HTMLInputElement>, "name">;
+
 
 export interface SelectFieldProps {
   label: string;

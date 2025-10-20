@@ -87,13 +87,16 @@ const LoginPage: React.FC = () => {
         <p className="mt-6 text-center">Entre em contato para automatizar o seu leilão!</p>
         <div
           className="absolute inset-0 bg-cover bg-center opacity-20"
-          style={{ backgroundImage: "url('/gado.jpg')" }}
+          style={{ backgroundImage: "url('/martelo.jpg')" }}
         ></div>
       </div>
 
       <div className="w-full lg:w-1/2 flex flex-col justify-center items-center bg-gray-50 p-6">
-        <Logo colorText="text-black"/>
-        <h3 className="mt-5 mb-3 text-2xl text-gray-900">Autentique-se com uma das opções abaixo</h3>
+          <Logo
+            variant="original"
+            isLink={false}
+            showTextOnMobile={true}
+          />
 
         {message && (
           <p
@@ -109,20 +112,6 @@ const LoginPage: React.FC = () => {
           onSubmit={handleLogin}
           className="flex flex-col items-center w-2/3"
         >
-
-        <a
-          onClick={() => handleGoogleLogin()}
-          className="flex items-center justify-center w-full py-4 mb-6 text-sm font-medium transition duration-300 rounded-2xl text-gray-900 bg-gray-300 hover:bg-gray-400 focus:ring-4 focus:ring-gray-300 cursor-pointer"
-        >
-          <img className="h-5 mr-2" src="https://raw.githubusercontent.com/Loopple/loopple-public-assets/main/motion-tailwind/img/logos/logo-google.png" alt="Google Logo" />
-          Entrar com Google
-        </a>
-
-          <div className="flex items-center mb-3 w-full">
-            <hr className="h-0 border-b border-solid border-gray-500 grow" />
-            <p className="mx-4 text-gray-600">ou</p>
-            <hr className="h-0 border-b border-solid border-gray-500 grow" />
-          </div>
 
           <label htmlFor="email" className="mb-2 text-sm text-start text-gray-900 w-full">
             Email*

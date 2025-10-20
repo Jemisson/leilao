@@ -6,6 +6,7 @@ import SelectField from "../components/SelectField";
 import { ProfileUser, UserFormProps } from "../types";
 import { isAuthenticated } from "../utils/authHelpers";
 import { sanitizeProfileUserData } from "../utils/formSanitizers";
+import { toast } from "react-toastify";
 
 const isLoggedIn = isAuthenticated()
 
@@ -31,18 +32,59 @@ const UserForm: React.FC<UserFormProps> = ({
   const [profileUser, setProfileUser] = useState<ProfileUser>(initialProfileUser);
   const [showPassword, setShowPassword] = useState(false);
 
+  const [isFetchingCep, setIsFetchingCep] = useState(false);
+
+function sanitizeCep(value: string) {
+  return value.replace(/\D/g, "");
+}
+
+async function fetchAddressByCep(cepRaw: string) {
+  const cep = sanitizeCep(cepRaw);
+  if (cep.length !== 8) return;
+
+  try {
+    setIsFetchingCep(true);
+    const res = await fetch(`https://viacep.com.br/ws/${cep}/json/`);
+    const data = await res.json();
+
+    if (data?.erro) {
+      throw new Error("CEP não encontrado");
+    }
+
+    setProfileUser(prev => ({
+      ...prev,
+      zip_code: cepRaw,
+      street: data.logradouro ?? prev.street,
+      neighborhood: data.bairro ?? prev.neighborhood,
+      city: data.localidade ?? prev.city,
+      state: data.uf ?? prev.state,
+      country: prev.country || "Brasil",
+    }));
+  } catch (e: any) {
+    toast.error(e?.message || "Não foi possível buscar o CEP");
+  } finally {
+    setIsFetchingCep(false);
+  }
+}
+
+
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
+
     if (["email", "role", "password"].includes(name)) {
-      setProfileUser((prev) => ({
+      setProfileUser(prev => ({
         ...prev,
-        user_attributes: {
-          ...prev.user_attributes,
-          [name]: value
-        }
+        user_attributes: { ...prev.user_attributes, [name]: value }
       }));
+    } else if (name === "zip_code") {
+      setProfileUser(prev => ({ ...prev, zip_code: value }));
+
+      const onlyDigits = value.replace(/\D/g, "");
+      if (onlyDigits.length === 8) {
+        fetchAddressByCep(value);
+      }
     } else {
-      setProfileUser((prev) => ({ ...prev, [name]: value }));
+      setProfileUser(prev => ({ ...prev, [name]: value }));
     }
   };
 
@@ -133,23 +175,83 @@ const UserForm: React.FC<UserFormProps> = ({
 
       <h2 className="text-xl font-bold mt-6 mb-4">Endereço</h2>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <InputField label="Rua" type="text" name="street" value={profileUser.street} onChange={handleChange} required />
-        <InputField label="Número" type="text" name="number" value={profileUser.number} onChange={handleChange} required />
-        <InputField label="Bairro" type="text" name="neighborhood" value={profileUser.neighborhood} onChange={handleChange} required />
-        <InputField label="Cidade" type="text" name="city" value={profileUser.city} onChange={handleChange} required />
-        <InputField label="Estado" type="text" name="state" value={profileUser.state} onChange={handleChange} required />
-        <InputField label="País" type="text" name="country" value={profileUser.country} onChange={handleChange} required />
+
+        <div className="relative">
+          <InputField
+            label="CEP"
+            type="text"
+            name="zip_code"
+            value={profileUser.zip_code}
+            placeholder="00000-000"
+            mask="99999-999"
+            onChange={handleChange}
+            onBlur={(e: React.FocusEvent<HTMLInputElement>) => {
+              fetchAddressByCep(e.target.value);
+            }}
+            required
+          />
+          {isFetchingCep && (
+            <div className="pointer-events-none absolute right-3 top-9 flex items-center">
+              <span className="block h-4 w-4 rounded-full border-2 border-gray-300 border-t-gray-700 animate-spin" />
+            </div>
+          )}
+        </div>
+
         <InputField
-          label="CEP"
+          label="Rua"
           type="text"
-          name="zip_code"
-          value={profileUser.zip_code}
-          placeholder="00000-000"
-          mask="99999-999"
+          name="street"
+          value={profileUser.street}
+          onChange={handleChange}
+          required
+        />
+
+        <InputField
+          label="Número"
+          type="text"
+          name="number"
+          value={profileUser.number}
+          onChange={handleChange}
+          required
+        />
+
+        <InputField
+          label="Bairro"
+          type="text"
+          name="neighborhood"
+          value={profileUser.neighborhood}
+          onChange={handleChange}
+          required
+        />
+
+        <InputField
+          label="Cidade"
+          type="text"
+          name="city"
+          value={profileUser.city}
+          onChange={handleChange}
+          required
+        />
+
+        <InputField
+          label="Estado"
+          type="text"
+          name="state"
+          value={profileUser.state}
+          onChange={handleChange}
+          required
+        />
+
+        <InputField
+          label="País"
+          type="text"
+          name="country"
+          value={profileUser.country}
           onChange={handleChange}
           required
         />
       </div>
+
 
       <Button
         text="Salvar"

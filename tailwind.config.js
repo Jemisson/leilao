@@ -11,10 +11,10 @@ export default {
         sans: ['Inter', 'sans-serif'],
       },
       colors: {
-        redDark: "#8B0000", // Vermelho escuro
-        gold: "#D4AF37", // Dourado
-        redBright: "#FF0000", // Vermelho brilhante
-        beige: "#F5F5DC" // Bege
+        redDark: "#3a2618", // Marrom escuro
+        gold: "#d8b91f", // dourado
+        redBright: "#533825", // Marrom claro
+        beige: "#8e6d49" // bege
       },
     },
   },

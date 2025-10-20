@@ -101,7 +101,12 @@ function Navbar({ onCategoryClick, activeCategory }: NavBarProps) {
     >
       <div className="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-4">
         <div className="flex items-center space-x-2 sm:ml-0 ml-12">
-          <Logo onCategoryClick={handleCategoryClick} />
+          <Logo
+            variant="white"
+            isLink={false}
+            showTextOnMobile={true}
+            onCategoryClick={handleCategoryClick}
+          />
         </div>
 
         {/* Botão menu mobile */}
@@ -111,7 +116,11 @@ function Navbar({ onCategoryClick, activeCategory }: NavBarProps) {
           aria-controls="navbar-default"
           aria-expanded={isMenuOpen}
         >
-          {isMenuOpen ? <FaTimes className="w-5 h-5" /> : <FaBars className="w-5 h-5" />}
+          {isMenuOpen ? (
+            <FaTimes className="w-5 h-5" />
+          ) : (
+            <FaBars className="w-5 h-5" />
+          )}
         </button>
 
         {/* Menu */}

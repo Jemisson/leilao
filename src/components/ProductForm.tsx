@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from "react";
-import { deleteImage, fetchCategories } from "../services/api";
-import ImageUpload from "./ImageUploader";
-import Button from "./Button";
-import { Category, Product, ProductFormProps } from "../types";
 import { toast } from "react-toastify";
+import { deleteImage, fetchCategories } from "../services/api";
+import { Category, Product, ProductFormProps } from "../types";
+import Button from "./Button";
+import ImageUpload from "./ImageUploader";
+import InputField from "./InputField";
 import VideoModal from "./VideoModal";
 
 const ProductForm: React.FC<ProductFormProps> = ({
@@ -12,12 +13,14 @@ const ProductForm: React.FC<ProductFormProps> = ({
   isSubmitting,
   mode,
 }) => {
-  const [productData, setProductData] = useState<Partial<Product["attributes"]>>(initialData);
+  const [productData, setProductData] =
+    useState<Partial<Product["attributes"]>>(initialData);
   const [categories, setCategories] = useState<Category[]>([]);
   const [productImages, setProductImages] = useState<File[]>([]);
-  const [existingImages, setExistingImages] = useState<{ id: string; url: string }[]>([]);
+  const [existingImages, setExistingImages] = useState<
+    { id: string; url: string }[]
+  >([]);
   const [isVideoModalOpen, setIsVideoModalOpen] = useState(false);
-
 
   useEffect(() => {
     if (initialData?.category_title && categories.length > 0) {
@@ -49,7 +52,9 @@ const ProductForm: React.FC<ProductFormProps> = ({
   }, []);
 
   const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
+    e: React.ChangeEvent<
+      HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
+    >
   ) => {
     setProductData((prevData) => ({
       ...prevData,
@@ -79,7 +84,9 @@ const ProductForm: React.FC<ProductFormProps> = ({
 
     try {
       await deleteImage(initialData.id, imageId);
-      setExistingImages((prevImages) => prevImages.filter((img) => img.id !== imageId));
+      setExistingImages((prevImages) =>
+        prevImages.filter((img) => img.id !== imageId)
+      );
       toast.success("Imagem apagada com sucesso!");
     } catch (err) {
       toast.error(`Erro ao apagar imagem: ${err}`);
@@ -88,11 +95,14 @@ const ProductForm: React.FC<ProductFormProps> = ({
 
   return (
     <div className="flex flex-wrap gap-6">
-      <h1 className="text-2xl font-bold">{mode === "edit" ? "Editar Produto" : "Cadastrar Produto"}</h1>
-      <form onSubmit={handleSubmit} className="flex flex-col md:flex-row w-full gap-6">
-
+      <h1 className="text-2xl font-bold">
+        {mode === "edit" ? "Editar Produto" : "Cadastrar Produto"}
+      </h1>
+      <form
+        onSubmit={handleSubmit}
+        className="flex flex-col md:flex-row w-full gap-6"
+      >
         <div className="w-full md:w-1/2 space-y-6 order-1">
-
           <div>
             <label
               htmlFor="category_id"
@@ -118,31 +128,58 @@ const ProductForm: React.FC<ProductFormProps> = ({
           </div>
 
           {[
-            { label: "Número do Lote", name: "lot_number", type: "text" },
-            { label: "Nome do Doador", name: "donor_name", type: "text" },
-            { label: "Telefone do Doador", name: "donor_phone", type: "tel" },
-            { label: "Valor Mínimo", name: "minimum_value", type: "number" },
-            { label: "Link do vídeo (opcional)", name: "link_video", type: "text" },
-          ].map(({ label, name, type }) => {
-
-            const value = productData[name as keyof Pick<Product["attributes"], "lot_number" | "donor_name" | "donor_phone" | "minimum_value">];
+            {
+              label: "Número do Lote",
+              name: "lot_number",
+              type: "text" as const,
+            },
+            {
+              label: "Nome do Doador",
+              name: "donor_name",
+              type: "text" as const,
+            },
+            {
+              label: "Telefone do Doador",
+              name: "donor_phone",
+              type: "tel" as const,
+              mask: "(99) 9 9999-9999",
+              placeholder: "(00) 0 0000-0000",
+            },
+            {
+              label: "Valor Mínimo",
+              name: "minimum_value",
+              type: "number" as const,
+              placeholder: "0.00",
+            },
+            {
+              label: "Link do vídeo (opcional)",
+              name: "link_video",
+              type: "text" as const,
+              optional: true,
+              placeholder: "https://...",
+            },
+          ].map(({ label, name, type, mask, optional, placeholder }) => {
+            const value = (productData as any)[name] ?? "";
 
             return (
-              <div key={name}>
-                <label htmlFor={name} className="block mb-2 text-sm font-medium text-gray-700">
-                  {label}
-                </label>
-                <input
-                  id={name}
-                  name={name}
-                  type={type}
-                  value={value || ""}
-                  onChange={handleChange}
-                  className="w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-redBright"
-                  placeholder={label}
-                  required
-                />
-              </div>
+              <InputField
+                key={name}
+                label={label}
+                name={name}
+                type={type}
+                value={value}
+                onChange={handleChange}
+                mask={mask}
+                placeholder={placeholder ?? label}
+                required={!optional}
+                inputMode={
+                  type === "number"
+                    ? "decimal"
+                    : type === "tel"
+                    ? "tel"
+                    : undefined
+                }
+              />
             );
           })}
 
@@ -159,8 +196,11 @@ const ProductForm: React.FC<ProductFormProps> = ({
           )}
 
           <div>
-            <label htmlFor="description" className="block mb-2 text-sm font-medium text-gray-700">
-              Descrição
+            <label
+              htmlFor="description"
+              className="block mb-2 text-sm font-medium text-gray-700"
+            >
+              Descrição (Obrigatório)
             </label>
             <textarea
               id="description"
