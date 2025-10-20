@@ -1,48 +1,15 @@
-import { useGoogleLogin } from "@react-oauth/google";
 import { AxiosError } from "axios";
-import Cookies from "js-cookie";
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import Logo from "../components/Logo";
-import { googleLogin, login } from "../services/api";
+import { login } from "../services/api";
 
 const LoginPage: React.FC = () => {
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
   const [message, setMessage] = useState<string | null>(null);
   const navigate = useNavigate();
-
-  const handleGoogleLogin = useGoogleLogin({
-    onSuccess: async (tokenResponse) => {
-      try {
-        const response = await googleLogin(tokenResponse.access_token);
-        
-        if (response.message === "Usuário não cadastrado"){
-          navigate("/participantes/new", {
-            state: { email: response.user.email, name: response.user.name },
-          });
-
-          toast.warning("Você precisa completar o cadastro para continuar!", {
-            autoClose: 15000,
-          });
-        } else {
-          Cookies.set("leilao_jwt_token", response.token, { expires: 5 });
-          if (response.role === "admin") {
-            navigate("/dashboard");
-          } else {
-            navigate("/");
-          }
-          toast.success("Autenticado com sucesso via Google!");
-        }
-      } catch (err) {
-        toast.error(`Erro ao autenticar com Google: ${err}`);
-      }
-    },
-    onError: () => {
-      toast.error("Falha no login com Google");
-    }
-  });
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
