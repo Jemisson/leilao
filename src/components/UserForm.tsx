@@ -1,14 +1,14 @@
 import React, { useState } from "react";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
+import { toast } from "react-toastify";
 import Button from "../components/Button";
 import InputField from "../components/InputField";
 import SelectField from "../components/SelectField";
 import { ProfileUser, UserFormProps } from "../types";
 import { isAuthenticated } from "../utils/authHelpers";
 import { sanitizeProfileUserData } from "../utils/formSanitizers";
-import { toast } from "react-toastify";
 
-const isLoggedIn = isAuthenticated()
+const isLoggedIn = isAuthenticated();
 
 const UserForm: React.FC<UserFormProps> = ({
   initialProfileUser = {
@@ -23,68 +23,70 @@ const UserForm: React.FC<UserFormProps> = ({
     country: "",
     zip_code: "",
     phone: "",
-    user_attributes: { id: "", email: "", role: "user", password: "" }
+    user_attributes: { id: "", email: "", role: "user", password: "" },
   },
   onSubmit,
   isSubmitting,
-  currentUserRole
+  currentUserRole,
 }) => {
-  const [profileUser, setProfileUser] = useState<ProfileUser>(initialProfileUser);
+  const [profileUser, setProfileUser] =
+    useState<ProfileUser>(initialProfileUser);
   const [showPassword, setShowPassword] = useState(false);
 
   const [isFetchingCep, setIsFetchingCep] = useState(false);
 
-function sanitizeCep(value: string) {
-  return value.replace(/\D/g, "");
-}
-
-async function fetchAddressByCep(cepRaw: string) {
-  const cep = sanitizeCep(cepRaw);
-  if (cep.length !== 8) return;
-
-  try {
-    setIsFetchingCep(true);
-    const res = await fetch(`https://viacep.com.br/ws/${cep}/json/`);
-    const data = await res.json();
-
-    if (data?.erro) {
-      throw new Error("CEP não encontrado");
-    }
-
-    setProfileUser(prev => ({
-      ...prev,
-      zip_code: cepRaw,
-      street: data.logradouro ?? prev.street,
-      neighborhood: data.bairro ?? prev.neighborhood,
-      city: data.localidade ?? prev.city,
-      state: data.uf ?? prev.state,
-      country: prev.country || "Brasil",
-    }));
-  } catch (e: any) {
-    toast.error(e?.message || "Não foi possível buscar o CEP");
-  } finally {
-    setIsFetchingCep(false);
+  function sanitizeCep(value: string) {
+    return value.replace(/\D/g, "");
   }
-}
 
+  async function fetchAddressByCep(cepRaw: string) {
+    const cep = sanitizeCep(cepRaw);
+    if (cep.length !== 8) return;
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+    try {
+      setIsFetchingCep(true);
+      const res = await fetch(`https://viacep.com.br/ws/${cep}/json/`);
+      const data = await res.json();
+
+      if (data?.erro) {
+        throw new Error("CEP não encontrado");
+      }
+
+      setProfileUser((prev) => ({
+        ...prev,
+        zip_code: cepRaw,
+        street: data.logradouro ?? prev.street,
+        neighborhood: data.bairro ?? prev.neighborhood,
+        city: data.localidade ?? prev.city,
+        state: data.uf ?? prev.state,
+        country: prev.country || "Brasil",
+      }));
+    } catch (e: any) {
+      toast.error(e?.message || "Não foi possível buscar o CEP");
+    } finally {
+      setIsFetchingCep(false);
+    }
+  }
+
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
+  ) => {
     const { name, value } = e.target;
 
     if (["email", "role", "password"].includes(name)) {
-      setProfileUser(prev => ({
+      setProfileUser((prev) => ({
         ...prev,
-        user_attributes: { ...prev.user_attributes, [name]: value }
+        user_attributes: { ...prev.user_attributes, [name]: value },
       }));
     } else if (name === "zip_code") {
-      setProfileUser(prev => ({ ...prev, zip_code: value }));
+      setProfileUser((prev) => ({ ...prev, zip_code: value }));
 
       const onlyDigits = value.replace(/\D/g, "");
       if (onlyDigits.length === 8) {
         fetchAddressByCep(value);
       }
     } else {
-      setProfileUser(prev => ({ ...prev, [name]: value }));
+      setProfileUser((prev) => ({ ...prev, [name]: value }));
     }
   };
 
@@ -100,7 +102,7 @@ async function fetchAddressByCep(cepRaw: string) {
       <h2 className="text-xl font-bold mb-4">Dados do Usuário</h2>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <InputField
-          label="Email"
+          label="Email*"
           type="email"
           name="email"
           value={profileUser.user_attributes.email}
@@ -111,35 +113,41 @@ async function fetchAddressByCep(cepRaw: string) {
         <div>
           <div className="relative">
             <InputField
-              label="Senha"
+              label="Senha*"
               type={showPassword ? "text" : "password"}
               name="password"
               value={profileUser.user_attributes.password || ""}
               onChange={handleChange}
               required
             />
+            <small>A senha deve ter no mínimo 8 letras</small>
             <button
               type="button"
               onClick={() => setShowPassword((prev) => !prev)}
-              className="absolute inset-y-0 right-3 flex items-center text-gray-500 hover:text-gray-700"
+              className="absolute inset-y-10 right-3 flex items-center text-gray-500 hover:text-gray-700"
               style={{ transform: "translateY(20%)" }}
             >
               {showPassword ? <FaEyeSlash /> : <FaEye />}
             </button>
-
           </div>
-          {isLoggedIn && <><small className="text-redDark">É necessário informar a senha para realizar alterações</small></>}
+          {isLoggedIn && (
+            <>
+              <small className="text-redDark">
+                É necessário informar a senha para realizar alterações
+              </small>
+            </>
+          )}
         </div>
 
         {currentUserRole === "admin" ? (
           <SelectField
-            label="Perfil"
+            label="Perfil*"
             name="role"
             value={profileUser.user_attributes.role}
             onChange={handleChange}
             options={[
               { value: "user", label: "Usuário" },
-              { value: "admin", label: "Administrador" }
+              { value: "admin", label: "Administrador" },
             ]}
           />
         ) : (
@@ -149,9 +157,16 @@ async function fetchAddressByCep(cepRaw: string) {
 
       <h2 className="text-xl font-bold mt-6 mb-4">Dados Pessoais</h2>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <InputField label="Nome" type="text" name="name" value={profileUser.name} onChange={handleChange} required />
         <InputField
-          label="CPF"
+          label="Nome*"
+          type="text"
+          name="name"
+          value={profileUser.name}
+          onChange={handleChange}
+          required
+        />
+        <InputField
+          label="CPF*"
           type="text"
           name="cpf"
           value={profileUser.cpf}
@@ -160,9 +175,17 @@ async function fetchAddressByCep(cepRaw: string) {
           mask={"999.999.999-99"}
           required
         />
-        <InputField label="Data de Nascimento" type="date" name="birth" value={profileUser.birth} onChange={handleChange} required />
         <InputField
-          label="Telefone"
+          label="Data de Nascimento*"
+          type="text"
+          name="birth"
+          mask="99/99/9999"
+          value={profileUser.birth}
+          onChange={handleChange}
+          required
+        />
+        <InputField
+          label="Telefone*"
           type="text"
           name="phone"
           value={profileUser.phone}
@@ -175,10 +198,9 @@ async function fetchAddressByCep(cepRaw: string) {
 
       <h2 className="text-xl font-bold mt-6 mb-4">Endereço</h2>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-
         <div className="relative">
           <InputField
-            label="CEP"
+            label="CEP*"
             type="text"
             name="zip_code"
             value={profileUser.zip_code}
@@ -198,7 +220,7 @@ async function fetchAddressByCep(cepRaw: string) {
         </div>
 
         <InputField
-          label="Rua"
+          label="Rua*"
           type="text"
           name="street"
           value={profileUser.street}
@@ -207,7 +229,7 @@ async function fetchAddressByCep(cepRaw: string) {
         />
 
         <InputField
-          label="Número"
+          label="Número*"
           type="text"
           name="number"
           value={profileUser.number}
@@ -216,7 +238,7 @@ async function fetchAddressByCep(cepRaw: string) {
         />
 
         <InputField
-          label="Bairro"
+          label="Bairro*"
           type="text"
           name="neighborhood"
           value={profileUser.neighborhood}
@@ -225,7 +247,7 @@ async function fetchAddressByCep(cepRaw: string) {
         />
 
         <InputField
-          label="Cidade"
+          label="Cidade*"
           type="text"
           name="city"
           value={profileUser.city}
@@ -234,7 +256,7 @@ async function fetchAddressByCep(cepRaw: string) {
         />
 
         <InputField
-          label="Estado"
+          label="Estado*"
           type="text"
           name="state"
           value={profileUser.state}
@@ -243,7 +265,7 @@ async function fetchAddressByCep(cepRaw: string) {
         />
 
         <InputField
-          label="País"
+          label="País*"
           type="text"
           name="country"
           value={profileUser.country}
@@ -251,7 +273,6 @@ async function fetchAddressByCep(cepRaw: string) {
           required
         />
       </div>
-
 
       <Button
         text="Salvar"
