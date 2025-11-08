@@ -4,7 +4,7 @@ import { formatCurrency } from "../utils/currency";
 import { CiShare2 } from "react-icons/ci";
 import { toast } from "react-toastify";
 
-const ProductCard = ({ product, isUpdated, onBid, onViewDetails }: ProductCardProps) => {
+const ProductCard = ({ product, isUpdated, onViewDetails }: ProductCardProps) => {
 
   return (
     <div
@@ -70,13 +70,13 @@ const ProductCard = ({ product, isUpdated, onBid, onViewDetails }: ProductCardPr
         <p className={`mb-3 font-semibold text-lg ${isUpdated ? "text-redBright" : "text-gray-900"}`}>
           Valor: {formatCurrency(Number(product.attributes.current_value))}
         </p>
-        <button
+        {/* <button
           type="button"
           onClick={onBid}
           className="inline-flex items-center px-3 py-2 text-sm font-medium text-center text-white !bg-redDark rounded-lg hover:bg-redBright focus:ring-4 focus:outline-none focus:ring-redBright dark:bg-redBright"
         >
           Fazer um Lance
-        </button>
+        </button> */}
       </div>
 
     </div>

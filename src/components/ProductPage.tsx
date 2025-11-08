@@ -1,20 +1,19 @@
-import { useNavigate, useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
+import { CiShare2 } from "react-icons/ci";
+import { useParams } from "react-router-dom";
+import { toast } from "react-toastify";
+import { useWebSocket } from "../hooks/useWebSocket";
 import { fetchProductById } from "../services/api";
 import { Product } from "../types";
-import { CiShare2 } from "react-icons/ci";
-import { formatCurrency } from "../utils/currency";
-import { toast } from "react-toastify";
 import { getAuthenticatedUser } from "../utils/authHelpers";
+import { formatCurrency } from "../utils/currency";
 import BidModal from "./BidModal";
-import { useWebSocket } from "../hooks/useWebSocket";
 
 const ProductPage = () => {
   const { id } = useParams();
   const [product, setProduct] = useState<Product | null>(null);
   const [loading, setLoading] = useState(true);
   const user = getAuthenticatedUser();
-  const navigate = useNavigate();
   const [isBidModalOpen, setBidModalOpen] = useState(false);
   const { cable } = useWebSocket();
   const [isWebSocketReady, setIsWebSocketReady] = useState(false);
@@ -26,14 +25,14 @@ const ProductPage = () => {
     return match ? `https://www.youtube.com/embed/${match[1]}` : null;
   };
 
-  const handleOpenBidModal = () => {
-    if (!user?.profile_id) {
-      navigate("/login");
-      toast.error("Você precisa estar autenticado para dar lances.");
-      return;
-    }
-    setBidModalOpen(true);
-  };
+  // const handleOpenBidModal = () => {
+  //   if (!user?.profile_id) {
+  //     navigate("/login");
+  //     toast.error("Você precisa estar autenticado para dar lances.");
+  //     return;
+  //   }
+  //   setBidModalOpen(true);
+  // };
 
   useEffect(() => {
     if (cable) setIsWebSocketReady(true);
@@ -43,7 +42,9 @@ const ProductPage = () => {
     if (!isWebSocketReady || !cable || !product) return;
 
     const subscription = cable.subscriptions.create("BidsChannel", {
-      received(data: { data: { attributes: { product: number; value: number } } }) {
+      received(data: {
+        data: { attributes: { product: number; value: number } };
+      }) {
         const updatedProductId = Number(data.data.attributes.product);
         const updatedValue = Number(data.data.attributes.value);
 
@@ -73,7 +74,6 @@ const ProductPage = () => {
       try {
         const data = await fetchProductById(Number(id));
         setProduct(data.data);
-
       } catch (err) {
         toast.error(`Erro ao buscar produto: ${err}`);
       } finally {
@@ -84,8 +84,14 @@ const ProductPage = () => {
     getProduct();
   }, [id]);
 
-  if (loading) return <p className="text-center mt-10">Carregando produto...</p>;
-  if (!product) return <p className="text-center mt-10">Produto não encontrado ou já arrematado.</p>;
+  if (loading)
+    return <p className="text-center mt-10">Carregando produto...</p>;
+  if (!product)
+    return (
+      <p className="text-center mt-10">
+        Produto não encontrado ou já arrematado.
+      </p>
+    );
 
   const handleShare = () => {
     const url = `https://apileilao.codenova.com.br/share/products/${product.id}`;
@@ -102,7 +108,6 @@ const ProductPage = () => {
   return (
     <div className="min-h-screen bg-gray-100 flex justify-center items-center p-4">
       <div className="relative bg-white dark:bg-gray-800 rounded-lg shadow-lg w-full md:max-w-[720px] mx-auto">
-
         <div className="relative w-full">
           {product.attributes?.link_video ? (
             <iframe
@@ -139,14 +144,13 @@ const ProductPage = () => {
             Valor: {formatCurrency(Number(product.attributes?.current_value))}
           </p>
 
-          <button
+          {/* <button
             type="button"
             onClick={handleOpenBidModal}
             className="inline-flex items-center px-3 py-2 mt-5 text-sm font-medium text-center text-white !bg-redDark rounded-lg hover:bg-redBright focus:ring-4 focus:outline-none focus:ring-redBright dark:bg-redBright"
           >
             Fazer um Lance
-          </button>
-
+          </button> */}
         </div>
       </div>
 
@@ -158,7 +162,6 @@ const ProductPage = () => {
         profileUserId={user?.profile_id || 0}
         currentValue={product.attributes.current_value || 0}
       />
-
     </div>
   );
 };
