@@ -6,6 +6,7 @@ import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import Button from "../components/Button";
 import IconButton from "../components/IconButton";
+import PageHeader from "../components/PageHeader";
 import Pagination from "../components/Pagination";
 import { fetchUsers } from "../services/api";
 import { User, UsersResponse } from "../types";
@@ -47,16 +48,11 @@ const UserManagement: React.FC = () => {
 
   return (
     <div className="p-6 bg-gray-100">
-      <div className="flex justify-between items-center mb-6">
-        <div>
-          <h1 className="text-2xl font-bold">Lista de Usuários</h1>
-          <div className="flex items-center mt-2">
-            <MdAdminPanelSettings className="text-redDark" />
-            <span className="text-sm text-gray-600 pl-2">Administrador do sistema</span>
-          </div>
-        </div>
-        <Button text="Adicionar Usuário" onClick={handleAddUser} />
-      </div>
+      <PageHeader
+        title="Lista de Usuários"
+        icon={<MdAdminPanelSettings className="h-5 w-5" />}
+        actions={<Button text="Adicionar Usuário" onClick={handleAddUser} />}
+      />
 
       {users.length > 0 ? (
         <>

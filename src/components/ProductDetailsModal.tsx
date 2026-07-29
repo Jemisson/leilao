@@ -1,6 +1,6 @@
 // components/ProductDetailsModal.tsx
 import React from "react";
-import { FaPlayCircle, FaTimes } from "react-icons/fa";
+import { FaPlayCircle, FaStar, FaTimes } from "react-icons/fa";
 import { formatCurrency } from "../utils/currency";
 
 interface ProductDetailsModalProps {
@@ -8,9 +8,11 @@ interface ProductDetailsModalProps {
   onClose: () => void;
   imageUrl: string;
   description: string;
-  value: string | number;
+  value?: string | number;
   lotNumber?: string;
   videoUrl?: string | null;
+  showProductValue?: boolean;
+  featured?: boolean;
 }
 
 const ProductDetailsModal: React.FC<ProductDetailsModalProps> = ({
@@ -20,7 +22,9 @@ const ProductDetailsModal: React.FC<ProductDetailsModalProps> = ({
   description,
   value,
   lotNumber,
-  videoUrl
+  videoUrl,
+  showProductValue = true,
+  featured = false
 }) => {
   if (!isOpen) return null;
 
@@ -50,14 +54,24 @@ const ProductDetailsModal: React.FC<ProductDetailsModalProps> = ({
 
         <div className="p-5">
           {lotNumber && (
-            <h3 className="text-xl font-bold text-gray-800 dark:text-white mb-2">
-              LOTE: {lotNumber}
-            </h3>
+            <div className="mb-2 flex flex-wrap items-center gap-2">
+              <h3 className="text-xl font-bold text-gray-800 dark:text-white">
+                LOTE: {lotNumber}
+              </h3>
+              {featured && (
+                <span className="inline-flex items-center gap-1 rounded-md bg-pinkDark/10 px-2 py-1 text-xs font-bold text-pinkDark">
+                  <FaStar className="h-3 w-3" />
+                  Destaque
+                </span>
+              )}
+            </div>
           )}
           <p className="text-gray-700 dark:text-gray-300 mb-4">{description}</p>
-          <p className="text-lg font-semibold text-red-600 dark:text-red-400">
-            Valor: {formatCurrency(Number(value))}
-          </p>
+          {showProductValue && value !== undefined && value !== null && (
+            <p className="text-lg font-semibold text-red-600 dark:text-red-400">
+              Valor: {formatCurrency(Number(value))}
+            </p>
+          )}
         </div>
       </div>
     </div>

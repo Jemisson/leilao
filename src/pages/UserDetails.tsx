@@ -2,9 +2,11 @@ import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { toast } from "react-toastify";
 import BidTable from "../components/BidTable";
+import PageHeader from "../components/PageHeader";
 import Pagination from "../components/Pagination";
 import { fetchBids, fetchUserBids, fetchUserById } from "../services/api";
 import { Bid, User } from "../types";
+import { FaUsers } from "react-icons/fa";
 
 const UserDetails: React.FC = () => {
   const { userId } = useParams<{ userId: string }>();
@@ -69,7 +71,7 @@ const UserDetails: React.FC = () => {
 
   return (
     <div className="p-6 bg-gray-100 min-h-screen">
-      <h1 className="text-3xl font-bold mb-6">Detalhes do Usuário</h1>
+      <PageHeader title="Detalhes do Usuário" icon={<FaUsers className="h-5 w-5" />} />
 
       {user ? (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">

@@ -19,19 +19,30 @@ export interface Product {
     link_video?: string;
     donor_name?: string;
     donor_phone?: string;
-    minimum_value?: number;
+    minimum_value?: number | string;
     description?: string;
-    sold_at?: number;
+    sold_at?: number | string;
     auctioned: number;
+    featured?: boolean;
     category_title: string;
     category_id: string;
-    current_value?: number;
+    current_value?: number | string;
+    winning_value?: number | string;
     winning_name?: string;
+    bidder_name?: string;
+    bidder_phone?: string;
     images?: Array<{
         id: string;
         url: string;
       }>;
   }
+}
+
+export interface CatalogSetting {
+  id?: string;
+  attributes: {
+    show_product_values: boolean;
+  };
 }
 
 export interface Category {
@@ -77,6 +88,7 @@ export interface BidModalProps {
   productId: number;
   profileUserId: number;
   currentValue: number;
+  showCurrentValue?: boolean;
 }
 
 export interface ProductCatalogProps {
@@ -88,6 +100,7 @@ export interface ProductCardProps {
   isUpdated: boolean;
   onBid: () => void;
   onViewDetails: () => void;
+  showProductValues: boolean;
 }
 
 export interface BidTableProps {
@@ -101,10 +114,18 @@ export interface BidTableProps {
 export interface AuctionModalProps {
   isOpen: boolean;
   onClose: () => void;
-  onConfirm: () => void;
+  onConfirm: (data: MarkAsSoldPayload) => Promise<void> | void;
   lotNumber: string;
-  currentValue: number;
-  winning_name: string;
+  currentValue: number | string;
+  showCurrentValue?: boolean;
+  initialData?: Partial<MarkAsSoldPayload>;
+  mode?: "create" | "edit";
+}
+
+export interface MarkAsSoldPayload {
+  bidder_name: string;
+  bidder_phone: string;
+  winning_value: number;
 }
 export interface NavBarProps {
   onCategoryClick: (categoryId: string | null) => void;

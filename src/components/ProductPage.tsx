@@ -3,11 +3,14 @@ import { useEffect, useState } from "react";
 import { fetchProductById } from "../services/api";
 import { Product } from "../types";
 import { CiShare2 } from "react-icons/ci";
+import { FaStar } from "react-icons/fa";
 import { formatCurrency } from "../utils/currency";
 import { toast } from "react-toastify";
 import { getAuthenticatedUser } from "../utils/authHelpers";
 import BidModal from "./BidModal";
 import { useWebSocket } from "../hooks/useWebSocket";
+import { buildShareProductUrl } from "../config/backend";
+import { useCatalogSettings } from "../hooks/useCatalogSettings";
 
 const ProductPage = () => {
   const { id } = useParams();
@@ -19,6 +22,7 @@ const ProductPage = () => {
   const { cable } = useWebSocket();
   const [isWebSocketReady, setIsWebSocketReady] = useState(false);
   const isAdmin = user?.role === "admin";
+  const { showProductValues } = useCatalogSettings();
 
   const getYouTubeEmbedUrl = (url: string): string | null => {
     const match = url.match(
@@ -89,11 +93,11 @@ const ProductPage = () => {
   if (!product) return <p className="text-center mt-10">Produto não encontrado ou já arrematado.</p>;
 
   const handleShare = () => {
-    const url = `https://api.leiloescapuci.com.br/share/products/${product.id}`;
+    const url = buildShareProductUrl(product.id);
     const text = `Confira este produto: LOTE ${product.attributes.lot_number}`;
 
     if (navigator.share) {
-      navigator.share({ title: "22° Leilão Direito de Viver", text, url });
+      navigator.share({ title: "23° Leilão Direito de Viver", text, url });
     } else {
       navigator.clipboard.writeText(url);
       toast.success("Link copiado!");
@@ -124,9 +128,17 @@ const ProductPage = () => {
 
         <div className="p-5">
           <div className="flex items-center justify-between mb-2">
-            <h3 className="text-xl font-bold text-gray-800 dark:text-white">
-              LOTE: {product.attributes?.lot_number}
-            </h3>
+            <div className="flex flex-wrap items-center gap-2">
+              <h3 className="text-xl font-bold text-gray-800 dark:text-white">
+                LOTE: {product.attributes?.lot_number}
+              </h3>
+              {product.attributes.featured && (
+                <span className="inline-flex items-center gap-1 rounded-md bg-pinkDark/10 px-2 py-1 text-xs font-bold text-pinkDark">
+                  <FaStar className="h-3 w-3" />
+                  Destaque
+                </span>
+              )}
+            </div>
             <CiShare2
               title="Compartilhar"
               className="w-6 h-6 text-gray-500 hover:text-redDark cursor-pointer"
@@ -136,9 +148,11 @@ const ProductPage = () => {
           <p className="text-gray-700 dark:text-gray-300 mb-4">
             {product.attributes?.description}
           </p>
-          <p className="text-lg font-semibold text-red-600 dark:text-red-400">
-            Valor: {formatCurrency(Number(product.attributes?.current_value))}
-          </p>
+          {showProductValues && product.attributes?.current_value !== undefined && (
+            <p className="text-lg font-semibold text-red-600 dark:text-red-400">
+              Valor: {formatCurrency(Number(product.attributes.current_value))}
+            </p>
+          )}
 
           {isAdmin && (
             <button
@@ -158,7 +172,8 @@ const ProductPage = () => {
         productName={product.attributes.lot_number || ""}
         productId={product.id}
         profileUserId={user?.profile_id || 0}
-        currentValue={product.attributes.current_value || 0}
+        currentValue={Number(product.attributes.current_value || 0)}
+        showCurrentValue={showProductValues}
       />
 
     </div>

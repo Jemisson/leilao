@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { fetchProducts, searchProducts } from "../services/api";
 import { Bid, Product, ProductCatalogProps } from "../types";
 import Pagination from "./Pagination";
@@ -12,6 +12,9 @@ import { toast } from "react-toastify";
 import ProductDetailsModal from "./ProductDetailsModal";
 import VideoModal from "./VideoModal";
 import ProductSearch from "./ProductSearch";
+import { FaTags } from "react-icons/fa";
+import { useCatalogSettings } from "../hooks/useCatalogSettings";
+import PageHeader from "./PageHeader";
 
 function ProductCatalog({ selectedCategory }: ProductCatalogProps) {
   const [products, setProducts] = useState<Product[]>([]);
@@ -32,6 +35,7 @@ function ProductCatalog({ selectedCategory }: ProductCatalogProps) {
   const navigate = useNavigate();
   const user = getAuthenticatedUser();
   const [searchQuery, setSearchQuery] = useState<string | null>(null);
+  const { showProductValues, loading: catalogSettingsLoading } = useCatalogSettings();
 
   const handleOpenDetails = (product: Product) => {
     if (product.attributes.link_video) {
@@ -59,15 +63,15 @@ function ProductCatalog({ selectedCategory }: ProductCatalogProps) {
     setBidModalOpen(true);
   };
 
-  const handleSearch = (query: string) => {
+  const handleSearch = useCallback((query: string) => {
     setSearchQuery(query);
     setCurrentPage(1);
-  };
+  }, []);
 
-  const handleClearSearch = () => {
+  const handleClearSearch = useCallback(() => {
     setSearchQuery(null);
     setCurrentPage(1);
-  };
+  }, []);
 
   useEffect(() => {
     if (cable) {
@@ -86,7 +90,9 @@ function ProductCatalog({ selectedCategory }: ProductCatalogProps) {
 
     try {
       const data = searchQuery
-        ? await searchProducts(searchQuery, 0, currentPage)
+        ? await searchProducts(searchQuery, 0, currentPage, {
+            categoryId: selectedCategory,
+          })
         : await fetchProducts(currentPage, selectedCategory, 0);
 
       if (Array.isArray(data.data) && data.data.length > 0) {
@@ -148,52 +154,69 @@ function ProductCatalog({ selectedCategory }: ProductCatalogProps) {
     };
   }, [cable, isWebSocketReady]);
 
-  if (loading) return <p>Carregando...</p>;
-  if (error) return <p>{error}</p>;
-
   return (
-    <div className="flex flex-col items-center min-h-screen bg-gray-100 p-6">
-      <h1 className="text-3xl font-bold mb-6">Catálogo de Produtos</h1>
-      
-      <ProductSearch
-        onSearch={handleSearch}
-        onClear={handleClearSearch}
-        defaultValue={searchQuery || ''}
-      />
+    <main className="min-h-screen bg-[#f4f7fb]">
+      <section className="h-3 border-b-4 border-pinkDark bg-blueBright" aria-hidden="true" />
 
-      {products.length === 0 ? (
-        <NoData />
-      ) : (
-        <>
-          <Pagination
-            currentPage={currentPage}
-            totalPages={totalPages}
-            onPageChange={(page) => setCurrentPage(page)}
-          />
+      <section className="mx-auto w-[90%] py-8">
+        <PageHeader
+          title="Catálogo de produtos"
+          icon={<FaTags className="h-5 w-5" />}
+          actions={
+            <ProductSearch
+              onSearch={handleSearch}
+              onClear={handleClearSearch}
+              defaultValue={searchQuery || ''}
+            />
+          }
+        />
 
-          <ul className="grid grid-cols-[repeat(auto-fit,_minmax(250px,_1fr))] gap-6 w-full mt-6">
-            {products.map((product) => (
-              <li 
-                key={product.id}
-                className="flex flex-col items-center"
-              >
-                <ProductCard
-                  product={product}
-                  isUpdated={updatedProducts.has(product.id)}
-                  onBid={() => handleOpenBidModal(product)}
-                  onViewDetails={() => handleOpenDetails(product)}
-                />
-              </li>
-            ))}
-          </ul>
+        {error ? (
+          <p className="rounded-lg border border-red-200 bg-white p-4 font-semibold text-red-700">
+            {error}
+          </p>
+        ) : loading ? (
+          <p className="rounded-lg border border-gray-200 bg-white p-4 font-semibold text-gray-700 shadow-sm">
+            Carregando produtos...
+          </p>
+        ) : products.length === 0 ? (
+          <NoData />
+        ) : (
+          <>
+            <div className="mb-6 flex justify-center sm:justify-end">
+              <Pagination
+                currentPage={currentPage}
+                totalPages={totalPages}
+                onPageChange={(page) => setCurrentPage(page)}
+              />
+            </div>
 
-          <Pagination
-            currentPage={currentPage}
-            totalPages={totalPages}
-            onPageChange={(page) => setCurrentPage(page)}
-          />
-        </>
-      )}
+            <ul className="grid w-full grid-cols-[repeat(auto-fit,_minmax(260px,_1fr))] gap-5 lg:gap-6">
+              {products.map((product) => (
+                <li
+                  key={product.id}
+                  className="flex h-full"
+                >
+                  <ProductCard
+                    product={product}
+                    isUpdated={updatedProducts.has(product.id)}
+                    onBid={() => handleOpenBidModal(product)}
+                    onViewDetails={() => handleOpenDetails(product)}
+                    showProductValues={showProductValues}
+                  />
+                </li>
+              ))}
+            </ul>
+
+            <div className="mt-8 flex justify-center">
+              <Pagination
+                currentPage={currentPage}
+                totalPages={totalPages}
+                onPageChange={(page) => setCurrentPage(page)}
+              />
+            </div>
+          </>
+        )}
 
       <BidModal
         isOpen={isBidModalOpen}
@@ -201,7 +224,8 @@ function ProductCatalog({ selectedCategory }: ProductCatalogProps) {
         productName={selectedProduct?.attributes.lot_number || ''}
         productId={selectedProduct?.id || 0}
         profileUserId={user?.profile_id || 0}
-        currentValue={selectedProduct?.attributes.current_value || 0}
+        currentValue={Number(selectedProduct?.attributes.current_value || 0)}
+        showCurrentValue={showProductValues}
       />
 
       <ProductDetailsModal
@@ -216,6 +240,8 @@ function ProductCatalog({ selectedCategory }: ProductCatalogProps) {
         description={selectedProductModal?.attributes.description || ""}
         value={selectedProductModal?.attributes.current_value || ""}
         lotNumber={selectedProductModal?.attributes.lot_number}
+        showProductValue={showProductValues && !catalogSettingsLoading}
+        featured={Boolean(selectedProductModal?.attributes.featured)}
       />
 
       {selectedProduct?.attributes.link_video && (
@@ -226,10 +252,13 @@ function ProductCatalog({ selectedCategory }: ProductCatalogProps) {
           lotNumber={selectedProduct.attributes.lot_number}
           description={selectedProduct.attributes.description || ""}
           value={selectedProduct?.attributes.current_value || ""}
+          showProductValue={showProductValues && !catalogSettingsLoading}
+          featured={Boolean(selectedProduct.attributes.featured)}
         />
       )}
 
-    </div>
+      </section>
+    </main>
   );
 }
 

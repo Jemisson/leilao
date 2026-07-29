@@ -3,6 +3,8 @@ import { createProduct } from "../services/api";
 import ProductForm from "../components/ProductForm";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
+import PageHeader from "../components/PageHeader";
+import { ImHammer2 } from "react-icons/im";
 
 function ProductCreation () {
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -22,6 +24,7 @@ function ProductCreation () {
 
   return (
     <div className="min-h-screen bg-gray-100 p-6">
+      <PageHeader title="Cadastrar Produto" icon={<ImHammer2 className="h-5 w-5" />} />
       <ProductForm
         onSubmit={handleCreateProduct}
         isSubmitting={isSubmitting}

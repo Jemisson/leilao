@@ -8,22 +8,30 @@ interface StatCardProps {
   icon: React.ReactNode;
   color?: string;
   isCurrency?: boolean;
+  compact?: boolean;
 }
 
-const StatCard: React.FC<StatCardProps> = ({ title, value, icon, color = "bg-white", isCurrency }) => {
+const StatCard: React.FC<StatCardProps> = ({ title, value, icon, color = "bg-white", isCurrency, compact }) => {
   return (
     <motion.div
-      className={`p-5 rounded-2xl shadow-sm border border-gray-200 ${color} flex items-center gap-4`}
+      className={`flex items-center rounded-lg border border-gray-200 shadow-sm ${color} ${
+        compact ? "min-h-20 gap-3 p-4" : "min-h-28 gap-4 p-5"
+      }`}
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.4 }}
     >
-      <div className="text-redDark">{icon}</div>
-      <div>
-        <h2 className="text-sm font-medium text-gray-700">{title}</h2>
-        <p className="text-xl font-bold text-gray-900">
+      <div
+        className={`flex shrink-0 items-center justify-center rounded-lg bg-blueBright/10 text-blueBright ${
+          compact ? "h-10 w-10" : "h-12 w-12"
+        }`}
+      >
+        {icon}
+      </div>
+      <div className="min-w-0">
+        <h2 className="text-sm font-semibold text-gray-500">{title}</h2>
+        <p className={`mt-1 font-bold text-gray-900 ${compact ? "text-xl" : "text-2xl"}`}>
           {isCurrency && typeof value === "number" ? formatCurrency(value) : value}
-          {isCurrency}
         </p>
       </div>
     </motion.div>

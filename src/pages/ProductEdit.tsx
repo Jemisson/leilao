@@ -2,8 +2,10 @@ import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { fetchProductById, updateProduct } from "../services/api";
 import { Product } from "../types";
+import PageHeader from "../components/PageHeader";
 import ProductForm from "../components/ProductForm";
 import { toast } from "react-toastify";
+import { ImHammer2 } from "react-icons/im";
 
 function ProductEdit() {
   const [productData, setProductData] = useState<Partial<Product["attributes"]> | null>(null);
@@ -50,6 +52,7 @@ function ProductEdit() {
 
   return (
     <div className="min-h-screen bg-gray-100 p-6">
+      <PageHeader title="Editar Produto" icon={<ImHammer2 className="h-5 w-5" />} />
       <ProductForm
         onSubmit={handleUpdateProduct}
         initialData={productData}

@@ -9,27 +9,13 @@ import Logo from "./Logo";
 
 function Navbar({ onCategoryClick, activeCategory }: NavBarProps) {
   const [categories, setCategories] = useState<Category[]>([]);
-  const [isVisible, setIsVisible] = useState(true);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [lastScrollY, setLastScrollY] = useState(0);
   const [pendingCategory, setPendingCategory] = useState<string | null>(null);
   const location = useLocation();
   const navigate = useNavigate();
   const userInfo = getUserInfo();
   const userRole = userInfo?.role;
   const shouldShowNavbar = location.pathname !== "/login";
-
-  // Esconde o navbar ao rolar
-  useEffect(() => {
-    const handleScroll = () => {
-      const currentScrollY = window.scrollY;
-      setIsVisible(currentScrollY <= lastScrollY);
-      setLastScrollY(currentScrollY);
-    };
-
-    window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, [lastScrollY]);
 
   // Carrega as categorias
   useEffect(() => {
@@ -84,92 +70,92 @@ function Navbar({ onCategoryClick, activeCategory }: NavBarProps) {
 
   if (!shouldShowNavbar) return null;
 
-  return (
-    <div className="">
-      <nav
-        className={`bg-blueBright border-pinkDark sticky top-0 left-0 w-full z-50 h-20 border-t-8 ${
-          isVisible ? "translate-y-0" : "-translate-y-full"
-        } transition-transform duration-300`}
-      >
-        <div className="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-4">
-          <div className="max-w-screen-xl h-full mx-auto px-4 flex items-center">
-            <Logo onCategoryClick={handleCategoryClick} />
-          </div>
-
-          {/* Botão menu mobile */}
+  const menuItems = (
+    <>
+      {categories?.map((category) => (
+        <li key={category.id} className="shrink-0">
           <button
-            onClick={() => setIsMenuOpen(!isMenuOpen)}
-            className="inline-flex items-center p-2 w-10 h-10 justify-center text-white rounded-lg md:hidden hover:bg-pinkDark focus:outline-none focus:ring-2 focus:white"
-            aria-controls="navbar-default"
-            aria-expanded={isMenuOpen}
+            className={`w-full px-3 py-2 text-left text-sm font-semibold text-beige transition md:w-auto md:text-center ${
+              activeCategory === category.id
+                ? "border-b-2 border-gold text-gold"
+                : "hover:text-gold hover:border-b-2 hover:border-gold"
+            }`}
+            onClick={() => handleMenuItemClick(category.id)}
           >
-            {isMenuOpen ? <FaTimes className="w-5 h-5" /> : <FaBars className="w-5 h-5" />}
+            {category.attributes.title}
           </button>
+        </li>
+      ))}
+      <li className="shrink-0">
+        <button
+          className={`w-full px-3 py-2 text-left text-sm font-semibold text-beige transition md:w-auto md:text-center ${
+            activeCategory === null && location.pathname === "/"
+              ? "border-b-2 border-gold text-gold"
+              : "hover:text-gold hover:border-b-2 hover:border-gold"
+          }`}
+          onClick={() => handleMenuItemClick(null)}
+        >
+          Ver Tudo
+        </button>
+      </li>
 
-          {/* Menu */}
-          <div
-            id="navbar-default"
-            className={`w-full md:w-auto overflow-x-hidden bg-blueBright transition-all duration-300 ease-in-out ${
-              isMenuOpen ? "block" : "hidden"
-            } md:block`}
-          >
+      {userRole === "admin" && (
+        <>
+          <li className="shrink-0">
+            <button
+              onClick={() => {
+                navigate("/dashboard");
+                if (window.innerWidth < 768) setIsMenuOpen(false);
+              }}
+              className="w-full px-3 py-2 text-left text-sm font-semibold text-beige transition hover:text-gold hover:border-b-2 hover:border-gold md:w-auto md:text-center"
+            >
+              Dashboard
+            </button>
+          </li>
+          <li className="shrink-0">
+            <button
+              className="w-full px-3 py-2 text-left text-sm font-semibold text-beige transition hover:text-gold hover:border-b-2 hover:border-gold md:w-auto md:text-center"
+              onClick={handleLogout}
+            >
+              Sair
+            </button>
+          </li>
+        </>
+      )}
+    </>
+  );
 
-            <ul className="flex flex-col md:flex-row md:space-x-4 items-center">
-              {categories?.map((category) => (
-                <li key={category.id}>
-                  <button
-                    className={`px-3 py-2 text-beige ${
-                      activeCategory === category.id
-                        ? "border-b-2 border-gold text-gold"
-                        : "hover:text-gold hover:border-b-2 hover:border-gold"
-                    }`}
-                    onClick={() => handleMenuItemClick(category.id)}
-                  >
-                    {category.attributes.title}
-                  </button>
-                </li>
-              ))}
-              <li>
-                <button
-                  className={`px-3 py-2 text-beige ${
-                    activeCategory === null && location.pathname === "/"
-                      ? "border-b-2 border-gold text-gold"
-                      : "hover:text-gold hover:border-b-2 hover:border-gold"
-                  }`}
-                  onClick={() => handleMenuItemClick(null)}
-                >
-                  Ver Tudo
-                </button>
-              </li>
-
-              {userRole === "admin" &&
-              <>
-                <li>
-                  <button
-                    onClick={() => {
-                      navigate("/dashboard");
-                      if (window.innerWidth < 768) setIsMenuOpen(false);
-                    }}
-                    className="px-3 py-2 text-beige hover:text-gold hover:border-b-2 hover:border-gold"
-                  >
-                    Dashboard
-                  </button>
-                </li>
-                <li>
-                  <button
-                    className="px-3 py-2 text-beige hover:text-gold hover:border-b-2 hover:border-gold"
-                    onClick={handleLogout}
-                  >
-                    Sair
-                  </button>
-                </li>
-              </>
-              }
-            </ul>
-          </div>
+  return (
+    <nav className="sticky left-0 top-0 z-50 h-20 w-full border-t-8 border-pinkDark bg-blueBright">
+      <div className="mx-auto flex h-full w-[90%] items-center justify-between gap-6">
+        <div className="flex min-w-0 shrink-0 items-center">
+          <Logo onCategoryClick={handleCategoryClick} />
         </div>
-      </nav>
-    </div>
+
+        <div className="hidden min-w-0 flex-1 justify-end md:flex">
+          <ul className="flex max-w-full items-center justify-end gap-1 overflow-x-auto whitespace-nowrap">
+            {menuItems}
+          </ul>
+        </div>
+
+        <button
+          onClick={() => setIsMenuOpen(!isMenuOpen)}
+          className="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-lg p-2 text-white hover:bg-pinkDark focus:outline-none focus:ring-2 focus:ring-white md:hidden"
+          aria-controls="navbar-mobile"
+          aria-expanded={isMenuOpen}
+        >
+          {isMenuOpen ? <FaTimes className="h-5 w-5" /> : <FaBars className="h-5 w-5" />}
+        </button>
+      </div>
+
+      {isMenuOpen && (
+        <div id="navbar-mobile" className="absolute left-0 top-20 w-full bg-blueBright shadow-md md:hidden">
+          <ul className="mx-auto flex max-h-[calc(100vh-5rem)] w-[90%] flex-col overflow-y-auto py-3">
+            {menuItems}
+          </ul>
+        </div>
+      )}
+    </nav>
   );
 }
 

@@ -9,12 +9,14 @@ const MenuItem: React.FC<MenuItemProps> = ({ to, icon, label, onClick }) => {
         end={to === "/dashboard"}
         onClick={onClick}
         className={({ isActive }) =>
-          `flex items-center p-2 w-full transition-colors duration-300 ${
-            isActive ? "font-bold text-beige bg-redDark" : "text-gray-700 hover:bg-gray-100"
+          `flex w-full items-center gap-3 rounded-md px-3 py-2.5 text-sm font-semibold transition-colors duration-200 ${
+            isActive
+              ? "bg-pinkDark text-white shadow-sm"
+              : "text-gray-700 hover:bg-blueBright/10 hover:text-blueBright"
           }`
         }
       >
-        <span className="mr-2">{icon}</span>
+        <span className="text-lg">{icon}</span>
         <span>{label}</span>
       </NavLink>
     </li>

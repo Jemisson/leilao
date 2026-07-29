@@ -9,7 +9,7 @@ function DashboardLayout({ children }: { children?: React.ReactNode }) {
   const userRole = userInfo?.role;
 
   return (
-    <div className="flex">
+    <div className="mx-auto flex w-[90%] flex-1 items-start gap-6 py-6">
       {userRole === "admin" && (
         <SideBar
           isSidebarOpen={isSidebarOpen}
@@ -17,11 +17,7 @@ function DashboardLayout({ children }: { children?: React.ReactNode }) {
         />
       )}
 
-      <div
-        className={`flex-1 transition-all duration-300 ${
-          isSidebarOpen && userRole === "admin" ? "ml-64" : "ml-0"
-        } `}
-      >
+      <div className="min-w-0 flex-1">
         {children || <Outlet />}
       </div>
     </div>

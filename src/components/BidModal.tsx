@@ -10,6 +10,7 @@ const BidModal: React.FC<BidModalProps> = ({
   productId,
   profileUserId,
   currentValue,
+  showCurrentValue = true,
  }) => {
   const [bidValue, setBidValue] = useState<number | "">("");
   const [noteValue, setNoteValue] = useState("");
@@ -24,7 +25,12 @@ const BidModal: React.FC<BidModalProps> = ({
         return;
       }
   
-      if (typeof bidValue !== "number" || bidValue <= currentValue) {
+      if (typeof bidValue !== "number" || bidValue <= 0) {
+        toast.warning("Por favor, insira um valor de lance válido.");
+        return;
+      }
+
+      if (showCurrentValue && bidValue <= currentValue) {
         toast.warning("Por favor, insira um valor maior que o valor atual.");
         return;
       }
@@ -67,20 +73,24 @@ const BidModal: React.FC<BidModalProps> = ({
     <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
       <div className="bg-white p-6 rounded shadow-lg w-96">
         <h1 className="text-4xl text-center font-bold mb-4 text-redDark">Lote {productName}</h1>
-        <h2 className="text-center font-bold mb-10"> Valor atual: R$ {currentValue}</h2>
+        {showCurrentValue && (
+          <h2 className="text-center font-bold mb-10"> Valor atual: R$ {currentValue}</h2>
+        )}
 
-        <div className="flex gap-2 mb-4">
-          {[10, 20, 50, 100].map((increment) => (
-            <button
-              key={increment}
-              type="button"
-              onClick={() => handleTagClick(increment)}
-              className="px-3 py-1 bg-gray-200 text-gray-800 rounded-lg hover:bg-gray-300"
-            >
-              +R$ {increment}
-            </button>
-          ))}
-        </div>
+        {showCurrentValue && (
+          <div className="flex gap-2 mb-4">
+            {[10, 20, 50, 100].map((increment) => (
+              <button
+                key={increment}
+                type="button"
+                onClick={() => handleTagClick(increment)}
+                className="px-3 py-1 bg-gray-200 text-gray-800 rounded-lg hover:bg-gray-300"
+              >
+                +R$ {increment}
+              </button>
+            ))}
+          </div>
+        )}
 
         <input
           type="number"

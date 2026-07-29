@@ -1,10 +1,12 @@
 import React, { useEffect, useState } from "react";
 import BidTable from "../components/BidTable";
+import PageHeader from "../components/PageHeader";
 import Pagination from "../components/Pagination";
 import { fetchBids } from "../services/api";
 import { Bid } from "../types";
 import { useWebSocket } from "../hooks/useWebSocket";
 import { toast } from "react-toastify";
+import { FaMoneyBill } from "react-icons/fa";
 
 const BidHistory: React.FC = () => {
   const [bids, setBids] = useState<Bid[]>([]);
@@ -65,7 +67,7 @@ const BidHistory: React.FC = () => {
 
   return (
     <div className="p-6 bg-gray-100">
-      <h1 className="text-3xl font-bold mb-6">Histórico de Lances</h1>
+      <PageHeader title="Histórico de Lances" icon={<FaMoneyBill className="h-5 w-5" />} />
       
       <BidTable showLotNumber={true} bids={bids} />
 

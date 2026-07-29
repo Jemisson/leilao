@@ -19,7 +19,7 @@ A plataforma tem como objetivo proporcionar uma experiência moderna e eficiente
 - Node.js (versão 18 ou superior)
 - Yarn ou npm
 - Backend Ruby on Rails disponível na porta 3000 (API e WebSocket)
-- `.env` com variáveis de ambiente corretamente definidas (veja abaixo)
+- `.env` opcional para sobrescrever as URLs padrão locais
 
 ---
 
@@ -40,11 +40,13 @@ npm install
 ```
 
 
-3. **Configure as variáveis de ambiente:**
+3. **Opcional: configure as variáveis de ambiente:**
 
-Crie um arquivo `.env` na raiz do projeto com o seguinte conteúdo:
+Por padrão, o frontend consome o backend em `http://localhost:3000`.
+Caso precise sobrescrever as URLs, crie um arquivo `.env` na raiz do projeto:
 
 ```env
+VITE_BACKEND_BASE_URL=http://localhost:3000
 VITE_API_BASE_URL=http://localhost:3000/api/v1
 VITE_AUTH_API_BASE_URL=http://localhost:3000
 VITE_WEBSOCKET_URL=ws://localhost:3000/cable

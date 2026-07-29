@@ -1,16 +1,21 @@
 import axios from "axios"
 import Cookies from "js-cookie"
-import { DecodedToken, ProfileUser } from "../types";
-
-const BASE_URL = import.meta.env.VITE_API_BASE_URL;
-const AUTHBASEURL = import.meta.env.VITE_AUTH_API_BASE_URL;
+import { CatalogSetting, DecodedToken, MarkAsSoldPayload, ProfileUser } from "../types";
+import { API_BASE_URL, AUTH_BASE_URL } from "../config/backend";
 
 export const getToken = (): string | undefined => {
   return Cookies.get("leilao_jwt_token");
 }
 
 const api = axios.create({
-  baseURL: BASE_URL,
+  baseURL: API_BASE_URL,
+  headers: {
+    "Content-Type": "application/json",
+  }
+})
+
+const publicApi = axios.create({
+  baseURL: API_BASE_URL,
   headers: {
     "Content-Type": "application/json",
   }
@@ -38,7 +43,7 @@ api.interceptors.response.use(
 );
 
 const authApi = axios.create({
-  baseURL: AUTHBASEURL,
+  baseURL: AUTH_BASE_URL,
   headers: {
     "Content-Type": "application/json",
   },
@@ -84,20 +89,49 @@ export const login = async (email: string, password: string) => {
 }
 
 export const fetchCategories = async () => {
-  const response = await api.get("/categories");
+  const response = await publicApi.get("/categories");
   return response.data;
+}
+
+export const fetchCatalogSetting = async () => {
+  const response = await publicApi.get("/catalog_setting");
+  return response.data;
+}
+
+export const updateCatalogSetting = async (showProductValues: boolean) => {
+  const response = await api.patch("/catalog_setting", {
+    catalog_setting: {
+      show_product_values: showProductValues,
+    },
+  });
+
+  return response.data;
+}
+
+export const getCatalogSettingValue = (data: { data: CatalogSetting }) => {
+  return Boolean(data.data.attributes.show_product_values);
+}
+
+interface ProductListOptions {
+  orderBy?: "lot_number" | "lot";
+  orderDirection?: "asc" | "desc";
 }
 
 export const fetchProducts = async (
   page: number,
   categoryId: string | null = null,
-  auctioned: number
+  auctioned: number,
+  options: ProductListOptions = {}
 ) => {
-  const url = categoryId
-  ? `/products?page=${page}&category_id=${categoryId}&auctioned=${auctioned}`
-  : `/products?page=${page}&auctioned=${auctioned}`;
-
-  const response = await api.get(url);
+  const response = await api.get("/products", {
+    params: {
+      page,
+      auctioned,
+      ...(categoryId ? { category_id: categoryId } : {}),
+      ...(options.orderBy ? { order_by: options.orderBy } : {}),
+      ...(options.orderDirection ? { order_direction: options.orderDirection } : {}),
+    },
+  });
   return response.data;
 }
 
@@ -138,8 +172,10 @@ export const updateProduct = async (productId: number, formData: FormData) => {
   }
 }
 
-export const soldProduct = async (id: number) => {
-  const response = await api.patch(`products/${id}/mark_as_sold`);
+export const soldProduct = async (id: number, productData: MarkAsSoldPayload) => {
+  const response = await api.patch(`products/${id}/mark_as_sold`, {
+    product: productData,
+  });
   return response.data;
 }
 
@@ -249,12 +285,20 @@ export const googleLogin = async (googleAccessToken: string) => {
   return response.data;
 };
 
-export const searchProducts = async (query: string, auctioned: number, page = 1) => {
-  const response = await api.get("/products/search", {
+export const searchProducts = async (
+  query: string,
+  auctioned: number,
+  page = 1,
+  options: ProductListOptions & { categoryId?: string | null } = {}
+) => {
+  const response = await publicApi.get("/products/search", {
     params: {
       query,
       page,
-      auctioned
+      auctioned,
+      ...(options.categoryId ? { category_id: options.categoryId } : {}),
+      ...(options.orderBy ? { order_by: options.orderBy } : {}),
+      ...(options.orderDirection ? { order_direction: options.orderDirection } : {}),
     },
   });
 

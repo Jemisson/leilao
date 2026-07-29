@@ -3,6 +3,7 @@ import { Navigate, Route, Routes } from "react-router-dom";
 import ConditionalLayout from "../components/ConditionalLayout";
 import DashboardLayout from "../components/DashboardLayout";
 import ProductCatalog from "../components/ProductCatalog";
+import CatalogSettings from "../pages/CatalogSettings";
 import BidHistory from "../pages/BidHistory";
 import Dashboard from "../pages/Dashboard";
 import LoginForm from "../pages/LoginForm";
@@ -65,6 +66,7 @@ const AppRoutes: React.FC<AppRoutesProps> = ({ selectedCategory }) => {
         <Route path="participantes" element={<UserManagement />} />
         <Route path="participantes/:userId" element={<UserDetails />} />
         <Route path="participantes/:userId/edit" element={<UserEdit />} />
+        <Route path="configuracoes/catalogo" element={<CatalogSettings />} />
 
       </Route>
     </Routes>

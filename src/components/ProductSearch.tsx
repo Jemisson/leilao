@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { FaSearch, FaTimes } from "react-icons/fa";
 
 interface ProductSearchProps {
   onSearch: (query: string) => void;
@@ -9,41 +10,52 @@ interface ProductSearchProps {
 const ProductSearch = ({ onSearch, onClear, defaultValue = ""  }: ProductSearchProps) => {
   const [query, setQuery] = useState(defaultValue)
 
-  const handleSubmit = () => {
-    const trimmed = query.trim();
-    if (trimmed.length >= 2) {
-      onSearch(trimmed);
-    }
-  };
-
   useEffect(() => {
     setQuery(defaultValue);
   }, [defaultValue]);
 
+  useEffect(() => {
+    const trimmed = query.trim();
+
+    if (trimmed.length >= 2) {
+      const timeoutId = window.setTimeout(() => {
+        onSearch(trimmed);
+      }, 300);
+
+      return () => window.clearTimeout(timeoutId);
+    }
+
+    if (trimmed.length < 2 && defaultValue) {
+      onClear?.();
+    }
+  }, [defaultValue, onClear, onSearch, query]);
+
   return (
-    <div className="w-full max-w-2xl flex items-center gap-2 mb-4">
-      <input
-        type="text"
-        value={query}
-        onChange={(e) => setQuery(e.target.value)}
-        onKeyDown={(e) => e.key === "Enter" && handleSubmit()}
-        className="flex-1 px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-pinkDark"
-        placeholder="Buscar por lote, descrição ou valor..."
-      />
-      <button
-        onClick={handleSubmit}
-        className="px-4 py-2 bg-pinkDark text-white rounded-md hover:bg-pinkBright transition"
-      >
-        Buscar
-      </button>
-      {onClear && (
-        <button
-          onClick={onClear}
-          className="text-sm text-gray-500 hover:underline"
-        >
-          Limpar
-        </button>
-      )}
+    <div className="flex w-full max-w-3xl">
+      <div className="relative flex-1">
+        <FaSearch className="pointer-events-none absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400" />
+        <input
+          type="text"
+          value={query}
+          onChange={(e) => setQuery(e.target.value)}
+          className="h-12 w-full rounded-md border border-gray-200 bg-white pl-11 pr-12 text-gray-900 shadow-sm focus:outline-none focus:ring-2 focus:ring-pinkDark"
+          placeholder="Buscar por produto, lote, descrição ou valor..."
+        />
+        {query && onClear && (
+          <button
+            type="button"
+            onClick={() => {
+              setQuery("");
+              onClear();
+            }}
+            className="absolute right-3 top-1/2 flex h-7 w-7 -translate-y-1/2 items-center justify-center rounded-md text-gray-500 hover:bg-gray-100 hover:text-pinkDark"
+            aria-label="Limpar busca"
+            title="Limpar busca"
+          >
+            <FaTimes className="h-3.5 w-3.5" />
+          </button>
+        )}
+      </div>
     </div>
   );
 };

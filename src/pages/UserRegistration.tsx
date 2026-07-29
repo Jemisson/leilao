@@ -1,10 +1,12 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
+import PageHeader from "../components/PageHeader";
 import UserForm from "../components/UserForm";
 import { createUser } from "../services/api";
 import { ProfileUser } from "../types";
 import { getUserRole } from "../utils/authHelpers";
+import { FaUsers } from "react-icons/fa";
 
 const UserRegistration: React.FC = () => {
 
@@ -27,7 +29,7 @@ const UserRegistration: React.FC = () => {
 
   return (
     <div className="p-6 bg-gray-100 min-h-screen">
-      <h1 className="text-3xl font-bold mb-6">Cadastro de Usuário</h1>
+      <PageHeader title="Cadastro de Usuário" icon={<FaUsers className="h-5 w-5" />} />
       <UserForm
         initialProfileUser={{
           name: "",

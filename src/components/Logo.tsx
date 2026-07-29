@@ -14,14 +14,14 @@ function Logo({ onCategoryClick, isLink = true, colorText = "text-beige" }: Logo
   };
 
   const content = (
-    <div className="flex items-center h-12 space-x-2 cursor-pointer" onClick={handleClick}>
+    <div className="flex h-12 min-w-0 cursor-pointer items-center space-x-2" onClick={handleClick}>
       <img
         src={logo}
         alt="Logo Imagem Peregrina"
-        className="h-full object-contain"
+        className="h-full shrink-0 object-contain"
       />
-      <span className={`text-base sm:text-lg md:text-xl lg:text-2xl font-semibold whitespace-nowrap ${colorText}`}>
-        22° LEILÃO DIREITO DE VIVER
+      <span className={`max-w-[52vw] truncate text-sm font-semibold whitespace-nowrap sm:max-w-[44vw] sm:text-lg lg:max-w-none lg:text-2xl ${colorText}`}>
+        23° LEILÃO DIREITO DE VIVER
       </span>
     </div>
   );
