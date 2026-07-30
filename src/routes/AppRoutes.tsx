@@ -10,6 +10,7 @@ import LoginForm from "../pages/LoginForm";
 import ProductCreation from "../pages/ProductCreation";
 import ProductDetails from "../pages/ProductDetails";
 import ProductEdit from "../pages/ProductEdit";
+import PasswordChange from "../pages/PasswordChange";
 import ProductManagement from "../pages/ProductManagement";
 import UserDetails from "../pages/UserDetails";
 import UserEdit from "../pages/UserEdit";
@@ -63,6 +64,7 @@ const AppRoutes: React.FC<AppRoutesProps> = ({ selectedCategory }) => {
         <Route path="produtos/new" element={<ProductCreation />} />
         <Route path="produtos/:productId/lances" element={ <ProductDetails />} />
         <Route path="produtos/:productId/edit" element={<ProductEdit />} />
+        <Route path="alterar-senha" element={<PasswordChange />} />
         <Route path="participantes" element={<UserManagement />} />
         <Route path="participantes/:userId" element={<UserDetails />} />
         <Route path="participantes/:userId/edit" element={<UserEdit />} />

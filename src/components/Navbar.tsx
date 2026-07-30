@@ -100,27 +100,28 @@ function Navbar({ onCategoryClick, activeCategory }: NavBarProps) {
       </li>
 
       {userRole === "admin" && (
-        <>
-          <li className="shrink-0">
-            <button
-              onClick={() => {
-                navigate("/dashboard");
-                if (window.innerWidth < 768) setIsMenuOpen(false);
-              }}
-              className="w-full px-3 py-2 text-left text-sm font-semibold text-beige transition hover:text-gold hover:border-b-2 hover:border-gold md:w-auto md:text-center"
-            >
-              Dashboard
-            </button>
-          </li>
-          <li className="shrink-0">
-            <button
-              className="w-full px-3 py-2 text-left text-sm font-semibold text-beige transition hover:text-gold hover:border-b-2 hover:border-gold md:w-auto md:text-center"
-              onClick={handleLogout}
-            >
-              Sair
-            </button>
-          </li>
-        </>
+        <li className="shrink-0">
+          <button
+            onClick={() => {
+              navigate("/dashboard");
+              if (window.innerWidth < 768) setIsMenuOpen(false);
+            }}
+            className="w-full px-3 py-2 text-left text-sm font-semibold text-beige transition hover:text-gold hover:border-b-2 hover:border-gold md:w-auto md:text-center"
+          >
+            Dashboard
+          </button>
+        </li>
+      )}
+
+      {userInfo && (
+        <li className="shrink-0">
+          <button
+            className="w-full px-3 py-2 text-left text-sm font-semibold text-beige transition hover:text-gold hover:border-b-2 hover:border-gold md:w-auto md:text-center"
+            onClick={handleLogout}
+          >
+            Sair
+          </button>
+        </li>
       )}
     </>
   );

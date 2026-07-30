@@ -1,8 +1,8 @@
 import { useEffect } from "react";
 import { BsPersonLinesFill } from "react-icons/bs";
-import { FaBars, FaMoneyBill, FaTimes } from "react-icons/fa";
+import { FaBars, FaTimes } from "react-icons/fa";
 import { IoBagHandle } from "react-icons/io5";
-import { MdDashboard, MdSettings } from "react-icons/md";
+import { MdDashboard, MdLock, MdSettings } from "react-icons/md";
 import { SideBarProps } from "../types";
 import MenuItem from "./MenuItem";
 
@@ -55,12 +55,6 @@ function SideBar({ isSidebarOpen, setIsSidebarOpen }: SideBarProps) {
           onClick={handleMenuClick}
         />
         <MenuItem
-          to="/dashboard/historico"
-          icon={<FaMoneyBill />}
-          label="Todos os Lances"
-          onClick={handleMenuClick}
-        />
-        <MenuItem
           to="/dashboard/participantes"
           icon={<BsPersonLinesFill />}
           label="Participantes"
@@ -70,6 +64,12 @@ function SideBar({ isSidebarOpen, setIsSidebarOpen }: SideBarProps) {
           to="/dashboard/configuracoes/catalogo"
           icon={<MdSettings />}
           label="Catálogo"
+          onClick={handleMenuClick}
+        />
+        <MenuItem
+          to="/dashboard/alterar-senha"
+          icon={<MdLock />}
+          label="Alterar Senha"
           onClick={handleMenuClick}
         />
       </ul>

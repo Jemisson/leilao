@@ -40,10 +40,6 @@ const LoginPage: React.FC = () => {
     }
   };
 
-  const handleCreateAccountClick = () => {
-    navigate('/participantes/new');
-  };
-
   return (
     <div className="flex flex-col lg:flex-row h-screen">
       <div className="w-full lg:w-1/2 relative bg-blueBright text-white flex flex-col justify-center items-center p-6">
@@ -123,15 +119,6 @@ const LoginPage: React.FC = () => {
           </button>
         </form>
     
-        <p className="text-sm leading-relaxed text-gray-900 w-2/3 text-center">
-          Primeira vez aqui?{" "}
-          <button
-            onClick={handleCreateAccountClick}
-            className="font-bold text-blue-700 hover:underline focus:outline-none"
-          >
-            Crie uma conta agora
-          </button>
-        </p>
       </div>
     </div>
   );

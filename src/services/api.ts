@@ -235,6 +235,22 @@ export const fetchUserById = async (userId: number) => {
   return response.data;
 }
 
+export const updatePassword = async (
+  currentPassword: string,
+  password: string,
+  passwordConfirmation: string
+) => {
+  const response = await api.patch("/users/password", {
+    user: {
+      current_password: currentPassword,
+      password,
+      password_confirmation: passwordConfirmation,
+    },
+  });
+
+  return response.data;
+}
+
 export const createUser = async (profileUser: ProfileUser) => {
   try {
     const response = await api.post("/profile_users", {
