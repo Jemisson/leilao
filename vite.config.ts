@@ -11,10 +11,6 @@ export default defineConfig({
   plugins: [react()],
   server: {
     proxy: {
-      "/api": {
-        target: BACKEND_BASE_URL,
-        changeOrigin: true,
-      },
       "/compartilhar/produto": {
         target: BACKEND_BASE_URL,
         changeOrigin: true,
@@ -63,22 +59,6 @@ export default defineConfig({
               response.writeHead(proxyRes.statusCode || 200, proxyRes.headers);
               response.end(rewrittenBody);
             });
-          });
-        },
-      },
-      "/share/products": {
-        target: BACKEND_BASE_URL,
-        changeOrigin: true,
-        configure: (proxy) => {
-          proxy.on("proxyRes", (proxyRes) => {
-            const location = proxyRes.headers.location;
-
-            if (!location) return;
-
-            proxyRes.headers.location = location
-              .replace(BACKEND_BASE_URL, FRONTEND_BASE_URL)
-              .replace("https://api.leiloescapuci.com.br", FRONTEND_BASE_URL)
-              .replace("http://localhost:3000", FRONTEND_BASE_URL);
           });
         },
       },
