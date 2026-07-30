@@ -5,7 +5,6 @@ import { Product, Bid } from "../types";
 import BidTable from "../components/BidTable";
 import PageHeader from "../components/PageHeader";
 import Pagination from "../components/Pagination";
-import { useWebSocket } from "../hooks/useWebSocket";
 import { toast } from "react-toastify";
 import { useCatalogSettings } from "../hooks/useCatalogSettings";
 import { FaStar } from "react-icons/fa";
@@ -20,8 +19,6 @@ const ProductDetails: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
-  const { cable } = useWebSocket();
-  const [isWebSocketReady, setIsWebSocketReady] = useState(false);
   const navigate = useNavigate();
   const { showProductValues } = useCatalogSettings();
 
@@ -56,39 +53,6 @@ const ProductDetails: React.FC = () => {
 
     fetchBids();
   }, [productId, currentPage]);
-
-  useEffect(() => {
-    if (cable) {
-      setIsWebSocketReady(true);
-    }
-  }, [cable]);
-
-  useEffect(() => {
-    if (!isWebSocketReady || !cable) return;
-
-    const subscription = cable.subscriptions.create("BidsChannel", {
-      received(data: { data: Bid }) {
-        if (Number(data.data.attributes.product) === Number(productId)) {
-          setBids((prevBids) => [data.data, ...prevBids]);
-          setProduct((prevProduct) =>
-            prevProduct
-              ? {
-                  ...prevProduct,
-                  attributes: {
-                    ...prevProduct.attributes,
-                    current_value: Number(data.data.attributes.value),
-                  },
-                }
-              : prevProduct
-          );
-        }
-      },
-    });
-
-    return () => {
-      subscription.unsubscribe();
-    };
-  }, [isWebSocketReady, cable, productId]);
 
   if (loading) return <p>Carregando...</p>;
   if (error) return <p>{error}</p>;

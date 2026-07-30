@@ -2,21 +2,15 @@ import { FaEye, FaPlayCircle, FaShareAlt, FaStar } from "react-icons/fa";
 import { ProductCardProps } from "../types";
 import { formatCurrency } from "../utils/currency";
 import { toast } from "react-toastify";
-import { getAuthenticatedUser } from "../utils/authHelpers";
 import { buildShareProductUrl } from "../config/backend";
-import { ImHammer2 } from "react-icons/im";
 
-const ProductCard = ({ product, isUpdated, onBid, onViewDetails, showProductValues }: ProductCardProps) => {
+const ProductCard = ({ product, onViewDetails, showProductValues }: ProductCardProps) => {
 
-  const user = getAuthenticatedUser();
-  const isAdmin = user?.role === "admin";
   const currentValue = Number(product.attributes.current_value ?? product.attributes.minimum_value ?? 0);
 
   return (
     <article
-      className={`relative flex h-full w-full flex-col overflow-hidden rounded-lg border bg-white shadow-sm transition duration-200 hover:-translate-y-1 hover:shadow-xl ${
-        isUpdated ? "border-pinkDark ring-2 ring-pinkDark/30" : "border-gray-200"
-      }`}
+      className="relative flex h-full w-full flex-col overflow-hidden rounded-lg border border-gray-200 bg-white shadow-sm transition duration-200 hover:-translate-y-1 hover:shadow-xl"
       key={product.id}
     >
 
@@ -60,7 +54,7 @@ const ProductCard = ({ product, isUpdated, onBid, onViewDetails, showProductValu
             <p className="text-xs font-bold uppercase text-pinkDark">
               Lance atual
             </p>
-            <p className={`whitespace-nowrap text-lg font-extrabold leading-tight tracking-normal ${isUpdated ? "text-pinkDark" : "text-gray-950"}`}>
+            <p className="whitespace-nowrap text-lg font-extrabold leading-tight tracking-normal text-gray-950">
               {formatCurrency(currentValue)}
             </p>
           </div>
@@ -98,26 +92,14 @@ const ProductCard = ({ product, isUpdated, onBid, onViewDetails, showProductValu
             Compartilhar
           </button>
 
-          <div className="flex items-center gap-2">
-            <button
-              type="button"
-              onClick={onViewDetails}
-              className="inline-flex h-11 flex-1 items-center justify-center gap-2 rounded-md border border-blueBright px-3 text-sm font-bold text-blueBright transition hover:bg-blueBright hover:text-white"
-            >
-              <FaEye className="h-4 w-4" />
-              Ver detalhes
-            </button>
-            {isAdmin && (
-              <button
-                type="button"
-                onClick={onBid}
-                className="inline-flex h-11 flex-1 items-center justify-center gap-2 rounded-md bg-pinkDark px-3 text-sm font-bold text-white transition hover:bg-redBright focus:outline-none focus:ring-2 focus:ring-pinkDark"
-              >
-                <ImHammer2 className="h-4 w-4" />
-                Lance
-              </button>
-            )}
-          </div>
+          <button
+            type="button"
+            onClick={onViewDetails}
+            className="inline-flex h-11 w-full items-center justify-center gap-2 rounded-md border border-blueBright px-3 text-sm font-bold text-blueBright transition hover:bg-blueBright hover:text-white"
+          >
+            <FaEye className="h-4 w-4" />
+            Ver detalhes
+          </button>
         </div>
       </div>
 

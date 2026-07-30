@@ -1,5 +1,5 @@
 import { useNavigate, useParams } from "react-router-dom";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { fetchProductById } from "../services/api";
 import { Product } from "../types";
 import { CiShare2 } from "react-icons/ci";
@@ -8,7 +8,6 @@ import { formatCurrency } from "../utils/currency";
 import { toast } from "react-toastify";
 import { getAuthenticatedUser } from "../utils/authHelpers";
 import BidModal from "./BidModal";
-import { useWebSocket } from "../hooks/useWebSocket";
 import { buildShareProductUrl } from "../config/backend";
 import { useCatalogSettings } from "../hooks/useCatalogSettings";
 
@@ -19,8 +18,6 @@ const ProductPage = () => {
   const user = getAuthenticatedUser();
   const navigate = useNavigate();
   const [isBidModalOpen, setBidModalOpen] = useState(false);
-  const { cable } = useWebSocket();
-  const [isWebSocketReady, setIsWebSocketReady] = useState(false);
   const isAdmin = user?.role === "admin";
   const { showProductValues } = useCatalogSettings();
 
@@ -40,54 +37,20 @@ const ProductPage = () => {
     setBidModalOpen(true);
   };
 
-  useEffect(() => {
-    if (cable) setIsWebSocketReady(true);
-  }, [cable]);
-
-  useEffect(() => {
-    if (!isWebSocketReady || !cable || !product) return;
-
-    const subscription = cable.subscriptions.create("BidsChannel", {
-      received(data: { data: { attributes: { product: number; value: number } } }) {
-        const updatedProductId = Number(data.data.attributes.product);
-        const updatedValue = Number(data.data.attributes.value);
-
-        if (updatedProductId == product.id) {
-          setProduct((prev) =>
-            prev
-              ? {
-                  ...prev,
-                  attributes: {
-                    ...prev.attributes,
-                    current_value: updatedValue,
-                  },
-                }
-              : prev
-          );
-        }
-      },
-    });
-
-    return () => {
-      subscription.unsubscribe();
-    };
-  }, [cable, isWebSocketReady, product]);
-
-  useEffect(() => {
-    const getProduct = async () => {
-      try {
-        const data = await fetchProductById(Number(id));
-        setProduct(data.data);
-
-      } catch (err) {
-        toast.error(`Erro ao buscar produto: ${err}`);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    getProduct();
+  const getProduct = useCallback(async () => {
+    try {
+      const data = await fetchProductById(Number(id));
+      setProduct(data.data);
+    } catch (err) {
+      toast.error(`Erro ao buscar produto: ${err}`);
+    } finally {
+      setLoading(false);
+    }
   }, [id]);
+
+  useEffect(() => {
+    getProduct();
+  }, [getProduct]);
 
   if (loading) return <p className="text-center mt-10">Carregando produto...</p>;
   if (!product) return <p className="text-center mt-10">Produto não encontrado ou já arrematado.</p>;
@@ -174,6 +137,7 @@ const ProductPage = () => {
         profileUserId={user?.profile_id || 0}
         currentValue={Number(product.attributes.current_value || 0)}
         showCurrentValue={showProductValues}
+        onSuccess={getProduct}
       />
 
     </div>

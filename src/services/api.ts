@@ -180,7 +180,7 @@ export const soldProduct = async (id: number, productData: MarkAsSoldPayload) =>
 }
 
 export const fetchProductById = async (productId: number) => {
-  const response = await api.get(`/products/${productId}`);
+  const response = await publicApi.get(`/products/${productId}`);
   return response.data;
 }
 

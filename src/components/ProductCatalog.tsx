@@ -1,13 +1,9 @@
 import { useCallback, useEffect, useState } from "react";
 import { fetchProducts, searchProducts } from "../services/api";
-import { Bid, Product, ProductCatalogProps } from "../types";
+import { Product, ProductCatalogProps } from "../types";
 import Pagination from "./Pagination";
 import ProductCard from "./ProductCard";
 import NoData from "./NoData";
-import BidModal from "./BidModal";
-import { useWebSocket } from "../hooks/useWebSocket";
-import { useNavigate } from "react-router-dom";
-import { getAuthenticatedUser } from "../utils/authHelpers";
 import { toast } from "react-toastify";
 import ProductDetailsModal from "./ProductDetailsModal";
 import VideoModal from "./VideoModal";
@@ -18,22 +14,16 @@ import PageHeader from "./PageHeader";
 
 function ProductCatalog({ selectedCategory }: ProductCatalogProps) {
   const [products, setProducts] = useState<Product[]>([]);
-  const [updatedProducts, setUpdatedProducts] = useState<Set<number>>(new Set());
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
 
-  const [isBidModalOpen, setBidModalOpen] = useState(false);
   const [isProductModalOpen, setIsProductModalOpen] = useState(false);
   const [selectedProductModal, setSelectedProductModal] = useState<Product | null>(null);
   const [isVideoModalOpen, setIsVideoModalOpen] = useState(false);
 
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
-  const { cable } = useWebSocket();
-  const [isWebSocketReady, setIsWebSocketReady] = useState(false);
-  const navigate = useNavigate();
-  const user = getAuthenticatedUser();
   const [searchQuery, setSearchQuery] = useState<string | null>(null);
   const { showProductValues, loading: catalogSettingsLoading } = useCatalogSettings();
 
@@ -52,17 +42,6 @@ function ProductCatalog({ selectedCategory }: ProductCatalogProps) {
     setSelectedProductModal(null);
   };
 
-  const handleOpenBidModal = (product: Product) => {
-
-    if (!user?.profile_id) {
-      navigate("/login");
-      toast.error("Você precisa estar autenticado para dar lances.");
-      return;
-    }
-    setSelectedProduct(product);
-    setBidModalOpen(true);
-  };
-
   const handleSearch = useCallback((query: string) => {
     setSearchQuery(query);
     setCurrentPage(1);
@@ -74,17 +53,10 @@ function ProductCatalog({ selectedCategory }: ProductCatalogProps) {
   }, []);
 
   useEffect(() => {
-    if (cable) {
-      setIsWebSocketReady(true);
-    }
-  }, [cable]); 
-
-  useEffect(() => {
     setCurrentPage(1);
   }, [selectedCategory]);
 
-  useEffect(() => {
-  const getProducts = async () => {
+  const getProducts = useCallback(async () => {
     setLoading(true);
     setError(null);
 
@@ -108,51 +80,11 @@ function ProductCatalog({ selectedCategory }: ProductCatalogProps) {
     } finally {
       setLoading(false);
     }
-  };
-
-  getProducts();
-}, [currentPage, selectedCategory, searchQuery]);
-
+  }, [currentPage, selectedCategory, searchQuery]);
 
   useEffect(() => {
-    if (!isWebSocketReady || !cable) return;
-
-    const subscription = cable.subscriptions.create("BidsChannel", {
-      received(data: {data: Bid}) {
-
-        setProducts((prevProducts) => {
-          return prevProducts.map((product) => {
-            if (Number(product.id) === Number(data.data.attributes.product)) {
-              setUpdatedProducts((prev) => new Set(prev).add(product.id));
-
-              setTimeout(() => {
-                setUpdatedProducts((prev) => {
-                  const newSet = new Set(prev);
-                  newSet.delete(product.id);
-                  return newSet;
-                });
-              }, 2000);
-
-              return {
-                ...product,
-                attributes: {
-                  ...product.attributes,
-                  current_value: Number(data.data.attributes.value),
-                },
-              };
-            } else {
-              return product;
-            }
-          });
-        });
-
-      },
-    });
-
-    return () => {
-      subscription.unsubscribe();
-    };
-  }, [cable, isWebSocketReady]);
+    getProducts();
+  }, [getProducts]);
 
   return (
     <main className="min-h-screen bg-[#f4f7fb]">
@@ -191,7 +123,7 @@ function ProductCatalog({ selectedCategory }: ProductCatalogProps) {
               />
             </div>
 
-            <ul className="grid w-full grid-cols-[repeat(auto-fit,_minmax(260px,_1fr))] gap-5 lg:gap-6">
+            <ul className="grid w-full grid-cols-[repeat(auto-fill,_minmax(min(100%,_260px),_320px))] justify-center gap-5 sm:justify-start lg:gap-6">
               {products.map((product) => (
                 <li
                   key={product.id}
@@ -199,8 +131,6 @@ function ProductCatalog({ selectedCategory }: ProductCatalogProps) {
                 >
                   <ProductCard
                     product={product}
-                    isUpdated={updatedProducts.has(product.id)}
-                    onBid={() => handleOpenBidModal(product)}
                     onViewDetails={() => handleOpenDetails(product)}
                     showProductValues={showProductValues}
                   />
@@ -217,16 +147,6 @@ function ProductCatalog({ selectedCategory }: ProductCatalogProps) {
             </div>
           </>
         )}
-
-      <BidModal
-        isOpen={isBidModalOpen}
-        onClose={() => setBidModalOpen(false)}
-        productName={selectedProduct?.attributes.lot_number || ''}
-        productId={selectedProduct?.id || 0}
-        profileUserId={user?.profile_id || 0}
-        currentValue={Number(selectedProduct?.attributes.current_value || 0)}
-        showCurrentValue={showProductValues}
-      />
 
       <ProductDetailsModal
         isOpen={isProductModalOpen}

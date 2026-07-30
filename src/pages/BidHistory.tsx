@@ -4,7 +4,6 @@ import PageHeader from "../components/PageHeader";
 import Pagination from "../components/Pagination";
 import { fetchBids } from "../services/api";
 import { Bid } from "../types";
-import { useWebSocket } from "../hooks/useWebSocket";
 import { toast } from "react-toastify";
 import { FaMoneyBill } from "react-icons/fa";
 
@@ -14,8 +13,6 @@ const BidHistory: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
-  const { cable } = useWebSocket();
-  const [isWebSocketReady, setIsWebSocketReady] = useState(false);
 
   useEffect(() => {
     const getBids = async () => {
@@ -35,32 +32,6 @@ const BidHistory: React.FC = () => {
 
     getBids();
   }, [currentPage]);
-
-  useEffect(() => {
-    if (cable) {
-      setIsWebSocketReady(true);
-    }
-  }, [cable]); 
-
-  useEffect(() => {
-    if (!isWebSocketReady || !cable) return;
-
-
-    const subscription = cable.subscriptions.create("BidsChannel", {
-      received(data: { data: Bid }) {
-        setBids((prevBids) => {
-          if (currentPage === 1) {
-            return [data.data, ...prevBids];
-          }
-          return prevBids;
-        });
-      },
-    });
-
-    return () => {
-      subscription.unsubscribe();
-    };
-  }, [isWebSocketReady, cable, currentPage]);
 
   if (loading) return <p className="p-6">Carregando...</p>;
   if (error) return <p className="p-6 text-red-500">{error}</p>;

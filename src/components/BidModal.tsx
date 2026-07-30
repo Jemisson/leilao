@@ -11,6 +11,7 @@ const BidModal: React.FC<BidModalProps> = ({
   profileUserId,
   currentValue,
   showCurrentValue = true,
+  onSuccess,
  }) => {
   const [bidValue, setBidValue] = useState<number | "">("");
   const [noteValue, setNoteValue] = useState("");
@@ -38,6 +39,7 @@ const BidModal: React.FC<BidModalProps> = ({
       await createBid(productId, bidValue, noteValue, profileUserId);
   
       toast.success("Lance registrado com sucesso");
+      onSuccess?.();
       onClose();
     } catch (err: unknown) {
       if (err instanceof Error) {

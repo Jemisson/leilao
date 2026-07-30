@@ -84,6 +84,7 @@ export interface NoDataProps {
 export interface BidModalProps {
   isOpen: boolean;
   onClose: () => void;
+  onSuccess?: () => void | Promise<void>;
   productName: string;
   productId: number;
   profileUserId: number;
@@ -97,8 +98,6 @@ export interface ProductCatalogProps {
 
 export interface ProductCardProps {
   product: Product;
-  isUpdated: boolean;
-  onBid: () => void;
   onViewDetails: () => void;
   showProductValues: boolean;
 }
@@ -130,10 +129,6 @@ export interface MarkAsSoldPayload {
 export interface NavBarProps {
   onCategoryClick: (categoryId: string | null) => void;
   activeCategory: string | null;
-}
-
-export interface WebSocketContextProps {
-  cable: ActionCable.Cable | null;
 }
 
 export interface MenuItemProps {

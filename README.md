@@ -18,7 +18,7 @@ A plataforma tem como objetivo proporcionar uma experiência moderna e eficiente
 
 - Node.js (versão 18 ou superior)
 - Yarn ou npm
-- Backend Ruby on Rails disponível na porta 3000 (API e WebSocket)
+- Backend Ruby on Rails disponível na porta 3000 (API)
 - `.env` opcional para sobrescrever as URLs padrão locais
 
 ---
@@ -49,7 +49,7 @@ Caso precise sobrescrever as URLs, crie um arquivo `.env` na raiz do projeto:
 VITE_BACKEND_BASE_URL=http://localhost:3000
 VITE_API_BASE_URL=http://localhost:3000/api/v1
 VITE_AUTH_API_BASE_URL=http://localhost:3000
-VITE_WEBSOCKET_URL=ws://localhost:3000/cable
+VITE_FRONTEND_BASE_URL=http://localhost:5173
 ```
 
 4. **Execute o projeto em modo desenvolvimento:**
@@ -84,13 +84,42 @@ A aplicação estará acessível em: [http://localhost:5173](http://localhost:51
 - `build`: compila o projeto para produção;
 - `lint`: verifica problemas de código com ESLint.
 
+## 🔗 Compartilhamento de produtos
+
+O frontend busca os dados públicos do produto em:
+
+```text
+GET https://api.leiloescapuci.com.br/api/v1/products/:id
+```
+
+Essa rota não exige autenticação.
+
+A URL compartilhada pelo usuário deve ser sempre a URL bonita do frontend:
+
+```text
+https://leiloescapuci.com.br/compartilhar/produto/:id
+```
+
+Não compartilhe diretamente URLs da API, como `https://api.leiloescapuci.com.br/share/products/:id`.
+
+Para que WhatsApp e outras redes exibam foto e descrição, a rota bonita precisa ser atendida internamente pelo backend que gera as tags Open Graph.
+
+Em produção, configure o servidor do frontend para encaminhar:
+
+```text
+https://leiloescapuci.com.br/compartilhar/produto/:id
+-> https://api.leiloescapuci.com.br/share/products/:id
+```
+
+A URL visível deve continuar sendo a do frontend. Depois de renderizar as meta tags, o backend redireciona o usuário para `https://leiloescapuci.com.br/produto/:id`.
+
 ---
 
 ## 🧪 Stack Utilizada
 
 - **React 18 + TypeScript**
 - **Tailwind CSS + Flowbite**
-- **Axios + ActionCable**
+- **Axios**
 - **Recharts, React Router DOM, React Toastify**
 - **Vite como bundler**
 

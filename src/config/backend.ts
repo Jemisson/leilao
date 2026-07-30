@@ -1,4 +1,6 @@
-const DEFAULT_BACKEND_URL = "http://localhost:3000";
+const DEFAULT_BACKEND_URL = import.meta.env.PROD
+  ? "https://api.leiloescapuci.com.br"
+  : "http://localhost:3000";
 
 const stripTrailingSlash = (url: string) => url.replace(/\/+$/, "");
 
@@ -16,9 +18,9 @@ export const AUTH_BASE_URL = stripTrailingSlash(
   import.meta.env.VITE_AUTH_API_BASE_URL || BACKEND_BASE_URL
 );
 
-export const WEBSOCKET_URL =
-  import.meta.env.VITE_WEBSOCKET_URL ||
-  `${BACKEND_BASE_URL.replace(/^http/, "ws")}/cable`;
+export const FRONTEND_BASE_URL = stripTrailingSlash(
+  import.meta.env.VITE_FRONTEND_BASE_URL || window.location.origin
+);
 
 export const buildShareProductUrl = (productId: number | string) =>
-  `${BACKEND_BASE_URL}/share/products/${productId}`;
+  `${FRONTEND_BASE_URL}/compartilhar/produto/${encodeURIComponent(productId)}`;
